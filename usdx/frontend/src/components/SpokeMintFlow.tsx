@@ -168,7 +168,7 @@ export function SpokeMintFlow({ signer, userAddress, onSuccess }: SpokeMintFlowP
               <button
                 onClick={handleMint}
                 disabled={!amount || isMinting || availableToMint === BigInt(0)}
-                className="btn btn-primary w-full"
+                className="btn bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 hover:shadow-lg shadow-sm w-full"
               >
                 {isMinting ? 'Minting...' : 'Mint USDX'}
               </button>

@@ -105,8 +105,8 @@ export default function Home() {
       {/* Animated background gradient */}
       <div className="fixed inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20" />
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl animate-pulse-slow" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: '1s' }} />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '3s' }} />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '3s', animationDelay: '1s' }} />
       </div>
 
       {/* Header */}
@@ -124,7 +124,7 @@ export default function Home() {
               <Coins className="h-7 w-7 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold gradient-text">
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                 USDX Protocol
               </h1>
               <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">
@@ -169,10 +169,10 @@ export default function Home() {
             className="inline-block mb-6"
           >
             <div className="px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full border border-blue-200 dark:border-blue-800">
-              <span className="text-sm font-semibold gradient-text">Yield-Bearing Stablecoin</span>
+              <span className="text-sm font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Yield-Bearing Stablecoin</span>
             </div>
           </motion.div>
-          <h2 className="text-5xl md:text-6xl font-bold mb-6 gradient-text">
+          <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
             Deposit USDC, Earn Yield
           </h2>
           <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed">
@@ -206,7 +206,7 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + index * 0.1 }}
                 whileHover={{ scale: 1.05, y: -5 }}
-                className="stat-card"
+                className="card text-center p-6 hover:scale-105 transition-transform duration-300"
               >
                 <div className={`inline-flex p-3 bg-gradient-to-br ${stat.gradient} rounded-xl mb-4 shadow-lg`}>
                   <Icon className="h-6 w-6 text-white" />
@@ -249,7 +249,7 @@ export default function Home() {
             transition={{ delay: 0.7 }}
             className="card max-w-5xl mx-auto mb-8"
           >
-            <h3 className="text-3xl font-bold mb-8 gradient-text text-center">Getting Started</h3>
+            <h3 className="text-3xl font-bold mb-8 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent text-center">Getting Started</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {steps.map((step, index) => {
                 const Icon = step.icon;

@@ -87,7 +87,7 @@ export function WithdrawFlow({ signer, onSuccess }: WithdrawFlowProps) {
           <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl">
             <ArrowUpCircle className="h-6 w-6 text-white" />
           </div>
-          <h2 className="text-2xl font-bold gradient-text">Withdraw USDC</h2>
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Withdraw USDC</h2>
         </div>
         <div className="flex flex-col items-center justify-center py-8 text-center">
           <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-full mb-4">
@@ -112,7 +112,7 @@ export function WithdrawFlow({ signer, onSuccess }: WithdrawFlowProps) {
           <ArrowUpCircle className="h-6 w-6 text-white" />
         </div>
         <div>
-          <h2 className="text-2xl font-bold gradient-text">Withdraw USDC</h2>
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Withdraw USDC</h2>
           <p className="text-sm text-gray-600 dark:text-gray-400">Burn USDX 1:1</p>
         </div>
       </div>
@@ -128,7 +128,7 @@ export function WithdrawFlow({ signer, onSuccess }: WithdrawFlowProps) {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
-              className="input input-lg w-full pr-12"
+              className="input h-14 text-lg pr-12"
               disabled={isApproving || isWithdrawing}
               step="0.000001"
               min="0"
@@ -144,7 +144,7 @@ export function WithdrawFlow({ signer, onSuccess }: WithdrawFlowProps) {
           whileTap={{ scale: isApproving || isWithdrawing || !amount ? 1 : 0.98 }}
           onClick={handleWithdraw}
           disabled={!amount || isApproving || isWithdrawing}
-          className="btn btn-primary w-full text-base py-4"
+          className="btn bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 hover:shadow-lg shadow-sm w-full text-base py-4"
         >
           {isApproving && (
             <>

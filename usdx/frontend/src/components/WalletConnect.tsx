@@ -13,7 +13,7 @@ export function WalletConnect() {
       <motion.button
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="btn btn-secondary"
+        className="btn bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 shadow-sm"
         disabled
       >
         <Loader2 className="h-4 w-4 animate-spin" />
@@ -56,7 +56,7 @@ export function WalletConnect() {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           onClick={disconnect}
-          className="btn btn-secondary"
+          className="btn bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-gray-200 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700 shadow-sm"
         >
           <LogOut className="h-4 w-4" />
           Disconnect
@@ -75,7 +75,7 @@ export function WalletConnect() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={connect}
-        className="btn btn-primary shadow-lg"
+        className="btn bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 hover:shadow-lg shadow-sm"
       >
         <Wallet className="h-4 w-4" />
         Connect Wallet

@@ -69,7 +69,7 @@ export function BalanceCard({ address }: BalanceCardProps) {
           <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl">
             <Wallet className="h-6 w-6 text-white" />
           </div>
-          <h2 className="text-2xl font-bold gradient-text">Your Balances</h2>
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Your Balances</h2>
         </div>
         <div className="flex flex-col items-center justify-center py-12 text-center">
           <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-full mb-4">
@@ -93,7 +93,7 @@ export function BalanceCard({ address }: BalanceCardProps) {
         <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg">
           <Wallet className="h-6 w-6 text-white" />
         </div>
-        <h2 className="text-2xl font-bold gradient-text">Your Balances</h2>
+        <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Your Balances</h2>
       </div>
       
       {isLoading ? (
@@ -101,7 +101,7 @@ export function BalanceCard({ address }: BalanceCardProps) {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="h-24 shimmer rounded-xl border border-gray-200 dark:border-gray-800"
+              className="h-24 animate-pulse rounded-xl border border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-800"
             />
           ))}
         </div>

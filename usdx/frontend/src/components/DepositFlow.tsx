@@ -87,7 +87,7 @@ export function DepositFlow({ signer, onSuccess }: DepositFlowProps) {
           <div className="p-3 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl">
             <ArrowDownCircle className="h-6 w-6 text-white" />
           </div>
-          <h2 className="text-2xl font-bold gradient-text">Deposit USDC</h2>
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Deposit USDC</h2>
         </div>
         <div className="flex flex-col items-center justify-center py-8 text-center">
           <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-full mb-4">
@@ -112,7 +112,7 @@ export function DepositFlow({ signer, onSuccess }: DepositFlowProps) {
           <ArrowDownCircle className="h-6 w-6 text-white" />
         </div>
         <div>
-          <h2 className="text-2xl font-bold gradient-text">Deposit USDC</h2>
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Deposit USDC</h2>
           <p className="text-sm text-gray-600 dark:text-gray-400">Mint USDX 1:1</p>
         </div>
       </div>
@@ -128,7 +128,7 @@ export function DepositFlow({ signer, onSuccess }: DepositFlowProps) {
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
               placeholder="0.00"
-              className="input input-lg w-full pr-12"
+              className="input h-14 text-lg pr-12"
               disabled={isApproving || isDepositing}
               step="0.000001"
               min="0"
@@ -144,7 +144,7 @@ export function DepositFlow({ signer, onSuccess }: DepositFlowProps) {
           whileTap={{ scale: isApproving || isDepositing || !amount ? 1 : 0.98 }}
           onClick={handleDeposit}
           disabled={!amount || isApproving || isDepositing}
-          className="btn btn-primary w-full text-base py-4"
+          className="btn bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 hover:shadow-lg shadow-sm w-full text-base py-4"
         >
           {isApproving && (
             <>
