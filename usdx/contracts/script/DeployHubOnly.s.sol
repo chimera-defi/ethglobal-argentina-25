@@ -35,18 +35,29 @@ contract DeployHubOnly is Script {
         USDXToken hubUSDX = new USDXToken(deployer);
         console2.log("Hub USDX Token:", address(hubUSDX));
 
-        // 4. Deploy Hub Vault
-        console2.log("4. Deploying Hub Vault...");
+        // 4. Deploy OVault components (for LayerZero integration)
+        console2.log("4. Deploying OVault components...");
+        // Note: In production, deploy these contracts:
+        // - USDXYearnVaultWrapper
+        // - USDXShareOFTAdapter  
+        // - USDXVaultComposerSync
+        // For now, deploy vault without OVault (can be added later)
+        
+        // 5. Deploy Hub Vault
+        console2.log("5. Deploying Hub Vault...");
         USDXVault hubVault = new USDXVault(
             address(usdc),
             address(hubUSDX),
-            address(yearnVault),
-            deployer // treasury
+            deployer, // treasury
+            deployer, // admin
+            address(0), // ovaultComposer (set later)
+            address(0), // shareOFTAdapter (set later)
+            address(0)  // vaultWrapper (set later)
         );
         console2.log("Hub Vault:", address(hubVault));
 
-        // 5. Grant roles
-        console2.log("5. Granting roles...");
+        // 6. Grant roles
+        console2.log("6. Granting roles...");
         bytes32 MINTER_ROLE = hubUSDX.MINTER_ROLE();
         bytes32 BURNER_ROLE = hubUSDX.BURNER_ROLE();
         
@@ -54,8 +65,8 @@ contract DeployHubOnly is Script {
         hubUSDX.grantRole(BURNER_ROLE, address(hubVault));
         console2.log("Roles granted to vault");
 
-        // 6. Mint test USDC
-        console2.log("6. Minting 1,000,000 USDC to deployer...");
+        // 7. Mint test USDC
+        console2.log("7. Minting 1,000,000 USDC to deployer...");
         usdc.mint(deployer, 1_000_000e6);
         console2.log("Done!");
 

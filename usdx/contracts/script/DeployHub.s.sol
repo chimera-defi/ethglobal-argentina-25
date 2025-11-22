@@ -57,31 +57,42 @@ contract DeployHub is Script {
         USDXToken usdx = new USDXToken(deployer);
         console2.log("   USDXToken deployed at:", address(usdx));
         
-        // 2. Deploy USDXVault
-        console2.log("\n2. Deploying USDXVault...");
+        // 2. Deploy OVault components (optional - can be deployed separately)
+        console2.log("\n2. Deploying OVault components...");
+        // Note: Deploy these contracts for LayerZero OVault integration:
+        // - USDXYearnVaultWrapper
+        // - USDXShareOFTAdapter
+        // - USDXVaultComposerSync
+        // For now, deploy vault without OVault (can be configured later)
+        
+        // 3. Deploy USDXVault
+        console2.log("\n3. Deploying USDXVault...");
         USDXVault vault = new USDXVault(
             USDC_ADDRESS,
             address(usdx),
             TREASURY_ADDRESS,
-            deployer
+            deployer,
+            address(0), // ovaultComposer (set later)
+            address(0), // shareOFTAdapter (set later)
+            address(0)  // vaultWrapper (set later)
         );
         console2.log("   USDXVault deployed at:", address(vault));
         
-        // 3. Grant vault permissions on USDX token
-        console2.log("\n3. Setting up permissions...");
+        // 4. Grant vault permissions on USDX token
+        console2.log("\n4. Setting up permissions...");
         usdx.grantRole(MINTER_ROLE, address(vault));
         console2.log("   Granted MINTER_ROLE to vault");
         
         usdx.grantRole(BURNER_ROLE, address(vault));
         console2.log("   Granted BURNER_ROLE to vault");
         
-        // 4. Set Yearn vault if available
+        // 5. Set Yearn vault if available
         if (YEARN_VAULT_ADDRESS != address(0)) {
-            console2.log("\n4. Setting Yearn vault...");
+            console2.log("\n5. Setting Yearn vault...");
             vault.setYearnVault(YEARN_VAULT_ADDRESS);
             console2.log("   Yearn vault set to:", YEARN_VAULT_ADDRESS);
         } else {
-            console2.log("\n4. Skipping Yearn vault setup (address not set)");
+            console2.log("\n5. Skipping Yearn vault setup (address not set)");
         }
         
         vm.stopBroadcast();

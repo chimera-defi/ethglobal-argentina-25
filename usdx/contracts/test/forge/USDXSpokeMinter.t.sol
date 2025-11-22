@@ -4,64 +4,118 @@ pragma solidity ^0.8.23;
 import {Test} from "forge-std/Test.sol";
 import {USDXSpokeMinter} from "../../contracts/USDXSpokeMinter.sol";
 import {USDXToken} from "../../contracts/USDXToken.sol";
+import {USDXShareOFT} from "../../contracts/USDXShareOFT.sol";
+import {MockLayerZeroEndpoint} from "../../contracts/mocks/MockLayerZeroEndpoint.sol";
 
 contract USDXSpokeMinterTest is Test {
     USDXSpokeMinter public minter;
     USDXToken public usdx;
+    USDXShareOFT public shareOFT;
+    MockLayerZeroEndpoint public lzEndpoint;
     
     address public admin = address(0x1);
     address public user1 = address(0x3);
     address public user2 = address(0x4);
     
+    uint32 constant HUB_CHAIN_ID = 30101; // Ethereum
+    uint32 constant LOCAL_EID = 30109; // Polygon
+    
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
-    bytes32 public constant POSITION_UPDATER_ROLE = keccak256("POSITION_UPDATER_ROLE");
     
     function setUp() public {
         // Deploy contracts
+        lzEndpoint = new MockLayerZeroEndpoint(LOCAL_EID);
         usdx = new USDXToken(admin);
-        minter = new USDXSpokeMinter(address(usdx), admin);
+        
+        shareOFT = new USDXShareOFT(
+            "USDX Vault Shares",
+            "USDX-SHARES",
+            address(lzEndpoint),
+            LOCAL_EID,
+            admin
+        );
+        
+        minter = new USDXSpokeMinter(
+            address(usdx),
+            address(shareOFT),
+            address(lzEndpoint),
+            HUB_CHAIN_ID,
+            admin
+        );
         
         // Grant minter the ability to mint/burn USDX
         vm.startPrank(admin);
         usdx.grantRole(MINTER_ROLE, address(minter));
         usdx.grantRole(BURNER_ROLE, address(minter));
+        shareOFT.setMinter(admin); // Admin can mint shares for testing
         vm.stopPrank();
     }
     
     function testDeployment() public view {
         assertEq(address(minter.usdxToken()), address(usdx));
+        assertEq(address(minter.shareOFT()), address(shareOFT));
         assertEq(minter.totalMinted(), 0);
     }
     
-    function testMint() public {
-        uint256 hubPosition = 1000 * 10**6;
+    function testMintUSDXFromOVault() public {
+        uint256 shares = 1000 * 10**6;
         uint256 mintAmount = 500 * 10**6;
         
-        // Update user's hub position
+        // Mint OVault shares to user
         vm.prank(admin);
-        minter.updateHubPosition(user1, hubPosition);
+        shareOFT.mint(user1, shares);
         
-        // Mint USDX
-        vm.prank(user1);
-        minter.mint(mintAmount);
+        // Approve minter to transfer shares
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), mintAmount);
+        
+        // Mint USDX using shares
+        minter.mintUSDXFromOVault(mintAmount);
+        vm.stopPrank();
         
         // Verify
         assertEq(usdx.balanceOf(user1), mintAmount, "User should have USDX");
         assertEq(minter.getMintedAmount(user1), mintAmount, "Minted amount should be tracked");
         assertEq(minter.totalMinted(), mintAmount, "Total minted should increase");
-        assertEq(minter.getAvailableMintAmount(user1), hubPosition - mintAmount, "Available amount should decrease");
+        assertEq(shareOFT.balanceOf(user1), shares - mintAmount, "Shares should be burned");
+    }
+    
+    function testMint() public {
+        uint256 shares = 1000 * 10**6;
+        uint256 mintAmount = 500 * 10**6;
+        
+        // Mint OVault shares to user
+        vm.prank(admin);
+        shareOFT.mint(user1, shares);
+        
+        // Approve minter to transfer shares
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), mintAmount);
+        
+        // Mint USDX
+        minter.mint(mintAmount);
+        vm.stopPrank();
+        
+        // Verify
+        assertEq(usdx.balanceOf(user1), mintAmount, "User should have USDX");
+        assertEq(minter.getMintedAmount(user1), mintAmount, "Minted amount should be tracked");
+        assertEq(minter.totalMinted(), mintAmount, "Total minted should increase");
+        assertEq(shareOFT.balanceOf(user1), shares - mintAmount, "Shares should be burned");
     }
     
     function testMintMultipleTimes() public {
-        uint256 hubPosition = 1000 * 10**6;
+        uint256 shares = 1000 * 10**6;
         
-        // Update user's hub position
+        // Mint shares to user
         vm.prank(admin);
-        minter.updateHubPosition(user1, hubPosition);
+        shareOFT.mint(user1, shares);
+        
+        // Approve minter to transfer shares
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), shares);
         
         // Mint in multiple steps
-        vm.startPrank(user1);
         minter.mint(300 * 10**6);
         minter.mint(200 * 10**6);
         minter.mint(100 * 10**6);
@@ -78,35 +132,37 @@ contract USDXSpokeMinterTest is Test {
         minter.mint(0);
     }
     
-    function testMintRevertsIfNoPosition() public {
+    function testMintRevertsIfNoShares() public {
         vm.prank(user1);
-        vm.expectRevert(USDXSpokeMinter.InsufficientPosition.selector);
+        vm.expectRevert(USDXSpokeMinter.InsufficientShares.selector);
         minter.mint(1000 * 10**6);
     }
     
-    function testMintRevertsIfExceedsPosition() public {
-        uint256 hubPosition = 1000 * 10**6;
+    function testMintRevertsIfInsufficientShares() public {
+        uint256 shares = 500 * 10**6;
         
-        // Update position
+        // Mint shares
         vm.prank(admin);
-        minter.updateHubPosition(user1, hubPosition);
+        shareOFT.mint(user1, shares);
         
-        // Try to mint more than position
+        // Try to mint more than shares
         vm.prank(user1);
-        vm.expectRevert(USDXSpokeMinter.ExceedsPosition.selector);
-        minter.mint(hubPosition + 1);
+        vm.expectRevert(USDXSpokeMinter.InsufficientShares.selector);
+        minter.mint(shares + 1);
     }
     
     function testBurn() public {
-        uint256 hubPosition = 1000 * 10**6;
+        uint256 shares = 1000 * 10**6;
         uint256 mintAmount = 500 * 10**6;
         
-        // Setup: update position and mint
+        // Setup: mint shares and mint USDX
         vm.prank(admin);
-        minter.updateHubPosition(user1, hubPosition);
+        shareOFT.mint(user1, shares);
         
-        vm.prank(user1);
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), mintAmount);
         minter.mint(mintAmount);
+        vm.stopPrank();
         
         // Burn half
         uint256 burnAmount = 250 * 10**6;
@@ -118,103 +174,87 @@ contract USDXSpokeMinterTest is Test {
         // Verify
         assertEq(usdx.balanceOf(user1), mintAmount - burnAmount, "USDX balance should decrease");
         assertEq(minter.getMintedAmount(user1), mintAmount - burnAmount, "Minted tracking should decrease");
-        assertEq(minter.getAvailableMintAmount(user1), hubPosition - (mintAmount - burnAmount), "Available should increase");
     }
     
     function testBurnAllowsReminting() public {
-        uint256 hubPosition = 1000 * 10**6;
+        uint256 shares = 1000 * 10**6;
         
-        // Update position
+        // Mint shares
         vm.prank(admin);
-        minter.updateHubPosition(user1, hubPosition);
+        shareOFT.mint(user1, shares);
         
         // Mint full amount
-        vm.prank(user1);
-        minter.mint(hubPosition);
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), shares);
+        minter.mint(shares);
+        vm.stopPrank();
         
-        // Can't mint more
+        // Can't mint more (no shares left)
         vm.prank(user1);
-        vm.expectRevert(USDXSpokeMinter.ExceedsPosition.selector);
+        vm.expectRevert(USDXSpokeMinter.InsufficientShares.selector);
         minter.mint(1);
         
         // Burn half
         vm.startPrank(user1);
-        usdx.approve(address(minter), hubPosition / 2);
-        minter.burn(hubPosition / 2);
+        usdx.approve(address(minter), shares / 2);
+        minter.burn(shares / 2);
         vm.stopPrank();
         
-        // Now can mint again
-        vm.prank(user1);
-        minter.mint(hubPosition / 2);
+        // Mint more shares
+        vm.prank(admin);
+        shareOFT.mint(user1, shares / 2);
         
-        assertEq(minter.getMintedAmount(user1), hubPosition);
+        // Now can mint again
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), shares / 2);
+        minter.mint(shares / 2);
+        vm.stopPrank();
+        
+        assertEq(minter.getMintedAmount(user1), shares);
     }
     
     function testBurnRevertsIfInsufficientBalance() public {
         vm.startPrank(user1);
         usdx.approve(address(minter), 1000 * 10**6);
-        vm.expectRevert(USDXSpokeMinter.InsufficientPosition.selector);
+        vm.expectRevert(USDXSpokeMinter.InsufficientShares.selector);
         minter.burn(1000 * 10**6);
         vm.stopPrank();
     }
     
-    function testUpdateHubPosition() public {
-        uint256 position1 = 1000 * 10**6;
-        uint256 position2 = 2000 * 10**6;
+    function testGetUserOVaultShares() public {
+        uint256 shares = 1000 * 10**6;
         
-        // Update position first time
-        vm.prank(admin);
-        minter.updateHubPosition(user1, position1);
-        assertEq(minter.getHubPosition(user1), position1);
+        // Initially zero
+        assertEq(minter.getUserOVaultShares(user1), 0);
         
-        // Update position second time
+        // After minting shares
         vm.prank(admin);
-        minter.updateHubPosition(user1, position2);
-        assertEq(minter.getHubPosition(user1), position2);
+        shareOFT.mint(user1, shares);
+        
+        assertEq(minter.getUserOVaultShares(user1), shares);
     }
     
-    function testUpdateHubPositionRevertsIfNotAuthorized() public {
-        vm.prank(user1);
-        vm.expectRevert();
-        minter.updateHubPosition(user2, 1000 * 10**6);
-    }
-    
-    function testBatchUpdateHubPositions() public {
-        address[] memory users = new address[](3);
-        users[0] = user1;
-        users[1] = user2;
-        users[2] = address(0x5);
-        
-        uint256[] memory positions = new uint256[](3);
-        positions[0] = 1000 * 10**6;
-        positions[1] = 2000 * 10**6;
-        positions[2] = 3000 * 10**6;
-        
-        // Batch update
-        vm.prank(admin);
-        minter.batchUpdateHubPositions(users, positions);
-        
-        // Verify all positions were updated
-        assertEq(minter.getHubPosition(user1), 1000 * 10**6);
-        assertEq(minter.getHubPosition(user2), 2000 * 10**6);
-        assertEq(minter.getHubPosition(address(0x5)), 3000 * 10**6);
-    }
-    
-    function testBatchUpdateRevertsIfArrayLengthMismatch() public {
-        address[] memory users = new address[](2);
-        uint256[] memory positions = new uint256[](3);
+    function testSetShareOFT() public {
+        USDXShareOFT newShareOFT = new USDXShareOFT(
+            "New Shares",
+            "NEW",
+            address(lzEndpoint),
+            LOCAL_EID,
+            admin
+        );
         
         vm.prank(admin);
-        vm.expectRevert("Array length mismatch");
-        minter.batchUpdateHubPositions(users, positions);
+        minter.setShareOFT(address(newShareOFT));
+        
+        assertEq(address(minter.shareOFT()), address(newShareOFT));
     }
     
     function testPauseAndUnpause() public {
-        uint256 hubPosition = 1000 * 10**6;
+        uint256 shares = 1000 * 10**6;
         
-        // Update position
+        // Mint shares
         vm.prank(admin);
-        minter.updateHubPosition(user1, hubPosition);
+        shareOFT.mint(user1, shares);
         
         // Pause
         vm.prank(admin);
@@ -229,47 +269,55 @@ contract USDXSpokeMinterTest is Test {
         vm.prank(admin);
         minter.unpause();
         
-        // Should work after unpause
-        vm.prank(user1);
+        // Should work after unpause (need approval)
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), 100 * 10**6);
         minter.mint(100 * 10**6);
+        vm.stopPrank();
         
         assertEq(usdx.balanceOf(user1), 100 * 10**6);
     }
     
     function testGetAvailableMintAmount() public {
-        uint256 hubPosition = 1000 * 10**6;
+        uint256 shares = 1000 * 10**6;
         
         // Initially zero
         assertEq(minter.getAvailableMintAmount(user1), 0);
         
-        // After setting position
+        // After minting shares
         vm.prank(admin);
-        minter.updateHubPosition(user1, hubPosition);
-        assertEq(minter.getAvailableMintAmount(user1), hubPosition);
+        shareOFT.mint(user1, shares);
+        assertEq(minter.getAvailableMintAmount(user1), shares);
         
-        // After minting
-        vm.prank(user1);
+        // After minting USDX (need approval)
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), 600 * 10**6);
         minter.mint(600 * 10**6);
+        vm.stopPrank();
         assertEq(minter.getAvailableMintAmount(user1), 400 * 10**6);
     }
     
     function testMultipleUsersIndependent() public {
-        // Set positions for both users
+        // Mint shares for both users
         vm.startPrank(admin);
-        minter.updateHubPosition(user1, 1000 * 10**6);
-        minter.updateHubPosition(user2, 2000 * 10**6);
+        shareOFT.mint(user1, 1000 * 10**6);
+        shareOFT.mint(user2, 2000 * 10**6);
         vm.stopPrank();
         
-        // User1 mints
-        vm.prank(user1);
+        // User1 mints (need approval)
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), 500 * 10**6);
         minter.mint(500 * 10**6);
+        vm.stopPrank();
         
         // User2 should still have full capacity
         assertEq(minter.getAvailableMintAmount(user2), 2000 * 10**6);
         
-        // User2 mints
-        vm.prank(user2);
+        // User2 mints (need approval)
+        vm.startPrank(user2);
+        shareOFT.approve(address(minter), 1500 * 10**6);
         minter.mint(1500 * 10**6);
+        vm.stopPrank();
         
         // Verify independence
         assertEq(minter.getMintedAmount(user1), 500 * 10**6);
@@ -277,22 +325,24 @@ contract USDXSpokeMinterTest is Test {
         assertEq(minter.totalMinted(), 2000 * 10**6);
     }
     
-    function testFuzzMint(uint256 position, uint256 mintAmount) public {
+    function testFuzzMint(uint256 shares, uint256 mintAmount) public {
         // Bound values
-        position = bound(position, 1, 1_000_000 * 10**6);
-        mintAmount = bound(mintAmount, 1, position);
+        shares = bound(shares, 1, 1_000_000 * 10**6);
+        mintAmount = bound(mintAmount, 1, shares);
         
-        // Update position
+        // Mint shares
         vm.prank(admin);
-        minter.updateHubPosition(user1, position);
+        shareOFT.mint(user1, shares);
         
-        // Mint
-        vm.prank(user1);
+        // Mint (need approval)
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), mintAmount);
         minter.mint(mintAmount);
+        vm.stopPrank();
         
         // Verify
         assertEq(usdx.balanceOf(user1), mintAmount);
         assertEq(minter.getMintedAmount(user1), mintAmount);
-        assertEq(minter.getAvailableMintAmount(user1), position - mintAmount);
+        assertEq(minter.getAvailableMintAmount(user1), shares - mintAmount);
     }
 }

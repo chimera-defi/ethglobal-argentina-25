@@ -6,6 +6,7 @@ import {ERC20Burnable} from "@openzeppelin/contracts/token/ERC20/extensions/ERC2
 import {ERC20Permit} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
+import {ILayerZeroEndpoint} from "./interfaces/ILayerZeroEndpoint.sol";
 
 /**
  * @title USDXToken
@@ -15,10 +16,11 @@ import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
  * 
  * Key Features:
  * - 1:1 USDC backing
- * - Cross-chain compatible (deployed on hub + spoke chains)
+ * - Cross-chain compatible via LayerZero OFT (Omnichain Fungible Token)
  * - Role-based access control for minting/burning
  * - Emergency pause mechanism
  * - ERC-2612 permit support for gasless approvals
+ * - LayerZero integration for decentralized cross-chain transfers
  */
 contract USDXToken is ERC20, ERC20Burnable, ERC20Permit, AccessControl, Pausable {
     // ============ Roles ============
@@ -31,6 +33,17 @@ contract USDXToken is ERC20, ERC20Burnable, ERC20Permit, AccessControl, Pausable
     
     /// @notice Role that can pause/unpause the contract
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
+    
+    // ============ LayerZero State ============
+    
+    /// @notice LayerZero endpoint (optional, for OFT functionality)
+    ILayerZeroEndpoint public lzEndpoint;
+    
+    /// @notice Local endpoint ID
+    uint32 public localEid;
+    
+    /// @notice Trusted remotes for cross-chain communication
+    mapping(uint32 => bytes32) public trustedRemotes;
     
     // ============ Events ============
     
@@ -55,6 +68,24 @@ contract USDXToken is ERC20, ERC20Burnable, ERC20Permit, AccessControl, Pausable
         uint256 indexed sourceChainId,
         bytes32 indexed messageHash
     );
+    
+    /// @notice Emitted when LayerZero endpoint is set
+    event LayerZeroEndpointSet(address indexed endpoint, uint32 eid);
+    
+    /// @notice Emitted when trusted remote is set
+    event TrustedRemoteSet(uint32 dstEid, bytes32 remote);
+    
+    /// @notice Emitted when tokens are sent cross-chain via LayerZero
+    event CrossChainSent(uint32 dstEid, bytes32 to, uint256 amount);
+    
+    /// @notice Emitted when tokens are received cross-chain via LayerZero
+    event CrossChainReceived(uint32 srcEid, bytes32 from, uint256 amount);
+    
+    // ============ Errors ============
+    
+    error Unauthorized();
+    error InvalidRemote();
+    error ZeroAddress();
     
     // ============ Constructor ============
     
@@ -126,7 +157,7 @@ contract USDXToken is ERC20, ERC20Burnable, ERC20Permit, AccessControl, Pausable
     }
     
     /**
-     * @notice Burns tokens for cross-chain transfer
+     * @notice Burns tokens for cross-chain transfer (legacy, use sendCrossChain instead)
      * @dev Burns tokens from sender and emits event for cross-chain bridge
      * @param amount Amount of tokens to burn
      * @param destinationChainId Chain ID where tokens should be minted
@@ -143,6 +174,79 @@ contract USDXToken is ERC20, ERC20Burnable, ERC20Permit, AccessControl, Pausable
         
         _burn(msg.sender, amount);
         emit CrossChainBurn(msg.sender, amount, destinationChainId, destinationAddress);
+    }
+    
+    /**
+     * @notice Send tokens cross-chain via LayerZero OFT
+     * @param dstEid Destination endpoint ID
+     * @param to Destination address (bytes32 format)
+     * @param amount Amount of tokens to send
+     * @param options LayerZero options
+     */
+    function sendCrossChain(
+        uint32 dstEid,
+        bytes32 to,
+        uint256 amount,
+        bytes calldata options
+    ) external payable whenNotPaused {
+        if (address(lzEndpoint) == address(0)) revert ZeroAddress();
+        if (amount == 0) revert("USDXToken: amount is zero");
+        if (trustedRemotes[dstEid] == bytes32(0)) revert InvalidRemote();
+        
+        // Burn tokens from sender
+        _burn(msg.sender, amount);
+        
+        // Build payload
+        bytes memory payload = abi.encode(msg.sender, amount);
+        
+        // Send via LayerZero
+        ILayerZeroEndpoint.MessagingParams memory params = ILayerZeroEndpoint.MessagingParams({
+            dstEid: dstEid,
+            receiver: to,
+            message: payload,
+            options: options,
+            payInLzToken: false
+        });
+        
+        lzEndpoint.send{value: msg.value}(params, msg.sender);
+        
+        emit CrossChainSent(dstEid, to, amount);
+    }
+    
+    /**
+     * @notice Receive tokens from cross-chain transfer via LayerZero
+     * @dev Called by LayerZero endpoint
+     * @dev This function mints tokens without MINTER_ROLE because LayerZero endpoint
+     *      verification provides sufficient security. The endpoint ensures only valid
+     *      cross-chain messages are delivered.
+     */
+    function lzReceive(
+        uint32 srcEid,
+        bytes32 sender,
+        bytes calldata payload,
+        address executor,
+        bytes calldata extraData
+    ) external payable whenNotPaused {
+        // Verify caller is LayerZero endpoint
+        if (msg.sender != address(lzEndpoint)) revert Unauthorized();
+        
+        // Verify trusted remote
+        if (trustedRemotes[srcEid] == bytes32(0) || trustedRemotes[srcEid] != sender) {
+            revert InvalidRemote();
+        }
+        
+        // Decode payload
+        (address user, uint256 amount) = abi.decode(payload, (address, uint256));
+        
+        if (user == address(0)) revert ZeroAddress();
+        if (amount == 0) revert("USDXToken: amount is zero");
+        
+        // Mint tokens to user
+        // Security: LayerZero endpoint verification ensures this is a valid cross-chain message
+        _mint(user, amount);
+        
+        emit CrossChainReceived(srcEid, sender, amount);
+        emit CrossChainMint(user, amount, srcEid, keccak256(payload));
     }
     
     /**
@@ -181,6 +285,30 @@ contract USDXToken is ERC20, ERC20Burnable, ERC20Permit, AccessControl, Pausable
      */
     function unpause() external onlyRole(PAUSER_ROLE) {
         _unpause();
+    }
+    
+    /**
+     * @notice Sets LayerZero endpoint for cross-chain functionality
+     * @param _lzEndpoint LayerZero endpoint address
+     * @param _localEid Local endpoint ID
+     */
+    function setLayerZeroEndpoint(address _lzEndpoint, uint32 _localEid) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (_lzEndpoint == address(0)) revert ZeroAddress();
+        
+        lzEndpoint = ILayerZeroEndpoint(_lzEndpoint);
+        localEid = _localEid;
+        
+        emit LayerZeroEndpointSet(_lzEndpoint, _localEid);
+    }
+    
+    /**
+     * @notice Sets trusted remote for cross-chain communication
+     * @param dstEid Destination endpoint ID
+     * @param remote Remote address (bytes32 format)
+     */
+    function setTrustedRemote(uint32 dstEid, bytes32 remote) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        trustedRemotes[dstEid] = remote;
+        emit TrustedRemoteSet(dstEid, remote);
     }
     
     // ============ Internal Functions ============

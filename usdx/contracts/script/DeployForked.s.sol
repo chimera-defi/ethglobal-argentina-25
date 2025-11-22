@@ -5,6 +5,7 @@ import {Script, console2} from "forge-std/Script.sol";
 import {USDXToken} from "../contracts/USDXToken.sol";
 import {USDXVault} from "../contracts/USDXVault.sol";
 import {USDXSpokeMinter} from "../contracts/USDXSpokeMinter.sol";
+import {USDXShareOFT} from "../contracts/USDXShareOFT.sol";
 import {MockUSDC} from "../contracts/mocks/MockUSDC.sol";
 import {MockYearnVault} from "../contracts/mocks/MockYearnVault.sol";
 
@@ -56,7 +57,10 @@ contract DeployForked is Script {
             address(usdc),
             address(hubUSDX),
             deployer, // Treasury = deployer for testing
-            deployer
+            deployer, // Admin
+            address(0), // ovaultComposer (set later)
+            address(0), // shareOFTAdapter (set later)
+            address(0)  // vaultWrapper (set later)
         );
         console2.log("HubVault:", address(vault));
         
@@ -75,8 +79,22 @@ contract DeployForked is Script {
         USDXToken spokeUSDX = new USDXToken(deployer);
         console2.log("SpokeUSDX:", address(spokeUSDX));
         
+        // Deploy USDXShareOFT (for OVault integration)
+        address LZ_ENDPOINT = address(0); // TODO: Set LayerZero endpoint
+        USDXShareOFT shareOFT = new USDXShareOFT(
+            "USDX Vault Shares",
+            "USDX-SHARES",
+            LZ_ENDPOINT,
+            30109, // Polygon EID (update for your chain)
+            deployer
+        );
+        console2.log("USDXShareOFT:", address(shareOFT));
+        
         USDXSpokeMinter spokeMinter = new USDXSpokeMinter(
             address(spokeUSDX),
+            address(shareOFT),
+            LZ_ENDPOINT,
+            30101, // Hub chain ID (Ethereum)
             deployer
         );
         console2.log("SpokeMinter:", address(spokeMinter));
@@ -84,7 +102,7 @@ contract DeployForked is Script {
         // Setup spoke permissions
         spokeUSDX.grantRole(MINTER_ROLE, address(spokeMinter));
         spokeUSDX.grantRole(BURNER_ROLE, address(spokeMinter));
-        spokeMinter.grantRole(POSITION_UPDATER_ROLE, deployer);
+        shareOFT.setMinter(address(spokeMinter));
         console2.log("Granted minter roles on SpokeUSDX");
         
         vm.stopBroadcast();
