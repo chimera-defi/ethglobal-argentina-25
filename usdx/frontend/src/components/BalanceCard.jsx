@@ -3,11 +3,7 @@
 import { useBalances } from '@/hooks/useBalances';
 import { formatAmount } from '@/config/contracts';
 
-interface BalanceCardProps {
-  address: string | null;
-}
-
-export function BalanceCard({ address }: BalanceCardProps) {
+export function BalanceCard({ address }) {
   const { usdcBalance, hubUsdxBalance, spokeUsdxBalance, isLoading } = useBalances(address);
 
   if (!address) {

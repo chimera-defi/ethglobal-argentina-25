@@ -6,10 +6,10 @@ import {
 } from '@/lib/contracts';
 import { getProvider } from '@/lib/ethers';
 
-export function useBalances(address: string | null) {
-  const [usdcBalance, setUsdcBalance] = useState<bigint>(BigInt(0));
-  const [hubUsdxBalance, setHubUsdxBalance] = useState<bigint>(BigInt(0));
-  const [spokeUsdxBalance, setSpokeUsdxBalance] = useState<bigint>(BigInt(0));
+export function useBalances(address) {
+  const [usdcBalance, setUsdcBalance] = useState(BigInt(0));
+  const [hubUsdxBalance, setHubUsdxBalance] = useState(BigInt(0));
+  const [spokeUsdxBalance, setSpokeUsdxBalance] = useState(BigInt(0));
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {

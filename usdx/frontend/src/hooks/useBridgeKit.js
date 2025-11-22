@@ -2,13 +2,9 @@
  * React Hook for Bridge Kit Integration
  * 
  * This hook provides Bridge Kit functionality for React components.
- * Uses the ACTUAL Bridge Kit API verified from type definitions.
  */
 
 import { useState, useCallback, useEffect } from 'react';
-import { BridgeKit } from '@circle-fin/bridge-kit';
-import type { BridgeResult } from '@circle-fin/bridge-kit';
-import type { ViemAdapter } from '@circle-fin/adapter-viem-v2';
 import {
   createBridgeKitAdapter,
   createBridgeKit,
@@ -16,37 +12,16 @@ import {
   getBridgeKitChainId,
 } from '@/lib/bridgeKit';
 
-export type TransferStatus = 'idle' | 'pending' | 'success' | 'error';
-
-export interface UseBridgeKitReturn {
-  bridgeKit: BridgeKit | null;
-  adapter: ViemAdapter | null;
-  isInitializing: boolean;
-  transferStatus: TransferStatus;
-  transferResult: BridgeResult | null;
-  error: string | null;
-  bridgeUSDC: (params: BridgeUSDCParams) => Promise<void>;
-  reset: () => void;
-}
-
-export interface BridgeUSDCParams {
-  sourceChainId: number;
-  destinationChainId: number;
-  amount: string; // Amount in USDC (6 decimals, e.g., "1000000" for 1 USDC)
-  recipientAddress?: string; // Optional recipient address
-  onStatusUpdate?: (status: TransferStatus) => void;
-}
-
 /**
  * Hook for Bridge Kit integration
  */
-export function useBridgeKit(): UseBridgeKitReturn {
-  const [bridgeKit, setBridgeKit] = useState<BridgeKit | null>(null);
-  const [adapter, setAdapter] = useState<ViemAdapter | null>(null);
+export function useBridgeKit() {
+  const [bridgeKit, setBridgeKit] = useState(null);
+  const [adapter, setAdapter] = useState(null);
   const [isInitializing, setIsInitializing] = useState(false);
-  const [transferStatus, setTransferStatus] = useState<TransferStatus>('idle');
-  const [transferResult, setTransferResult] = useState<BridgeResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [transferStatus, setTransferStatus] = useState('idle');
+  const [transferResult, setTransferResult] = useState(null);
+  const [error, setError] = useState(null);
 
   // Initialize Bridge Kit and adapter on mount
   useEffect(() => {
@@ -65,13 +40,15 @@ export function useBridgeKit(): UseBridgeKitReturn {
 
         // Set up event handlers for status updates
         // Listen for all bridge actions to track progress
-        kit.on('*', (payload: { method?: string }) => {
-          // Update status when bridge actions occur
-          // Bridge actions: approve, burn, attestation, mint
-          if (payload.method === 'approve' || payload.method === 'burn' || payload.method === 'mint') {
-            setTransferStatus('pending');
-          }
-        });
+        if (kit.on) {
+          kit.on('*', (payload) => {
+            // Update status when bridge actions occur
+            // Bridge actions: approve, burn, attestation, mint
+            if (payload.method === 'approve' || payload.method === 'burn' || payload.method === 'mint') {
+              setTransferStatus('pending');
+            }
+          });
+        }
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to initialize Bridge Kit';
         setError(errorMessage);
@@ -87,7 +64,7 @@ export function useBridgeKit(): UseBridgeKitReturn {
   /**
    * Bridge USDC from source chain to destination chain
    */
-  const bridgeUSDC = useCallback(async (params: BridgeUSDCParams) => {
+  const bridgeUSDC = useCallback(async (params) => {
     const { sourceChainId, destinationChainId, amount, recipientAddress, onStatusUpdate } = params;
 
     setError(null);
@@ -122,33 +99,28 @@ export function useBridgeKit(): UseBridgeKitReturn {
       setTransferResult(result);
 
       // Update status based on result state
-      // BridgeResult.state: 'pending' | 'success' | 'error'
-      // 'pending' means bridge is in progress (steps still executing)
-      // 'success' means bridge completed successfully
-      // 'error' means bridge failed
       if (result.state === 'success') {
         setTransferStatus('success');
-        onStatusUpdate?.('success');
+        if (onStatusUpdate) onStatusUpdate('success');
       } else if (result.state === 'error') {
         setTransferStatus('error');
         // Check result.steps for detailed error information
-        const errorDetails = result.steps?.find((step: { state?: string; name?: string }) => step.state === 'error');
+        const errorDetails = result.steps?.find((step) => step.state === 'error');
         const errorMessage = errorDetails 
           ? `Bridge transfer failed: ${errorDetails.name || 'Unknown error'}`
           : 'Bridge transfer failed. Check result.steps for details.';
         setError(errorMessage);
-        onStatusUpdate?.('error');
+        if (onStatusUpdate) onStatusUpdate('error');
       } else {
         // result.state === 'pending' - bridge is still in progress
-        // Event handlers will update status as steps complete
         setTransferStatus('pending');
-        onStatusUpdate?.('pending');
+        if (onStatusUpdate) onStatusUpdate('pending');
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Bridge transfer failed';
       setError(errorMessage);
       setTransferStatus('error');
-      onStatusUpdate?.('error');
+      if (onStatusUpdate) onStatusUpdate('error');
       console.error('Bridge transfer error:', err);
     }
   }, [bridgeKit, adapter]);

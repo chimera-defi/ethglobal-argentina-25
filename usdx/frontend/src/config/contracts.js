@@ -11,7 +11,7 @@ export const CONTRACTS = {
   // Spoke chain (simulated Polygon on same network for MVP)
   SPOKE_USDX: '0xFb314854baCb329200778B82cb816CFB6500De9D',
   SPOKE_MINTER: '0x18eed2c26276A42c70E064D25d4f773c3626478e',
-} as const;
+};
 
 // Test account with pre-minted USDC
 export const TEST_ACCOUNT = {
@@ -34,7 +34,7 @@ export const DECIMALS = {
 };
 
 // Format amounts for display
-export function formatAmount(amount: bigint, decimals: number = 6): string {
+export function formatAmount(amount, decimals = 6) {
   const divisor = BigInt(10 ** decimals);
   const whole = amount / divisor;
   const fraction = amount % divisor;
@@ -42,7 +42,7 @@ export function formatAmount(amount: bigint, decimals: number = 6): string {
 }
 
 // Parse amounts from user input
-export function parseAmount(amount: string, decimals: number = 6): bigint {
+export function parseAmount(amount, decimals = 6) {
   const [whole, fraction = '0'] = amount.split('.');
   const paddedFraction = fraction.padEnd(decimals, '0').slice(0, decimals);
   return BigInt(whole) * BigInt(10 ** decimals) + BigInt(paddedFraction);

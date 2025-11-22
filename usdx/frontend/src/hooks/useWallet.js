@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ethers } from 'ethers';
 import {
   requestAccounts,
   getSigner,
@@ -12,12 +11,12 @@ import {
 import { CHAIN_CONFIG } from '@/config/contracts';
 
 export function useWallet() {
-  const [address, setAddress] = useState<string | null>(null);
-  const [signer, setSigner] = useState<ethers.Signer | null>(null);
-  const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
-  const [chainId, setChainId] = useState<number | null>(null);
+  const [address, setAddress] = useState(null);
+  const [signer, setSigner] = useState(null);
+  const [provider, setProvider] = useState(null);
+  const [chainId, setChainId] = useState(null);
   const [isConnecting, setIsConnecting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   // Connect wallet
   const connect = useCallback(async () => {
@@ -35,16 +34,16 @@ export function useWallet() {
         throw new Error('Could not get provider');
       }
       
-      const signer = await getSigner();
-      if (!signer) {
+      const signerInstance = await getSigner();
+      if (!signerInstance) {
         throw new Error('Could not get signer');
       }
       
-      const signerAddress = await signer.getAddress();
+      const signerAddress = await signerInstance.getAddress();
       const network = await browserProvider.getNetwork();
       
       setProvider(browserProvider);
-      setSigner(signer);
+      setSigner(signerInstance);
       setAddress(signerAddress);
       setChainId(Number(network.chainId));
       
@@ -52,7 +51,7 @@ export function useWallet() {
       if (Number(network.chainId) !== CHAIN_CONFIG.chainId) {
         await switchToChain(CHAIN_CONFIG.chainId);
       }
-    } catch (err: unknown) {
+    } catch (err) {
       console.error('Failed to connect wallet:', err);
       setError(err instanceof Error ? err.message : 'Failed to connect wallet');
     } finally {
@@ -70,11 +69,11 @@ export function useWallet() {
   }, []);
 
   // Switch network
-  const switchNetwork = useCallback(async (targetChainId: number) => {
+  const switchNetwork = useCallback(async (targetChainId) => {
     try {
       await switchToChain(targetChainId);
       setChainId(targetChainId);
-    } catch (err: unknown) {
+    } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to switch network');
       throw err;
     }

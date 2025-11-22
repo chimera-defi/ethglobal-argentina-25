@@ -1,24 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
 import { getSpokeMinterContract, getSpokeUSDXContract, waitForTransaction } from '@/lib/contracts';
 import { parseAmount, formatAmount } from '@/config/contracts';
 import { getProvider } from '@/lib/ethers';
 
-interface SpokeMintFlowProps {
-  signer: ethers.Signer | null;
-  userAddress: string | null;
-  onSuccess?: () => void;
-}
-
-export function SpokeMintFlow({ signer, userAddress, onSuccess }: SpokeMintFlowProps) {
+export function SpokeMintFlow({ signer, userAddress, onSuccess }) {
   const [amount, setAmount] = useState('');
   const [isMinting, setIsMinting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [hubPosition, setHubPosition] = useState<bigint>(BigInt(0));
-  const [spokeBalance, setSpokeBalance] = useState<bigint>(BigInt(0));
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
+  const [hubPosition, setHubPosition] = useState(BigInt(0));
+  const [spokeBalance, setSpokeBalance] = useState(BigInt(0));
   const [isLoading, setIsLoading] = useState(false);
 
   // Load user's hub position and spoke balance
@@ -81,9 +74,9 @@ export function SpokeMintFlow({ signer, userAddress, onSuccess }: SpokeMintFlowP
       if (receipt) {
         setSuccess(`Successfully minted ${amount} USDX on Polygon!`);
         setAmount('');
-        onSuccess?.();
+        if (onSuccess) onSuccess();
       }
-    } catch (err: unknown) {
+    } catch (err) {
       console.error('Mint failed:', err);
       setError(err instanceof Error ? err.message : 'Transaction failed');
       setIsMinting(false);

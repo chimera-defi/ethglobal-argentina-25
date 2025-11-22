@@ -1,13 +1,6 @@
 'use client';
 
-import { ChainType } from '@/config/chains';
-
-interface ChainSwitcherProps {
-  currentChain: ChainType;
-  onSwitch: (chain: ChainType) => void;
-}
-
-export function ChainSwitcher({ currentChain, onSwitch }: ChainSwitcherProps) {
+export function ChainSwitcher({ currentChain, onSwitch }) {
   return (
     <div className="card">
       <h3 className="font-bold mb-4">Select Chain</h3>

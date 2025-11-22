@@ -1,20 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useBridgeKit, TransferStatus } from '@/hooks/useBridgeKit';
+import { useBridgeKit } from '@/hooks/useBridgeKit';
 import { parseAmount, CONTRACTS } from '@/config/contracts';
 import { CHAINS } from '@/config/chains';
 
-interface BridgeKitFlowProps {
-  userAddress: string | null;
-  currentChainId: number | null;
-  onSuccess?: () => void;
-}
-
-export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: BridgeKitFlowProps) {
+export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }) {
   const [amount, setAmount] = useState('');
-  const [sourceChainId, setSourceChainId] = useState<number | null>(null);
-  const [destinationChainId, setDestinationChainId] = useState<number | null>(null);
+  const [sourceChainId, setSourceChainId] = useState(null);
+  const [destinationChainId, setDestinationChainId] = useState(null);
   const [isBridging, setIsBridging] = useState(false);
   
   const { bridgeUSDC, transferStatus, error, reset } = useBridgeKit();
@@ -48,24 +42,24 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
         sourceChainId,
         destinationChainId,
         amount: amountString,
-        recipientAddress: CONTRACTS.HUB_VAULT as `0x${string}`, // Bridge to vault address
+        recipientAddress: CONTRACTS.HUB_VAULT, // Bridge to vault address
         onStatusUpdate: (status) => {
           if (status === 'success') {
             setIsBridging(false);
             setAmount('');
-            onSuccess?.();
+            if (onSuccess) onSuccess();
           } else if (status === 'error') {
             setIsBridging(false);
           }
         },
       });
-    } catch (err: unknown) {
+    } catch (err) {
       console.error('Bridge failed:', err);
       setIsBridging(false);
     }
   };
 
-  const getStatusMessage = (status: TransferStatus): string => {
+  const getStatusMessage = (status) => {
     switch (status) {
       case 'pending':
         return 'Bridge in progress...';

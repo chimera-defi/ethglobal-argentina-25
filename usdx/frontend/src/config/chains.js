@@ -28,7 +28,7 @@ export const CHAINS = {
       blockExplorer: 'http://localhost:8546',
     },
   },
-} as const;
+};
 
 // Bridge Kit supported chains
 export const BRIDGE_KIT_CHAINS = {
@@ -53,25 +53,18 @@ export const BRIDGE_KIT_CHAINS = {
     name: 'Optimism Sepolia',
     rpcUrl: 'https://sepolia.optimism.io',
   },
-  // Mainnets (commented for now)
-  // mainnet: { id: 1, name: 'Ethereum Mainnet', rpcUrl: '...' },
-  // base: { id: 8453, name: 'Base', rpcUrl: '...' },
-  // arbitrum: { id: 42161, name: 'Arbitrum', rpcUrl: '...' },
-  // optimism: { id: 10, name: 'Optimism', rpcUrl: '...' },
-} as const;
+};
 
-export type ChainType = keyof typeof CHAINS;
-
-export function getChainById(chainId: number): ChainType | null {
+export function getChainById(chainId) {
   if (chainId === CHAINS.HUB.id) return 'HUB';
   if (chainId === CHAINS.SPOKE.id) return 'SPOKE';
   return null;
 }
 
-export function isHubChain(chainId: number): boolean {
+export function isHubChain(chainId) {
   return chainId === CHAINS.HUB.id;
 }
 
-export function isSpokeChain(chainId: number): boolean {
+export function isSpokeChain(chainId) {
   return chainId === CHAINS.SPOKE.id;
 }

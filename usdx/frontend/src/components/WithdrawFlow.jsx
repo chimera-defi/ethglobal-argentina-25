@@ -1,21 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { ethers } from 'ethers';
 import { getHubUSDXContract, getHubVaultContract, waitForTransaction } from '@/lib/contracts';
 import { parseAmount, CONTRACTS } from '@/config/contracts';
 
-interface WithdrawFlowProps {
-  signer: ethers.Signer | null;
-  onSuccess?: () => void;
-}
-
-export function WithdrawFlow({ signer, onSuccess }: WithdrawFlowProps) {
+export function WithdrawFlow({ signer, onSuccess }) {
   const [amount, setAmount] = useState('');
   const [isApproving, setIsApproving] = useState(false);
   const [isWithdrawing, setIsWithdrawing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
 
   const handleWithdraw = async () => {
     if (!signer || !amount) return;
@@ -48,9 +42,9 @@ export function WithdrawFlow({ signer, onSuccess }: WithdrawFlowProps) {
       if (receipt) {
         setSuccess(`Successfully withdrew ${amount} USDC!`);
         setAmount('');
-        onSuccess?.();
+        if (onSuccess) onSuccess();
       }
-    } catch (err: unknown) {
+    } catch (err) {
       console.error('Withdrawal failed:', err);
       setError(err instanceof Error ? err.message : 'Transaction failed');
       setIsApproving(false);

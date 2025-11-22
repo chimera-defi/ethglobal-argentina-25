@@ -1,25 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ethers } from 'ethers';
 import { getUSDCContract, getHubVaultContract, waitForTransaction } from '@/lib/contracts';
 import { parseAmount, CONTRACTS } from '@/config/contracts';
 import { CHAINS } from '@/config/chains';
 import { BridgeKitFlow } from './BridgeKitFlow';
 
-interface DepositFlowProps {
-  signer: ethers.Signer | null;
-  userAddress: string | null;
-  chainId: number | null;
-  onSuccess?: () => void;
-}
-
-export function DepositFlow({ signer, userAddress, chainId, onSuccess }: DepositFlowProps) {
+export function DepositFlow({ signer, userAddress, chainId, onSuccess }) {
   const [amount, setAmount] = useState('');
   const [isApproving, setIsApproving] = useState(false);
   const [isDepositing, setIsDepositing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(null);
   const [showBridgeFlow, setShowBridgeFlow] = useState(false);
   
   // Check if user is on spoke chain - if so, show bridge flow first
@@ -62,9 +54,9 @@ export function DepositFlow({ signer, userAddress, chainId, onSuccess }: Deposit
       if (receipt) {
         setSuccess(`Successfully deposited ${amount} USDC and minted USDX!`);
         setAmount('');
-        onSuccess?.();
+        if (onSuccess) onSuccess();
       }
-    } catch (err: unknown) {
+    } catch (err) {
       console.error('Deposit failed:', err);
       setError(err instanceof Error ? err.message : 'Transaction failed');
       setIsApproving(false);
