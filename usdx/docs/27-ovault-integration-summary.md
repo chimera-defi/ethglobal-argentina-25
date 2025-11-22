@@ -128,6 +128,7 @@ Spoke Chains
 
 - **[25-layerzero-ovault-comprehensive-understanding.md](./25-layerzero-ovault-comprehensive-understanding.md)** - Complete OVault understanding
 - **[26-layerzero-ovault-implementation-action-plan.md](./26-layerzero-ovault-implementation-action-plan.md)** - Detailed implementation plan
+- **[29-layerzero-ovault-examples.md](./29-layerzero-ovault-examples.md)** - **📝 Code Examples** - Practical integration examples
 - **[13-layerzero-ovault-research.md](./13-layerzero-ovault-research.md)** - Initial research notes
 - **[08-layerzero-research.md](./08-layerzero-research.md)** - General LayerZero research
 

@@ -375,3 +375,5 @@ assets = shares * totalAssets / totalSupply
 ## Next Steps
 
 See **[26-layerzero-ovault-implementation-action-plan.md](./26-layerzero-ovault-implementation-action-plan.md)** for detailed implementation steps.
+
+See **[29-layerzero-ovault-examples.md](./29-layerzero-ovault-examples.md)** for practical code examples and integration patterns.

@@ -30,6 +30,7 @@ All USDX protocol documentation is organized here.
 15. **[25-layerzero-ovault-comprehensive-understanding.md](./25-layerzero-ovault-comprehensive-understanding.md)** - **📘 Comprehensive OVault Understanding** - Complete OVault architecture, integration with USDX, technical details
 16. **[26-layerzero-ovault-implementation-action-plan.md](./26-layerzero-ovault-implementation-action-plan.md)** - **📋 OVault Implementation Action Plan** - Detailed 10-phase implementation plan with checklists and timelines
 17. **[27-ovault-integration-summary.md](./27-ovault-integration-summary.md)** - **📝 OVault Integration Summary** - Quick reference guide for OVault integration
+18. **[29-layerzero-ovault-examples.md](./29-layerzero-ovault-examples.md)** - **💻 OVault Code Examples** - Practical code examples, integration patterns, and complete flows
 
 ### Implementation Guides
 
