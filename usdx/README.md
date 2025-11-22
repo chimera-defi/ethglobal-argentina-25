@@ -20,6 +20,14 @@ npm run dev
 ⚠️ **Cross-Chain**: Uses trusted relayer (needs LayerZero implementation)
 ✅ **Deployment**: CI/CD configured for automatic deployment
 
+**MVP Readiness**: ~45% - See [FINAL-REVIEW-SUMMARY.md](./FINAL-REVIEW-SUMMARY.md) for detailed assessment.
+
+**Critical Gaps**:
+- ❌ OVault/Yield Routes integration (using MockYieldVault)
+- ❌ LayerZero/Hyperlane adapters (using trusted relayer)
+- ❌ Bridge Kit frontend integration
+- ❌ Missing contract functions
+
 ## 🏗️ Architecture
 
 **Hub-and-Spoke Model**:
