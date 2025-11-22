@@ -64,21 +64,10 @@ export function useBridgeKit(): UseBridgeKitReturn {
         setBridgeKit(kit);
 
         // Set up event handlers for status updates
-        kit.on('approve', () => {
-          setTransferStatus('pending');
-        });
-
-        kit.on('burn', () => {
-          setTransferStatus('pending');
-        });
-
-        kit.on('mint', () => {
-          setTransferStatus('pending');
-        });
-
-        // Listen for all actions to track progress
+        // Listen for all bridge actions to track progress
         kit.on('*', (payload) => {
-          // Update status based on action
+          // Update status when bridge actions occur
+          // Bridge actions: approve, burn, attestation, mint
           if (payload.method === 'approve' || payload.method === 'burn' || payload.method === 'mint') {
             setTransferStatus('pending');
           }
@@ -132,15 +121,26 @@ export function useBridgeKit(): UseBridgeKitReturn {
 
       setTransferResult(result);
 
-      // Update status based on result
+      // Update status based on result state
+      // BridgeResult.state: 'pending' | 'success' | 'error'
+      // 'pending' means bridge is in progress (steps still executing)
+      // 'success' means bridge completed successfully
+      // 'error' means bridge failed
       if (result.state === 'success') {
         setTransferStatus('success');
         onStatusUpdate?.('success');
       } else if (result.state === 'error') {
         setTransferStatus('error');
-        setError('Bridge transfer failed. Check result.steps for details.');
+        // Check result.steps for detailed error information
+        const errorDetails = result.steps?.find(step => step.state === 'error');
+        const errorMessage = errorDetails 
+          ? `Bridge transfer failed: ${errorDetails.name || 'Unknown error'}`
+          : 'Bridge transfer failed. Check result.steps for details.';
+        setError(errorMessage);
         onStatusUpdate?.('error');
       } else {
+        // result.state === 'pending' - bridge is still in progress
+        // Event handlers will update status as steps complete
         setTransferStatus('pending');
         onStatusUpdate?.('pending');
       }

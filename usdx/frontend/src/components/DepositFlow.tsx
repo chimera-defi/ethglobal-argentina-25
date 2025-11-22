@@ -90,17 +90,21 @@ export function DepositFlow({ signer, userAddress, chainId, onSuccess }: Deposit
           currentChainId={chainId}
           onSuccess={() => {
             setShowBridgeFlow(false);
-            // After bridging, prompt user to switch to hub chain
-            alert('USDC bridged! Please switch to Hub chain (Ethereum) to deposit.');
+            // After bridging, show success message
+            // User will need to switch to hub chain to deposit
+            // This is handled by the UI state change
           }}
         />
-        <div className="card">
-          <h3 className="text-lg font-bold mb-2">Next Steps</h3>
-          <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
-            <li>Bridge USDC to hub chain using Bridge Kit above</li>
-            <li>Switch your wallet to Hub chain (Ethereum)</li>
-            <li>Deposit the bridged USDC to mint USDX</li>
+        <div className="card bg-green-50 border-green-200">
+          <h3 className="text-lg font-bold mb-2 text-green-800">Next Steps After Bridging</h3>
+          <ol className="text-sm text-gray-700 space-y-2 list-decimal list-inside">
+            <li className="font-medium">Bridge USDC to hub chain using Bridge Kit above</li>
+            <li className="font-medium">Switch your wallet to Hub chain (Ethereum Sepolia)</li>
+            <li className="font-medium">Deposit the bridged USDC to mint USDX</li>
           </ol>
+          <p className="text-xs text-gray-600 mt-3 pt-3 border-t border-green-200">
+            💡 Tip: The bridge may take a few minutes. Once complete, switch chains and refresh this page.
+          </p>
         </div>
       </div>
     );
