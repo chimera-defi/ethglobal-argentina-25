@@ -236,10 +236,14 @@ function estimateFees(
 
 ## Resources
 
-- **Documentation**: https://layerzero.gitbook.io/docs/
-- **OApp Guide**: https://docs.layerzero.network/contracts/oapp
+- **Documentation**: https://docs.layerzero.network/v2
+- **OApp Guide**: https://docs.layerzero.network/v2/developers/evm/oapp/overview
+- **OVault Standard**: https://docs.layerzero.network/v2/concepts/applications/ovault-standard
+- **OVault Implementation**: https://docs.layerzero.network/v2/developers/evm/ovault/overview
 - **GitHub**: https://github.com/LayerZero-Labs
-- **Contract Addresses**: https://layerzero.gitbook.io/docs/technical-reference/mainnet/contract-addresses
+- **Contract Addresses**: https://docs.layerzero.network/v2/deployments/deployed-contracts
+- **[25-layerzero-ovault-comprehensive-understanding.md](./25-layerzero-ovault-comprehensive-understanding.md)** - Comprehensive OVault understanding
+- **[26-layerzero-ovault-implementation-action-plan.md](./26-layerzero-ovault-implementation-action-plan.md)** - OVault implementation plan
 
 ## Example: USDX Transfer Message
 

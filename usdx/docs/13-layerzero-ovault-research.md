@@ -180,5 +180,8 @@ contract USDXVault {
 ## Resources
 
 - [LayerZero OVault Blog Post](https://layerzero.network/blog/introducing-ovault-any-vault-accessible-everywhere)
-- LayerZero OVault Documentation (to be found)
-- OVault GitHub Repository (to be found)
+- [LayerZero OVault Documentation](https://docs.layerzero.network/v2/concepts/applications/ovault-standard)
+- [LayerZero OVault EVM Implementation](https://docs.layerzero.network/v2/developers/evm/ovault/overview)
+- **[25-layerzero-ovault-comprehensive-understanding.md](./25-layerzero-ovault-comprehensive-understanding.md)** - Comprehensive OVault understanding document
+- **[26-layerzero-ovault-implementation-action-plan.md](./26-layerzero-ovault-implementation-action-plan.md)** - Detailed implementation action plan
+- Source documents saved in `layerzero-source-docs/` directory
