@@ -74,6 +74,9 @@ contract USDXShareOFTTest is Test {
         // Set remote contract
         lzEndpoint.setRemoteContract(REMOTE_EID, address(shareOFT));
         
+        // Give user ETH for LayerZero fees
+        vm.deal(user, 1 ether);
+        
         // Send cross-chain
         vm.prank(user);
         shareOFT.send{value: 0.001 ether}(REMOTE_EID, receiver, MINT_AMOUNT, options);

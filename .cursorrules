@@ -1,0 +1,41 @@
+# USDX Project Cursor Rules
+
+## Documentation Organization
+- **ALWAYS** move generated documentation files (`.md` files) to the `usdx/docs/` folder immediately after creation
+- Do not leave documentation files in the root directory or scattered across the project
+- Generated docs should be organized by topic in appropriate subdirectories within `usdx/docs/`
+
+## Testing Standards
+- **ALWAYS** run tests locally (`forge test`) after making changes to verify everything works
+- Fix test failures properly - understand why they fail, don't just remove tests
+- When fixing tests:
+  - Ensure proper approvals (`approve`) are set up before token transfers
+  - Provide ETH for LayerZero fees using `vm.deal(user, amount)` when needed
+  - Set up trusted remotes properly for cross-chain tests
+  - Use `vm.warp()` to avoid operation ID collisions when testing multiple operations
+  - Understand the contract architecture before writing/updating tests
+
+## Code Quality
+- Remove unused code and files - don't leave dead code in the codebase
+- Ensure all contracts compile without errors
+- Use proper error handling and custom errors
+- Follow Solidity best practices (checks-effects-interactions pattern, reentrancy guards, etc.)
+
+## LayerZero Integration
+- When working with LayerZero:
+  - Set trusted remotes for cross-chain communication
+  - Provide ETH for LayerZero fees in tests
+  - Understand the difference between hub and spoke chain contracts
+  - OVault shares are locked in adapters on hub, represented as OFT tokens on spokes
+
+## Review Process
+- Do multi-pass reviews of code changes
+- Verify all tests pass before considering work complete
+- Check that deployment scripts are updated when contract constructors change
+- Ensure integration tests cover end-to-end flows
+
+## File Organization
+- Contracts go in `usdx/contracts/contracts/`
+- Tests go in `usdx/contracts/test/forge/`
+- Scripts go in `usdx/contracts/script/`
+- Documentation goes in `usdx/docs/`

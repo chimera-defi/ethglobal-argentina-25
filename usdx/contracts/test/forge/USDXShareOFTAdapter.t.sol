@@ -103,19 +103,17 @@ contract USDXShareOFTAdapterTest is Test {
     function testLockSharesFrom() public {
         uint256 shares = vault.balanceOf(user);
         
-        // Approve adapter to transfer shares
+        // Approve adapter to transfer shares FROM user
         vm.prank(user);
         IERC20(address(vault)).approve(address(adapter), shares);
         
-        // Transfer shares to adapter first
-        vm.prank(user);
-        IERC20(address(vault)).transfer(address(adapter), shares);
+        // Lock shares from user (adapter transfers from user)
+        adapter.lockSharesFrom(user, shares);
         
-        // Lock shares from adapter
-        adapter.lockSharesFrom(address(adapter), shares);
-        
-        assertEq(adapter.balanceOf(address(adapter)), shares);
-        assertEq(adapter.lockedShares(address(adapter)), shares);
+        assertEq(adapter.balanceOf(user), shares, "User should have OFT tokens");
+        assertEq(adapter.lockedShares(user), shares, "Shares should be locked for user");
+        assertEq(vault.balanceOf(address(adapter)), shares, "Adapter should hold shares");
+        assertEq(vault.balanceOf(user), 0, "User should have no vault shares");
     }
     
     function testUnlockSharesFor() public {
@@ -148,6 +146,9 @@ contract USDXShareOFTAdapterTest is Test {
         
         // Set remote contract on endpoint
         lzEndpoint.setRemoteContract(REMOTE_EID, address(adapter));
+        
+        // Give user ETH for LayerZero fees
+        vm.deal(user, 1 ether);
         
         // Send cross-chain
         vm.prank(user);

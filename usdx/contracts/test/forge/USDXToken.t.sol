@@ -310,6 +310,9 @@ contract USDXTokenTest is Test {
         // Set remote contract on endpoint
         lzEndpoint.setRemoteContract(REMOTE_EID, address(token));
         
+        // Give user1 ETH for LayerZero fees
+        vm.deal(user1, 1 ether);
+        
         // Send cross-chain
         vm.prank(user1);
         token.sendCrossChain{value: 0.001 ether}(REMOTE_EID, receiver, amount, options);
@@ -386,7 +389,6 @@ contract USDXTokenTest is Test {
         vm.prank(admin);
         token.setTrustedRemote(REMOTE_EID, sender);
         
-        vm.prank(address(lzEndpoint));
         vm.prank(address(lzEndpoint));
         vm.expectRevert(USDXToken.ZeroAddress.selector);
         token.lzReceive(REMOTE_EID, sender, payload, address(0), "");

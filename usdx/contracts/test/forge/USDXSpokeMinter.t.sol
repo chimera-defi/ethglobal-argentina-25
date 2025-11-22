@@ -66,9 +66,13 @@ contract USDXSpokeMinterTest is Test {
         vm.prank(admin);
         shareOFT.mint(user1, shares);
         
+        // Approve minter to transfer shares
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), mintAmount);
+        
         // Mint USDX using shares
-        vm.prank(user1);
         minter.mintUSDXFromOVault(mintAmount);
+        vm.stopPrank();
         
         // Verify
         assertEq(usdx.balanceOf(user1), mintAmount, "User should have USDX");
@@ -107,8 +111,11 @@ contract USDXSpokeMinterTest is Test {
         vm.prank(admin);
         shareOFT.mint(user1, shares);
         
-        // Mint in multiple steps
+        // Approve minter to transfer shares
         vm.startPrank(user1);
+        shareOFT.approve(address(minter), shares);
+        
+        // Mint in multiple steps
         minter.mint(300 * 10**6);
         minter.mint(200 * 10**6);
         minter.mint(100 * 10**6);
@@ -152,8 +159,10 @@ contract USDXSpokeMinterTest is Test {
         vm.prank(admin);
         shareOFT.mint(user1, shares);
         
-        vm.prank(user1);
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), mintAmount);
         minter.mint(mintAmount);
+        vm.stopPrank();
         
         // Burn half
         uint256 burnAmount = 250 * 10**6;
@@ -175,8 +184,10 @@ contract USDXSpokeMinterTest is Test {
         shareOFT.mint(user1, shares);
         
         // Mint full amount
-        vm.prank(user1);
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), shares);
         minter.mint(shares);
+        vm.stopPrank();
         
         // Can't mint more (no shares left)
         vm.prank(user1);
@@ -194,8 +205,10 @@ contract USDXSpokeMinterTest is Test {
         shareOFT.mint(user1, shares / 2);
         
         // Now can mint again
-        vm.prank(user1);
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), shares / 2);
         minter.mint(shares / 2);
+        vm.stopPrank();
         
         assertEq(minter.getMintedAmount(user1), shares);
     }
@@ -256,9 +269,11 @@ contract USDXSpokeMinterTest is Test {
         vm.prank(admin);
         minter.unpause();
         
-        // Should work after unpause
-        vm.prank(user1);
+        // Should work after unpause (need approval)
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), 100 * 10**6);
         minter.mint(100 * 10**6);
+        vm.stopPrank();
         
         assertEq(usdx.balanceOf(user1), 100 * 10**6);
     }
@@ -274,9 +289,11 @@ contract USDXSpokeMinterTest is Test {
         shareOFT.mint(user1, shares);
         assertEq(minter.getAvailableMintAmount(user1), shares);
         
-        // After minting USDX
-        vm.prank(user1);
+        // After minting USDX (need approval)
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), 600 * 10**6);
         minter.mint(600 * 10**6);
+        vm.stopPrank();
         assertEq(minter.getAvailableMintAmount(user1), 400 * 10**6);
     }
     
@@ -287,16 +304,20 @@ contract USDXSpokeMinterTest is Test {
         shareOFT.mint(user2, 2000 * 10**6);
         vm.stopPrank();
         
-        // User1 mints
-        vm.prank(user1);
+        // User1 mints (need approval)
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), 500 * 10**6);
         minter.mint(500 * 10**6);
+        vm.stopPrank();
         
         // User2 should still have full capacity
         assertEq(minter.getAvailableMintAmount(user2), 2000 * 10**6);
         
-        // User2 mints
-        vm.prank(user2);
+        // User2 mints (need approval)
+        vm.startPrank(user2);
+        shareOFT.approve(address(minter), 1500 * 10**6);
         minter.mint(1500 * 10**6);
+        vm.stopPrank();
         
         // Verify independence
         assertEq(minter.getMintedAmount(user1), 500 * 10**6);
@@ -313,9 +334,11 @@ contract USDXSpokeMinterTest is Test {
         vm.prank(admin);
         shareOFT.mint(user1, shares);
         
-        // Mint
-        vm.prank(user1);
+        // Mint (need approval)
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), mintAmount);
         minter.mint(mintAmount);
+        vm.stopPrank();
         
         // Verify
         assertEq(usdx.balanceOf(user1), mintAmount);
