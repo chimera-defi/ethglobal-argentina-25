@@ -222,7 +222,7 @@ USDX Hub Chain (Ethereum)
 └── USDXVault - Integrates with OVault
 
 USDX Spoke Chains (Polygon, Arbitrum, etc.)
-├── USDX Share OFT - Represents OVault shares
+├── USDXShareOFT (Share OFT) - Represents OVault shares
 ├── USDXSpokeMinter - Mints USDX using OVault shares
 └── USDXToken - USDX stablecoin
 ```

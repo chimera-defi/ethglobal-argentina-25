@@ -648,8 +648,7 @@ npm install @layerzerolabs/toolbox-hardhat
 
 ### Documentation
 - [OVault Comprehensive Understanding](./25-layerzero-ovault-comprehensive-understanding.md)
-- [USDX Architecture](./02-architecture.md)
-- [Hub-and-Spoke Architecture](./16-hub-spoke-architecture.md)
+- [USDX Architecture](./02-architecture.md) (includes hub-and-spoke architecture)
 - [LayerZero Research](./08-layerzero-research.md)
 
 ### Code Examples
