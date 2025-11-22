@@ -27,6 +27,9 @@ All USDX protocol documentation is organized here.
 12. **[RESEARCH-hyperlane.md](./RESEARCH-hyperlane.md)** - **Complete Hyperlane guide** - Consolidated research, ISM selection, Yield Routes integration
 13. **[08-layerzero-research.md](./08-layerzero-research.md)** - LayerZero integration research
 14. **[13-layerzero-ovault-research.md](./13-layerzero-ovault-research.md)** - LayerZero OVault specific research
+15. **[25-layerzero-ovault-comprehensive-understanding.md](./25-layerzero-ovault-comprehensive-understanding.md)** - **📘 Comprehensive OVault Understanding** - Complete OVault architecture, integration with USDX, technical details
+16. **[26-layerzero-ovault-implementation-action-plan.md](./26-layerzero-ovault-implementation-action-plan.md)** - **📋 OVault Implementation Action Plan** - Detailed 10-phase implementation plan with checklists and timelines
+17. **[27-ovault-integration-summary.md](./27-ovault-integration-summary.md)** - **📝 OVault Integration Summary** - Quick reference guide for OVault integration
 
 ### Implementation Guides
 
@@ -89,6 +92,7 @@ All USDX protocol documentation is organized here.
 **Bridge Kit**: `RESEARCH-bridge-kit.md`
 **Hyperlane**: `RESEARCH-hyperlane.md`
 **LayerZero**: `08-layerzero-research.md`, `13-layerzero-ovault-research.md`
+**OVault**: `25-layerzero-ovault-comprehensive-understanding.md`, `26-layerzero-ovault-implementation-action-plan.md`, `27-ovault-integration-summary.md`
 
 ## Status
 
