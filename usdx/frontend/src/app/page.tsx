@@ -8,7 +8,7 @@ import { WithdrawFlow } from '@/components/WithdrawFlow';
 import { useState } from 'react';
 
 export default function Home() {
-  const { address, signer, isConnected } = useWallet();
+  const { address, signer, isConnected, chainId } = useWallet();
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleSuccess = () => {
@@ -72,7 +72,12 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
           <BalanceCard key={refreshKey} address={address} />
           <div className="space-y-6">
-            <DepositFlow signer={signer} onSuccess={handleSuccess} />
+            <DepositFlow 
+              signer={signer} 
+              userAddress={address}
+              chainId={chainId}
+              onSuccess={handleSuccess} 
+            />
             <WithdrawFlow signer={signer} onSuccess={handleSuccess} />
           </div>
         </div>

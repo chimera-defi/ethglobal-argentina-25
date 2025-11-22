@@ -1,12 +1,7 @@
 import { ethers } from 'ethers';
 import { CHAIN_CONFIG } from '@/config/contracts';
 
-// Get provider (read-only)
-export function getProvider(): ethers.JsonRpcProvider {
-  return new ethers.JsonRpcProvider(CHAIN_CONFIG.rpcUrl);
-}
-
-// Get browser provider (requires MetaMask or similar)
+// Get browser provider (MetaMask, etc.)
 export async function getBrowserProvider(): Promise<ethers.BrowserProvider | null> {
   if (typeof window === 'undefined' || !window.ethereum) {
     return null;
@@ -14,30 +9,39 @@ export async function getBrowserProvider(): Promise<ethers.BrowserProvider | nul
   return new ethers.BrowserProvider(window.ethereum);
 }
 
-// Get signer (requires wallet connection)
+// Get provider for read-only operations
+export function getProvider(): ethers.JsonRpcProvider {
+  return new ethers.JsonRpcProvider(CHAIN_CONFIG.rpcUrl);
+}
+
+// Get signer from browser provider
 export async function getSigner(): Promise<ethers.Signer | null> {
   const provider = await getBrowserProvider();
   if (!provider) return null;
   return provider.getSigner();
 }
 
-// Request account access
+// Request accounts from wallet
 export async function requestAccounts(): Promise<string[]> {
   if (typeof window === 'undefined' || !window.ethereum) {
-    throw new Error('No Ethereum wallet found. Please install MetaMask.');
+    throw new Error('No wallet found');
   }
-  
-  const accounts = await window.ethereum.request({
-    method: 'eth_requestAccounts',
-  });
-  
-  return accounts as string[];
+  return await window.ethereum.request({ method: 'eth_requestAccounts' });
 }
 
-// Switch to correct chain
+// Check if wallet is connected
+export async function isConnected(): Promise<boolean> {
+  if (typeof window === 'undefined' || !window.ethereum) {
+    return false;
+  }
+  const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+  return accounts.length > 0;
+}
+
+// Switch to a specific chain
 export async function switchToChain(chainId: number): Promise<void> {
   if (typeof window === 'undefined' || !window.ethereum) {
-    throw new Error('No Ethereum wallet found');
+    throw new Error('No wallet found');
   }
   
   try {
@@ -46,19 +50,11 @@ export async function switchToChain(chainId: number): Promise<void> {
       params: [{ chainId: `0x${chainId.toString(16)}` }],
     });
   } catch (error: any) {
-    // Chain doesn't exist, add it
+    // If chain doesn't exist, try to add it
     if (error.code === 4902) {
-      await window.ethereum.request({
-        method: 'wallet_addEthereumChain',
-        params: [{
-          chainId: `0x${chainId.toString(16)}`,
-          chainName: CHAIN_CONFIG.name,
-          rpcUrls: [CHAIN_CONFIG.rpcUrl],
-        }],
-      });
-    } else {
-      throw error;
+      throw new Error(`Chain ${chainId} not found. Please add it to your wallet.`);
     }
+    throw error;
   }
 }
 
@@ -68,11 +64,12 @@ export function onAccountsChanged(callback: (accounts: string[]) => void): () =>
     return () => {};
   }
   
-  const handler = (accounts: string[]) => callback(accounts);
-  window.ethereum.on('accountsChanged', handler);
+  window.ethereum.on('accountsChanged', callback);
   
   return () => {
-    window.ethereum?.removeListener('accountsChanged', handler);
+    if (window.ethereum) {
+      window.ethereum.removeListener('accountsChanged', callback);
+    }
   };
 }
 
@@ -82,32 +79,28 @@ export function onChainChanged(callback: (chainId: string) => void): () => void 
     return () => {};
   }
   
-  const handler = (chainId: string) => callback(chainId);
-  window.ethereum.on('chainChanged', handler);
+  window.ethereum.on('chainChanged', callback);
   
   return () => {
-    window.ethereum?.removeListener('chainChanged', handler);
+    if (window.ethereum) {
+      window.ethereum.removeListener('chainChanged', callback);
+    }
   };
 }
 
 // Format address for display
 export function formatAddress(address: string): string {
+  if (!address) return '';
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
-// Check if wallet is connected
-export async function isConnected(): Promise<boolean> {
-  if (typeof window === 'undefined' || !window.ethereum) {
-    return false;
-  }
-  
-  const accounts = await window.ethereum.request({ method: 'eth_accounts' });
-  return accounts.length > 0;
-}
-
-// Declare ethereum on window
+// Declare window.ethereum type
 declare global {
   interface Window {
-    ethereum?: any;
+    ethereum?: {
+      request: (args: { method: string; params?: any[] }) => Promise<any>;
+      on: (event: string, callback: (...args: any[]) => void) => void;
+      removeListener: (event: string, callback: (...args: any[]) => void) => void;
+    };
   }
 }
