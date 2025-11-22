@@ -58,10 +58,17 @@ USDX is a cross-chain stablecoin protocol that enables users to mint USDX tokens
 10. **[08-layerzero-research.md](./08-layerzero-research.md)** - LayerZero integration research
 11. **[13-layerzero-ovault-research.md](./13-layerzero-ovault-research.md)** - LayerZero OVault specific research
 
+### Implementation Guides
+
+12. **[20-frontend-architecture.md](./20-frontend-architecture.md)** - Frontend architecture, MVP features, technology stack
+13. **[21-smart-contract-development-setup.md](./21-smart-contract-development-setup.md)** - Smart contract setup, Foundry/Hardhat, mainnet forking
+14. **[22-detailed-task-breakdown.md](./22-detailed-task-breakdown.md)** - Comprehensive task breakdown with dependencies
+15. **[23-implementation-details-summary.md](./23-implementation-details-summary.md)** - Summary of new implementation guides and improvements
+
 ### Reference & Questions
 
-12. **[10-open-questions.md](./10-open-questions.md)** - Open questions and clarifications needed (many answered)
-13. **[07-circle-cctp-research.md](./07-circle-cctp-research.md)** - Circle CCTP research (reference - Bridge Kit recommended)
+16. **[10-open-questions.md](./10-open-questions.md)** - Open questions and clarifications needed (many answered)
+17. **[07-circle-cctp-research.md](./07-circle-cctp-research.md)** - Circle CCTP research (reference - Bridge Kit recommended)
 
 ### Legacy/Archive Documents
 

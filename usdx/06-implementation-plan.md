@@ -167,20 +167,26 @@
 
 ### Smart Contracts
 - **Language**: Solidity ^0.8.20
-- **Framework**: Foundry (Hardhat as backup)
+- **Primary Framework**: Foundry (Forge) - Fast testing, fuzzing, mainnet forking
+- **Secondary Framework**: Hardhat - Deployment scripts, better TypeScript support
 - **Libraries**: OpenZeppelin Contracts
-- **Testing**: Foundry tests, Hardhat tests
+- **Testing**: Foundry tests (unit, fuzz, fork), Hardhat tests (integration)
 - **Deployment**: Hardhat deploy scripts
+- **Mainnet Forking**: Both Foundry and Hardhat support mainnet forking for local testing
+- **See**: **[21-smart-contract-development-setup.md](./21-smart-contract-development-setup.md)** for detailed setup
 
 ### Frontend
-- **Framework**: React + TypeScript
-- **Styling**: Tailwind CSS
-- **Wallet**: wagmi + viem
-- **State Management**: Zustand or Redux
-- **Chain Management**: RainbowKit
-- **UI Components**: shadcn/ui or similar
+- **Framework**: Next.js 14+ (App Router) + TypeScript
+- **Styling**: Tailwind CSS + shadcn/ui components
+- **Wallet**: wagmi v2 + viem
+- **Wallet UI**: RainbowKit
+- **State Management**: Zustand (global) + TanStack Query (server state)
+- **UI Components**: shadcn/ui (Radix UI primitives)
 - **Bridge Kit**: @circle-fin/bridge-kit + @circle-fin/adapter-viem-v2 (for USDC cross-chain transfers)
+- **Icons**: Lucide React
+- **Animations**: Framer Motion
 - **Note**: Bridge Kit is SDK-only, custom UI required
+- **See**: **[20-frontend-architecture.md](./20-frontend-architecture.md)** for detailed architecture and MVP features
 
 ### Infrastructure
 - **Bridge Kit Integration**: SDK used directly in frontend (no backend service needed)
@@ -293,11 +299,27 @@
 
 **Total to Full Launch**: ~16-22 weeks (~4-5.5 months)
 
+## Detailed Task Breakdown
+
+**See**: **[22-detailed-task-breakdown.md](./22-detailed-task-breakdown.md)** for comprehensive, step-by-step task breakdown with:
+- Detailed tasks for each phase
+- Dependencies between tasks
+- Acceptance criteria
+- Estimated durations
+- Critical path analysis
+
 ## Next Steps
 
-1. Finalize technical specifications
-2. Set up development environment
-3. Create repository structure
-4. Begin smart contract development
+1. ✅ Finalize technical specifications
+2. ✅ Set up development environment (see setup guides)
+3. ✅ Create repository structure
+4. Begin Phase 1: Setup & Infrastructure
 5. Set up CI/CD pipeline
 6. Create test infrastructure
+7. Begin smart contract development (Phase 2)
+
+## Related Documents
+
+- **[20-frontend-architecture.md](./20-frontend-architecture.md)** - Frontend architecture, MVP features, technology stack
+- **[21-smart-contract-development-setup.md](./21-smart-contract-development-setup.md)** - Smart contract setup, Foundry/Hardhat configuration, mainnet forking
+- **[22-detailed-task-breakdown.md](./22-detailed-task-breakdown.md)** - Comprehensive task breakdown with dependencies and timelines

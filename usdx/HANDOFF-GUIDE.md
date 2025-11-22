@@ -7,17 +7,21 @@ This guide provides essential information for different development teams/agents
 ## Quick Start
 
 ### For Smart Contract Developers
-1. Read **[02-architecture.md](./02-architecture.md)** - Complete architecture
-2. Read **[05-technical-specification.md](./05-technical-specification.md)** - Contract interfaces
-3. Review **[RESEARCH-bridge-kit.md](./RESEARCH-bridge-kit.md)** - Bridge Kit integration
-4. Review **[RESEARCH-hyperlane.md](./RESEARCH-hyperlane.md)** - Hyperlane integration
-5. Start with Phase 2 in **[06-implementation-plan.md](./06-implementation-plan.md)**
+1. Read **[21-smart-contract-development-setup.md](./21-smart-contract-development-setup.md)** - **START HERE** - Foundry/Hardhat setup, mainnet forking
+2. Read **[02-architecture.md](./02-architecture.md)** - Complete architecture
+3. Read **[05-technical-specification.md](./05-technical-specification.md)** - Contract interfaces
+4. Review **[22-detailed-task-breakdown.md](./22-detailed-task-breakdown.md)** - Detailed task breakdown for Phase 2
+5. Review **[RESEARCH-bridge-kit.md](./RESEARCH-bridge-kit.md)** - Bridge Kit integration
+6. Review **[RESEARCH-hyperlane.md](./RESEARCH-hyperlane.md)** - Hyperlane integration
+7. Start with Phase 2 in **[06-implementation-plan.md](./06-implementation-plan.md)**
 
 ### For Frontend Developers
-1. Read **[01-overview.md](./01-overview.md)** - High-level overview
-2. Read **[03-flow-diagrams.md](./03-flow-diagrams.md)** - User flows
-3. Review **[RESEARCH-bridge-kit.md](./RESEARCH-bridge-kit.md)** - Bridge Kit SDK usage
-4. Start with Phase 4 in **[06-implementation-plan.md](./06-implementation-plan.md)**
+1. Read **[20-frontend-architecture.md](./20-frontend-architecture.md)** - **START HERE** - Frontend architecture, MVP features, tech stack
+2. Read **[01-overview.md](./01-overview.md)** - High-level overview
+3. Read **[03-flow-diagrams.md](./03-flow-diagrams.md)** - User flows
+4. Review **[22-detailed-task-breakdown.md](./22-detailed-task-breakdown.md)** - Detailed task breakdown for Phase 4
+5. Review **[RESEARCH-bridge-kit.md](./RESEARCH-bridge-kit.md)** - Bridge Kit SDK usage
+6. Start with Phase 4 in **[06-implementation-plan.md](./06-implementation-plan.md)**
 
 ### For Backend/Infrastructure Developers
 1. Read **[02-architecture.md](./02-architecture.md)** - System architecture
@@ -195,33 +199,49 @@ const transfer = await kit.transfer({
 
 ## Implementation Priorities
 
-### Phase 1: Core Contracts (Weeks 1-2)
-- [ ] USDXToken.sol
-- [ ] USDXVault.sol (basic deposit/withdrawal)
-- [ ] AccessControl setup
+**See**: **[22-detailed-task-breakdown.md](./22-detailed-task-breakdown.md)** for comprehensive task breakdown with step-by-step actions, dependencies, and acceptance criteria.
 
-### Phase 2: Yield Integration (Week 3)
-- [ ] OVault integration
-- [ ] Yield Routes integration
-- [ ] Yearn vault integration
+### Quick Overview
 
-### Phase 3: Cross-Chain (Weeks 4-5)
-- [ ] LayerZero integration
-- [ ] Hyperlane integration
-- [ ] CrossChainBridge.sol
-- [ ] USDXSpokeMinter.sol
+**Phase 1: Setup & Infrastructure (Week 1)**
+- Repository setup
+- Development environment (Foundry + Hardhat)
+- Mainnet forking configuration
+- CI/CD setup
 
-### Phase 4: Testing & Security (Weeks 6-7)
-- [ ] Unit tests (90%+ coverage)
-- [ ] Integration tests
-- [ ] Fork tests
-- [ ] Security audit preparation
+**Phase 2: Smart Contracts (Weeks 2-7)**
+- Week 2: USDXToken, USDXVault (core)
+- Week 3: USDXSpokeMinter, OVault/Yield Routes integration
+- Week 4: LayerZeroAdapter, HyperlaneAdapter
+- Week 5: CrossChainBridge
+- Weeks 6-7: Testing, security, gas optimization
 
-### Phase 5: Frontend (Weeks 8-11)
-- [ ] Bridge Kit SDK integration
-- [ ] Custom UI components
-- [ ] Multi-chain wallet connection
-- [ ] Transaction status tracking
+**Phase 3: Security Audit (Weeks 8-11)**
+- Audit preparation
+- Audit execution
+- Remediation
+
+**Phase 4: Frontend (Weeks 8-14, parallel with audit)**
+- Week 8: Setup, wallet integration, Bridge Kit
+- Week 9-10: Smart contract integration, dashboard
+- Week 10-12: Core flows (deposit, mint, transfer, withdraw)
+- Week 12-13: Transaction history, UI polish
+- Week 14: Testing
+
+**Phase 5: Testnet (Weeks 15-17)**
+- Contract deployment
+- Integration testing
+- Community testing
+
+**Phase 6: Mainnet Limited (Weeks 18-20)**
+- Limited deployment (2-3 chains)
+- TVL caps
+- Gradual rollout
+
+**Phase 7: Full Launch (Week 21+)**
+- All chains
+- Remove caps
+- Ongoing operations
 
 ## Testing Strategy
 
@@ -273,6 +293,26 @@ const transfer = await kit.transfer({
 - `10-open-questions.md` - Open questions
 - `04-concept-exploration.md` - Design decisions
 
+## Development Setup
+
+### Smart Contract Development
+- **Setup Guide**: **[21-smart-contract-development-setup.md](./21-smart-contract-development-setup.md)**
+- **Tools**: Foundry (primary) + Hardhat (secondary)
+- **Mainnet Forking**: Both frameworks support forking for local testing
+- **Testing**: Foundry (unit, fuzz, fork) + Hardhat (integration)
+
+### Frontend Development
+- **Architecture Guide**: **[20-frontend-architecture.md](./20-frontend-architecture.md)**
+- **Framework**: Next.js 14+ (App Router)
+- **Tech Stack**: TypeScript, Tailwind CSS, wagmi, viem, RainbowKit, Bridge Kit SDK
+- **MVP Features**: Wallet connection, deposit, mint, transfer, withdraw, transaction history
+
+### Task Breakdown
+- **Detailed Tasks**: **[22-detailed-task-breakdown.md](./22-detailed-task-breakdown.md)**
+- **Dependencies**: Clear dependency chain documented
+- **Acceptance Criteria**: Defined for each task
+- **Timeline**: ~20 weeks to full launch
+
 ## Key Resources
 
 ### External Documentation
@@ -280,11 +320,18 @@ const transfer = await kit.transfer({
 - **LayerZero**: https://layerzero.gitbook.io/docs/
 - **Hyperlane**: https://docs.hyperlane.xyz/
 - **Yearn**: https://docs.yearn.fi/
+- **Foundry**: https://book.getfoundry.sh/
+- **Hardhat**: https://hardhat.org/docs
+- **Next.js**: https://nextjs.org/docs
+- **wagmi**: https://wagmi.sh/
+- **RainbowKit**: https://www.rainbowkit.com/docs
 
 ### GitHub Repositories
 - Bridge Kit: `@circle-fin/bridge-kit`
 - LayerZero: `@layerzerolabs/lz-evm-protocol-v2`
 - Hyperlane: `@hyperlane-xyz/core`
+- Foundry: https://github.com/foundry-rs/foundry
+- Hardhat: https://github.com/NomicFoundation/hardhat
 
 ## Common Pitfalls to Avoid
 
