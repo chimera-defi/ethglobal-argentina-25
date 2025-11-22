@@ -158,7 +158,7 @@ contract USDXSpokeMinter is AccessControl, Pausable, ReentrancyGuard {
      */
     function burn(uint256 amount) external nonReentrant whenNotPaused {
         if (amount == 0) revert ZeroAmount();
-        if (mintedPerUser[msg.sender] < amount) revert InsufficientPosition();
+        if (mintedPerUser[msg.sender] < amount) revert InsufficientShares();
         
         // Update tracking
         mintedPerUser[msg.sender] -= amount;

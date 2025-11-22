@@ -3,26 +3,39 @@ pragma solidity ^0.8.23;
 
 import "forge-std/Test.sol";
 import "../../contracts/USDXToken.sol";
+import "../../contracts/interfaces/ILayerZeroEndpoint.sol";
+import "../../contracts/mocks/MockLayerZeroEndpoint.sol";
 
 contract USDXTokenTest is Test {
     USDXToken public token;
+    MockLayerZeroEndpoint public lzEndpoint;
     
     address public admin = address(0x1);
     address public minter = address(0x2);
     address public user1 = address(0x3);
     address public user2 = address(0x4);
     
+    uint32 constant LOCAL_EID = 30101; // Ethereum
+    uint32 constant REMOTE_EID = 30109; // Polygon
+    
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     
     function setUp() public {
+        // Deploy mock LayerZero endpoint
+        lzEndpoint = new MockLayerZeroEndpoint(LOCAL_EID);
+        
         // Deploy token
         token = new USDXToken(admin);
         
         // Grant minter role to minter address
         vm.prank(admin);
         token.grantRole(MINTER_ROLE, minter);
+        
+        // Set LayerZero endpoint
+        vm.prank(admin);
+        token.setLayerZeroEndpoint(address(lzEndpoint), LOCAL_EID);
     }
     
     function testDeployment() public view {
@@ -250,5 +263,132 @@ contract USDXTokenTest is Test {
         
         assertEq(token.balanceOf(user1), 0);
         assertEq(token.balanceOf(user2), amount);
+    }
+    
+    // LayerZero Tests
+    function testSetLayerZeroEndpoint() public {
+        MockLayerZeroEndpoint newEndpoint = new MockLayerZeroEndpoint(LOCAL_EID);
+        
+        vm.prank(admin);
+        token.setLayerZeroEndpoint(address(newEndpoint), LOCAL_EID);
+        
+        assertEq(address(token.lzEndpoint()), address(newEndpoint));
+        assertEq(token.localEid(), LOCAL_EID);
+    }
+    
+    function testSetLayerZeroEndpointRevertsIfNotAdmin() public {
+        MockLayerZeroEndpoint newEndpoint = new MockLayerZeroEndpoint(LOCAL_EID);
+        
+        vm.prank(user1);
+        vm.expectRevert();
+        token.setLayerZeroEndpoint(address(newEndpoint), LOCAL_EID);
+    }
+    
+    function testSetTrustedRemote() public {
+        bytes32 remote = bytes32(uint256(uint160(user2)));
+        
+        vm.prank(admin);
+        token.setTrustedRemote(REMOTE_EID, remote);
+        
+        assertEq(token.trustedRemotes(REMOTE_EID), remote);
+    }
+    
+    function testSendCrossChain() public {
+        uint256 amount = 1000 * 10**6;
+        bytes32 receiver = bytes32(uint256(uint160(user2)));
+        bytes memory options = "";
+        
+        // Mint tokens
+        vm.prank(minter);
+        token.mint(user1, amount);
+        
+        // Set trusted remote
+        bytes32 remote = bytes32(uint256(uint160(address(token)))); // Self for testing
+        vm.prank(admin);
+        token.setTrustedRemote(REMOTE_EID, remote);
+        
+        // Set remote contract on endpoint
+        lzEndpoint.setRemoteContract(REMOTE_EID, address(token));
+        
+        // Send cross-chain
+        vm.prank(user1);
+        token.sendCrossChain{value: 0.001 ether}(REMOTE_EID, receiver, amount, options);
+        
+        // Tokens should be burned
+        assertEq(token.balanceOf(user1), 0);
+        assertEq(token.totalSupply(), 0);
+    }
+    
+    function testSendCrossChainRevertsIfNoEndpoint() public {
+        USDXToken tokenNoEndpoint = new USDXToken(admin);
+        vm.prank(admin);
+        tokenNoEndpoint.grantRole(MINTER_ROLE, minter);
+        
+        vm.prank(minter);
+        tokenNoEndpoint.mint(user1, 1000 * 10**6);
+        
+        vm.prank(user1);
+        vm.expectRevert(USDXToken.ZeroAddress.selector);
+        tokenNoEndpoint.sendCrossChain(REMOTE_EID, bytes32(uint256(uint160(user2))), 1000 * 10**6, "");
+    }
+    
+    function testSendCrossChainRevertsIfInvalidRemote() public {
+        uint256 amount = 1000 * 10**6;
+        
+        vm.prank(minter);
+        token.mint(user1, amount);
+        
+        vm.prank(user1);
+        vm.expectRevert(USDXToken.InvalidRemote.selector);
+        token.sendCrossChain(REMOTE_EID, bytes32(uint256(uint160(user2))), amount, "");
+    }
+    
+    function testLzReceive() public {
+        uint256 amount = 1000 * 10**6;
+        bytes32 sender = bytes32(uint256(uint160(address(token))));
+        bytes memory payload = abi.encode(user1, amount);
+        
+        // Set trusted remote
+        vm.prank(admin);
+        token.setTrustedRemote(REMOTE_EID, sender);
+        
+        // Call lzReceive (simulating LayerZero endpoint call)
+        vm.prank(address(lzEndpoint));
+        token.lzReceive(REMOTE_EID, sender, payload, address(0), "");
+        
+        // Tokens should be minted
+        assertEq(token.balanceOf(user1), amount);
+        assertEq(token.totalSupply(), amount);
+    }
+    
+    function testLzReceiveRevertsIfNotEndpoint() public {
+        bytes32 sender = bytes32(uint256(uint160(address(token))));
+        bytes memory payload = abi.encode(user1, 1000 * 10**6);
+        
+        vm.prank(user1);
+        vm.expectRevert(USDXToken.Unauthorized.selector);
+        token.lzReceive(REMOTE_EID, sender, payload, address(0), "");
+    }
+    
+    function testLzReceiveRevertsIfInvalidRemote() public {
+        bytes32 sender = bytes32(uint256(uint160(user2)));
+        bytes memory payload = abi.encode(user1, 1000 * 10**6);
+        
+        vm.prank(address(lzEndpoint));
+        vm.expectRevert(USDXToken.InvalidRemote.selector);
+        token.lzReceive(REMOTE_EID, sender, payload, address(0), "");
+    }
+    
+    function testLzReceiveRevertsIfZeroAddress() public {
+        bytes32 sender = bytes32(uint256(uint160(address(token))));
+        bytes memory payload = abi.encode(address(0), 1000 * 10**6);
+        
+        vm.prank(admin);
+        token.setTrustedRemote(REMOTE_EID, sender);
+        
+        vm.prank(address(lzEndpoint));
+        vm.prank(address(lzEndpoint));
+        vm.expectRevert(USDXToken.ZeroAddress.selector);
+        token.lzReceive(REMOTE_EID, sender, payload, address(0), "");
     }
 }

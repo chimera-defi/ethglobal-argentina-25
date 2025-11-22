@@ -4,19 +4,30 @@ pragma solidity ^0.8.23;
 import {Test} from "forge-std/Test.sol";
 import {USDXVault} from "../../contracts/USDXVault.sol";
 import {USDXToken} from "../../contracts/USDXToken.sol";
+import {USDXYearnVaultWrapper} from "../../contracts/USDXYearnVaultWrapper.sol";
+import {USDXShareOFTAdapter} from "../../contracts/USDXShareOFTAdapter.sol";
+import {USDXVaultComposerSync} from "../../contracts/USDXVaultComposerSync.sol";
 import {MockUSDC} from "../../contracts/mocks/MockUSDC.sol";
 import {MockYearnVault} from "../../contracts/mocks/MockYearnVault.sol";
+import {MockLayerZeroEndpoint} from "../../contracts/mocks/MockLayerZeroEndpoint.sol";
+import {IOVaultComposer} from "../../contracts/interfaces/IOVaultComposer.sol";
 
 contract USDXVaultTest is Test {
     USDXVault public vault;
     USDXToken public usdx;
     MockUSDC public usdc;
     MockYearnVault public yearnVault;
+    USDXYearnVaultWrapper public vaultWrapper;
+    USDXShareOFTAdapter public shareOFTAdapter;
+    USDXVaultComposerSync public composer;
+    MockLayerZeroEndpoint public lzEndpoint;
     
     address public admin = address(0x1);
     address public treasury = address(0x2);
     address public user1 = address(0x3);
     address public user2 = address(0x4);
+    
+    uint32 constant HUB_EID = 30101;
     
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
@@ -25,11 +36,46 @@ contract USDXVaultTest is Test {
     uint256 constant INITIAL_USDC = 10_000 * 10**6; // 10,000 USDC
     
     function setUp() public {
-        // Deploy contracts
+        // Deploy mocks
         usdc = new MockUSDC();
-        usdx = new USDXToken(admin);
-        vault = new USDXVault(address(usdc), address(usdx), treasury, admin);
         yearnVault = new MockYearnVault(address(usdc));
+        lzEndpoint = new MockLayerZeroEndpoint(HUB_EID);
+        
+        // Deploy OVault contracts
+        vaultWrapper = new USDXYearnVaultWrapper(
+            address(usdc),
+            address(yearnVault),
+            "USDX Yearn Wrapper",
+            "USDX-YV"
+        );
+        
+        shareOFTAdapter = new USDXShareOFTAdapter(
+            address(vaultWrapper),
+            address(lzEndpoint),
+            HUB_EID,
+            admin
+        );
+        
+        composer = new USDXVaultComposerSync(
+            address(vaultWrapper),
+            address(shareOFTAdapter),
+            address(usdc),
+            address(lzEndpoint),
+            HUB_EID,
+            admin
+        );
+        
+        // Deploy core contracts
+        usdx = new USDXToken(admin);
+        vault = new USDXVault(
+            address(usdc),
+            address(usdx),
+            treasury,
+            admin,
+            address(composer),
+            address(shareOFTAdapter),
+            address(vaultWrapper)
+        );
         
         // Grant vault minter and burner roles on USDX
         vm.startPrank(admin);
@@ -70,8 +116,24 @@ contract USDXVaultTest is Test {
         assertEq(vault.totalMinted(), depositAmount, "Total minted should increase");
     }
     
+    function testDepositWithOVaultWrapper() public {
+        uint256 depositAmount = 1000 * 10**6;
+        
+        // Deposit (should use OVault wrapper)
+        vm.startPrank(user1);
+        usdc.approve(address(vault), depositAmount);
+        vault.deposit(depositAmount);
+        vm.stopPrank();
+        
+        // Verify OVault shares were created
+        assertGt(vault.getUserOVaultShares(user1), 0, "User should have OVault shares");
+        assertGt(vaultWrapper.balanceOf(user1), 0, "User should have vault wrapper shares");
+    }
+    
     function testDepositWithYearn() public {
-        // Set Yearn vault
+        // Set Yearn vault (fallback mode)
+        vm.prank(admin);
+        vault.setVaultWrapper(address(0)); // Disable wrapper
         vm.prank(admin);
         vault.setYearnVault(address(yearnVault));
         
@@ -86,6 +148,73 @@ contract USDXVaultTest is Test {
         // Verify Yearn shares were received
         assertGt(vault.getUserYearnShares(user1), 0, "User should have Yearn shares");
         assertGt(yearnVault.balanceOf(address(vault)), 0, "Vault should hold Yearn shares");
+    }
+    
+    function testDepositViaOVault() public {
+        uint256 depositAmount = 1000 * 10**6;
+        bytes32 receiver = bytes32(uint256(uint160(user1)));
+        bytes memory options = "";
+        
+        vm.startPrank(user1);
+        usdc.approve(address(vault), depositAmount);
+        vault.depositViaOVault{value: 0.001 ether}(
+            depositAmount,
+            30109, // Polygon EID
+            receiver,
+            options
+        );
+        vm.stopPrank();
+        
+        // Verify deposit
+        assertEq(vault.totalCollateral(), depositAmount);
+        assertEq(vault.getUserBalance(user1), depositAmount);
+    }
+    
+    function testSetOVaultComposer() public {
+        vm.prank(admin);
+        vault.setOVaultComposer(address(composer));
+        
+        assertEq(address(vault.ovaultComposer()), address(composer));
+    }
+    
+    function testSetShareOFTAdapter() public {
+        vm.prank(admin);
+        vault.setShareOFTAdapter(address(shareOFTAdapter));
+        
+        assertEq(address(vault.shareOFTAdapter()), address(shareOFTAdapter));
+    }
+    
+    function testSetVaultWrapper() public {
+        vm.prank(admin);
+        vault.setVaultWrapper(address(vaultWrapper));
+        
+        assertEq(address(vault.vaultWrapper()), address(vaultWrapper));
+    }
+    
+    function testGetUserOVaultShares() public {
+        uint256 depositAmount = 1000 * 10**6;
+        
+        // Deposit
+        vm.startPrank(user1);
+        usdc.approve(address(vault), depositAmount);
+        vault.deposit(depositAmount);
+        vm.stopPrank();
+        
+        uint256 shares = vault.getUserOVaultShares(user1);
+        assertGt(shares, 0, "User should have OVault shares");
+    }
+    
+    function testGetTotalValueWithOVault() public {
+        uint256 depositAmount = 1000 * 10**6;
+        
+        // Deposit
+        vm.startPrank(user1);
+        usdc.approve(address(vault), depositAmount);
+        vault.deposit(depositAmount);
+        vm.stopPrank();
+        
+        uint256 totalValue = vault.getTotalValue();
+        assertGt(totalValue, 0, "Total value should be greater than zero");
     }
     
     function testDepositRevertsIfZeroAmount() public {
@@ -344,5 +473,21 @@ contract USDXVaultTest is Test {
         assertEq(vault.getUserBalance(user2), amount2);
         assertEq(vault.totalCollateral(), amount1 + amount2);
         assertEq(vault.totalMinted(), amount1 + amount2);
+    }
+    
+    function testDepositViaOVaultRevertsIfNoComposer() public {
+        // Remove composer
+        vm.prank(admin);
+        vault.setOVaultComposer(address(0));
+        
+        vm.prank(user1);
+        usdc.approve(address(vault), 1000 * 10**6);
+        vm.expectRevert(USDXVault.ZeroAddress.selector);
+        vault.depositViaOVault(
+            1000 * 10**6,
+            30109,
+            bytes32(uint256(uint160(user1))),
+            ""
+        );
     }
 }

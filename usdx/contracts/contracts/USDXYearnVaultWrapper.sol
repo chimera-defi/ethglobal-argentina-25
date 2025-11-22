@@ -2,7 +2,9 @@
 pragma solidity ^0.8.23;
 
 import {ERC4626} from "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol";
+import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
@@ -38,9 +40,9 @@ contract USDXYearnVaultWrapper is ERC4626, Ownable, ReentrancyGuard, Pausable {
     constructor(
         address _asset, // USDC address
         address _yearnVault, // Yearn USDC vault address
-        string memory _name,
-        string memory _symbol
-    ) ERC4626(IERC20(_asset)) Ownable(msg.sender) {
+        string memory name_,
+        string memory symbol_
+    ) ERC20(name_, symbol_) ERC4626(IERC20(_asset)) Ownable(msg.sender) {
         if (_asset == address(0) || _yearnVault == address(0)) {
             revert ZeroAddress();
         }

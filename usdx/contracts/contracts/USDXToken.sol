@@ -81,6 +81,12 @@ contract USDXToken is ERC20, ERC20Burnable, ERC20Permit, AccessControl, Pausable
     /// @notice Emitted when tokens are received cross-chain via LayerZero
     event CrossChainReceived(uint32 srcEid, bytes32 from, uint256 amount);
     
+    // ============ Errors ============
+    
+    error Unauthorized();
+    error InvalidRemote();
+    error ZeroAddress();
+    
     // ============ Constructor ============
     
     /**
