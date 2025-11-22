@@ -1,0 +1,27 @@
+{
+  "name": "usdx-protocol",
+  "version": "0.1.0",
+  "description": "USDX Cross-Chain Stablecoin Protocol",
+  "private": true,
+  "workspaces": [
+    "contracts",
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "install:all": "npm install && npm run install --workspaces",
+    "build:contracts": "npm run build --workspace=contracts",
+    "build:frontend": "npm run build --workspace=frontend",
+    "test:contracts": "npm run test --workspace=contracts",
+    "test:frontend": "npm run test --workspace=frontend",
+    "lint": "npm run lint --workspaces",
+    "format": "prettier --write \"**/*.{ts,js,json,md}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=9.0.0"
+  }
+}
