@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { ethers } from 'ethers';
 import { getUSDCContract, getHubVaultContract, waitForTransaction } from '@/lib/contracts';
 import { parseAmount, formatAmount, CONTRACTS } from '@/config/contracts';
+import { useToast } from '@/hooks/useToast';
+import { ArrowDownCircle, Loader2, CheckCircle2, Info, Coins } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface DepositFlowProps {
   signer: ethers.Signer | null;
@@ -14,45 +17,60 @@ export function DepositFlow({ signer, onSuccess }: DepositFlowProps) {
   const [amount, setAmount] = useState('');
   const [isApproving, setIsApproving] = useState(false);
   const [isDepositing, setIsDepositing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
+  const { success: showSuccess, error: showError, loading: showLoading, removeToast } = useToast();
+  const [loadingToastId, setLoadingToastId] = useState<string | null>(null);
 
   const handleDeposit = async () => {
     if (!signer || !amount) return;
     
-    setError(null);
-    setSuccess(null);
+    const toastId = showLoading('Processing transaction...');
+    setLoadingToastId(toastId);
     
     try {
       const parsedAmount = parseAmount(amount);
       
       if (parsedAmount <= 0) {
-        setError('Amount must be greater than 0');
+        removeToast(toastId);
+        showError('Amount must be greater than 0');
         return;
       }
 
       // Step 1: Approve USDC
       setIsApproving(true);
+      removeToast(toastId);
+      const approveToastId = showLoading('Approving USDC spending...');
+      setLoadingToastId(approveToastId);
+      
       const usdc = getUSDCContract(signer);
       const approveTx = await usdc.approve(CONTRACTS.HUB_VAULT, parsedAmount);
       await waitForTransaction(approveTx);
       setIsApproving(false);
+      removeToast(approveToastId);
+      showSuccess('USDC approved successfully!');
 
       // Step 2: Deposit to vault
       setIsDepositing(true);
+      const depositToastId = showLoading('Depositing USDC and minting USDX...');
+      setLoadingToastId(depositToastId);
+      
       const vault = getHubVaultContract(signer);
       const depositTx = await vault.deposit(parsedAmount);
       const receipt = await waitForTransaction(depositTx);
       setIsDepositing(false);
+      removeToast(depositToastId);
 
       if (receipt) {
-        setSuccess(`Successfully deposited ${amount} USDC and minted USDX!`);
+        showSuccess(`Successfully deposited ${amount} USDC and minted USDX!`);
         setAmount('');
         onSuccess?.();
       }
     } catch (err: any) {
       console.error('Deposit failed:', err);
-      setError(err.message || 'Transaction failed');
+      if (loadingToastId) {
+        removeToast(loadingToastId);
+        setLoadingToastId(null);
+      }
+      showError(err.message || 'Transaction failed');
       setIsApproving(false);
       setIsDepositing(false);
     }
@@ -60,67 +78,123 @@ export function DepositFlow({ signer, onSuccess }: DepositFlowProps) {
 
   if (!signer) {
     return (
-      <div className="card">
-        <h2 className="text-xl font-bold mb-4">Deposit USDC</h2>
-        <p className="text-gray-500">Connect your wallet to deposit</p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="card"
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-3 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl">
+            <ArrowDownCircle className="h-6 w-6 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold gradient-text">Deposit USDC</h2>
+        </div>
+        <div className="flex flex-col items-center justify-center py-8 text-center">
+          <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-full mb-4">
+            <Coins className="h-8 w-8 text-gray-400" />
+          </div>
+          <p className="text-gray-500 dark:text-gray-400 font-medium">
+            Connect your wallet to deposit
+          </p>
+        </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="card">
-      <h2 className="text-xl font-bold mb-4">Deposit USDC → Mint USDX</h2>
-      <p className="text-sm text-gray-600 mb-4">
-        Deposit USDC on hub chain to mint USDX 1:1. Your USDC will be deposited into Yearn for yield.
-      </p>
-
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-2">Amount (USDC)</label>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="0.00"
-            className="input w-full"
-            disabled={isApproving || isDepositing}
-            step="0.000001"
-            min="0"
-          />
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="card"
+    >
+      <div className="flex items-center gap-3 mb-4">
+        <div className="p-3 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl shadow-lg">
+          <ArrowDownCircle className="h-6 w-6 text-white" />
         </div>
-
-        <button
-          onClick={handleDeposit}
-          disabled={!amount || isApproving || isDepositing}
-          className="btn btn-primary w-full"
-        >
-          {isApproving && 'Approving USDC...'}
-          {isDepositing && 'Depositing...'}
-          {!isApproving && !isDepositing && 'Deposit & Mint'}
-        </button>
-
-        {error && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-600">{error}</p>
-          </div>
-        )}
-
-        {success && (
-          <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-sm text-green-600">{success}</p>
-          </div>
-        )}
-
-        <div className="p-4 bg-blue-50 rounded-lg">
-          <h3 className="font-medium mb-2">How it works:</h3>
-          <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
-            <li>Approve USDC spending</li>
-            <li>Vault deposits USDC into Yearn</li>
-            <li>You receive USDX 1:1</li>
-            <li>Earn yield on your deposit</li>
-          </ol>
+        <div>
+          <h2 className="text-2xl font-bold gradient-text">Deposit USDC</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Mint USDX 1:1</p>
         </div>
       </div>
-    </div>
+
+      <div className="space-y-5">
+        <div>
+          <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
+            Amount (USDC)
+          </label>
+          <div className="relative">
+            <input
+              type="number"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="0.00"
+              className="input input-lg w-full pr-12"
+              disabled={isApproving || isDepositing}
+              step="0.000001"
+              min="0"
+            />
+            <div className="absolute right-4 top-1/2 -translate-y-1/2">
+              <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">USDC</span>
+            </div>
+          </div>
+        </div>
+
+        <motion.button
+          whileHover={{ scale: isApproving || isDepositing || !amount ? 1 : 1.02 }}
+          whileTap={{ scale: isApproving || isDepositing || !amount ? 1 : 0.98 }}
+          onClick={handleDeposit}
+          disabled={!amount || isApproving || isDepositing}
+          className="btn btn-primary w-full text-base py-4"
+        >
+          {isApproving && (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              Approving USDC...
+            </>
+          )}
+          {isDepositing && (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              Depositing & Minting...
+            </>
+          )}
+          {!isApproving && !isDepositing && (
+            <>
+              <ArrowDownCircle className="h-5 w-5" />
+              Deposit & Mint USDX
+            </>
+          )}
+        </motion.button>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="p-5 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl border border-blue-200 dark:border-blue-800"
+        >
+          <div className="flex items-start gap-3 mb-3">
+            <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+            <h3 className="font-semibold text-gray-900 dark:text-gray-100">How it works:</h3>
+          </div>
+          <ol className="text-sm text-gray-700 dark:text-gray-300 space-y-2 ml-8">
+            <li className="flex items-start gap-2">
+              <span className="font-bold text-blue-600 dark:text-blue-400">1.</span>
+              <span>Approve USDC spending for the vault</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="font-bold text-blue-600 dark:text-blue-400">2.</span>
+              <span>Vault deposits USDC into Yearn Finance</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="font-bold text-blue-600 dark:text-blue-400">3.</span>
+              <span>You receive USDX tokens 1:1</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="font-bold text-blue-600 dark:text-blue-400">4.</span>
+              <span>Earn yield automatically on your deposit</span>
+            </li>
+          </ol>
+        </motion.div>
+      </div>
+    </motion.div>
   );
 }
