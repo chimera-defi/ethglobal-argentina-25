@@ -21,6 +21,7 @@ USDX is a cross-chain stablecoin protocol that enables users to mint USDX tokens
 13. **[13-layerzero-ovault-research.md](./13-layerzero-ovault-research.md)** - LayerZero OVault research
 14. **[14-hyperlane-yield-routes-research.md](./14-hyperlane-yield-routes-research.md)** - Hyperlane Yield Routes research
 15. **[15-architecture-simplification-summary.md](./15-architecture-simplification-summary.md)** - Architecture simplification summary with OVault/Yield Routes
+16. **[16-hub-spoke-architecture.md](./16-hub-spoke-architecture.md)** - Hub-and-spoke architecture details
 
 ## Key Features
 
@@ -33,12 +34,16 @@ USDX is a cross-chain stablecoin protocol that enables users to mint USDX tokens
 ## Architecture Highlights
 
 ### Core Components
-- **USDXVault**: Manages USDC deposits via OVault/Yield Routes and USDX minting
-- **USDXToken**: ERC20 token with cross-chain capabilities
-- **CrossChainBridge**: Handles cross-chain USDX transfers
-- **Bridge Kit Service**: Backend service using Bridge Kit SDK for USDC transfers
-- **OVault/Yield Routes**: Cross-chain yield vaults wrapping Yearn USDC vault
-- **Yearn USDC Vault**: Single source of yield for all USDC collateral
+- **Hub Chain (Ethereum)**:
+  - **USDXVault**: Manages USDC deposits via OVault/Yield Routes (hub only)
+  - **OVault/Yield Routes**: Cross-chain yield vaults wrapping Yearn USDC vault
+  - **Yearn USDC Vault**: Single source of yield for all USDC collateral
+- **Spoke Chains**:
+  - **USDXSpokeMinter**: Allows minting USDX using hub positions
+  - **USDXToken**: ERC20 token deployed on all chains
+  - **CrossChainBridge**: Handles USDX transfers between spokes
+- **Infrastructure**:
+  - **Bridge Kit Service**: Backend service using Bridge Kit SDK for USDC transfers (Spoke ↔ Hub)
 
 ### Cross-Chain Infrastructure
 - **LayerZero**: Primary cross-chain messaging protocol for USDX transfers + OVault for yield
@@ -46,16 +51,22 @@ USDX is a cross-chain stablecoin protocol that enables users to mint USDX tokens
 - **Circle Bridge Kit**: SDK and UI components for USDC cross-chain transfers (built on CCTP)
 - **Yearn Finance**: Yearn USDC vault as single source of yield (accessed via OVault/Yield Routes)
 
+## Hub-and-Spoke Architecture
+
+USDX uses a **hub-and-spoke model**:
+- **Hub Chain**: Ethereum (single source of USDC collateral and yield)
+- **Spoke Chains**: Polygon, Arbitrum, Optimism, etc. (where users mint and use USDX)
+
 ## User Flow
 
-1. User bridges USDC to source chain (Ethereum) via Bridge Kit
-2. User deposits USDC into USDXVault on source chain
-3. USDXVault deposits into OVault/Yield Routes (wraps Yearn USDC vault)
-4. User receives OVault/Yield Routes position
-5. User can mint USDX on any chain using OVault/Yield Routes position
-6. Yield accrues automatically in Yearn USDC vault on source chain
-7. User can transfer USDX cross-chain via LayerZero/Hyperlane
-8. USDC collateral remains in Yearn vault (earning yield automatically)
+1. **Deposit**: User bridges USDC from Spoke Chain → Hub Chain (Ethereum) via Bridge Kit
+2. **Vault Deposit**: User deposits USDC into USDXVault on Hub Chain
+3. **Yield Setup**: USDXVault → OVault/Yield Routes → Yearn USDC Vault
+4. **Position**: User receives OVault/Yield Routes position on Hub Chain
+5. **Mint USDX**: User mints USDX on any Spoke Chain using hub position
+6. **Yield**: Yield accrues automatically in Yearn vault on Hub Chain
+7. **Transfer**: User can transfer USDX between Spoke Chains via LayerZero/Hyperlane
+8. **Withdraw**: User withdraws USDC from Hub → bridges back to Spoke Chain
 
 ## Supported Chains (Planned)
 
