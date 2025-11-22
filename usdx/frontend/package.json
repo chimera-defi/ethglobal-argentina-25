@@ -20,7 +20,10 @@
     "framer-motion": "^10.16.0",
     "lucide-react": "^0.300.0",
     "clsx": "^2.0.0",
-    "tailwind-merge": "^2.0.0"
+    "tailwind-merge": "^2.0.0",
+    "@circle-fin/bridge-kit": "^1.0.0",
+    "@circle-fin/adapter-viem-v2": "^1.0.0",
+    "viem": "^2.9.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

@@ -1,21 +1,35 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { getUSDCContract, getHubVaultContract, waitForTransaction } from '@/lib/contracts';
 import { parseAmount, formatAmount, CONTRACTS } from '@/config/contracts';
+import { CHAINS } from '@/config/chains';
+import { BridgeKitFlow } from './BridgeKitFlow';
 
 interface DepositFlowProps {
   signer: ethers.Signer | null;
+  userAddress: string | null;
+  chainId: number | null;
   onSuccess?: () => void;
 }
 
-export function DepositFlow({ signer, onSuccess }: DepositFlowProps) {
+export function DepositFlow({ signer, userAddress, chainId, onSuccess }: DepositFlowProps) {
   const [amount, setAmount] = useState('');
   const [isApproving, setIsApproving] = useState(false);
   const [isDepositing, setIsDepositing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [showBridgeFlow, setShowBridgeFlow] = useState(false);
+  
+  // Check if user is on spoke chain - if so, show bridge flow first
+  useEffect(() => {
+    if (chainId === CHAINS.SPOKE.id) {
+      setShowBridgeFlow(true);
+    } else {
+      setShowBridgeFlow(false);
+    }
+  }, [chainId]);
 
   const handleDeposit = async () => {
     if (!signer || !amount) return;
@@ -67,11 +81,41 @@ export function DepositFlow({ signer, onSuccess }: DepositFlowProps) {
     );
   }
 
+  // If on spoke chain, show bridge flow first
+  if (showBridgeFlow && chainId === CHAINS.SPOKE.id) {
+    return (
+      <div className="space-y-4">
+        <BridgeKitFlow
+          userAddress={userAddress}
+          currentChainId={chainId}
+          onSuccess={() => {
+            setShowBridgeFlow(false);
+            // After bridging, prompt user to switch to hub chain
+            alert('USDC bridged! Please switch to Hub chain (Ethereum) to deposit.');
+          }}
+        />
+        <div className="card">
+          <h3 className="text-lg font-bold mb-2">Next Steps</h3>
+          <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
+            <li>Bridge USDC to hub chain using Bridge Kit above</li>
+            <li>Switch your wallet to Hub chain (Ethereum)</li>
+            <li>Deposit the bridged USDC to mint USDX</li>
+          </ol>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="card">
       <h2 className="text-xl font-bold mb-4">Deposit USDC → Mint USDX</h2>
       <p className="text-sm text-gray-600 mb-4">
         Deposit USDC on hub chain to mint USDX 1:1. Your USDC will be deposited into Yearn for yield.
+        {chainId === CHAINS.SPOKE.id && (
+          <span className="block mt-2 text-yellow-600">
+            ⚠️ You're on a spoke chain. Bridge USDC to hub chain first, then deposit.
+          </span>
+        )}
       </p>
 
       <div className="space-y-4">
@@ -114,10 +158,23 @@ export function DepositFlow({ signer, onSuccess }: DepositFlowProps) {
         <div className="p-4 bg-blue-50 rounded-lg">
           <h3 className="font-medium mb-2">How it works:</h3>
           <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
-            <li>Approve USDC spending</li>
-            <li>Vault deposits USDC into Yearn</li>
-            <li>You receive USDX 1:1</li>
-            <li>Earn yield on your deposit</li>
+            {chainId === CHAINS.SPOKE.id ? (
+              <>
+                <li>Bridge USDC from spoke chain to hub chain (Circle Bridge Kit)</li>
+                <li>Switch to hub chain</li>
+                <li>Approve USDC spending</li>
+                <li>Vault deposits USDC into Yearn</li>
+                <li>You receive USDX 1:1</li>
+                <li>Earn yield on your deposit</li>
+              </>
+            ) : (
+              <>
+                <li>Approve USDC spending</li>
+                <li>Vault deposits USDC into Yearn</li>
+                <li>You receive USDX 1:1</li>
+                <li>Earn yield on your deposit</li>
+              </>
+            )}
           </ol>
         </div>
       </div>
