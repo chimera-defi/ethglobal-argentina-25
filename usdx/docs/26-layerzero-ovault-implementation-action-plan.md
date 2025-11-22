@@ -654,6 +654,7 @@ npm install @layerzerolabs/toolbox-hardhat
 ### Code Examples
 - LayerZero OVault Example: `LZ_ENABLE_OVAULT_EXAMPLE=1 npx create-lz-oapp@latest --example ovault-evm`
 - [LayerZero OVault GitHub](https://github.com/LayerZero-Labs/devtools/tree/main/examples/ovault-evm)
+- **[29-layerzero-ovault-examples.md](./29-layerzero-ovault-examples.md)** - Comprehensive code examples for USDX integration
 
 ### Tools
 - LayerZero CLI: `npx create-lz-oapp@latest`
