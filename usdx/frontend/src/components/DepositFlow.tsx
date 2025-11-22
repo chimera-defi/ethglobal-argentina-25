@@ -1,72 +1,76 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ethers } from 'ethers';
 import { getUSDCContract, getHubVaultContract, waitForTransaction } from '@/lib/contracts';
 import { parseAmount, formatAmount, CONTRACTS } from '@/config/contracts';
-import { CHAINS } from '@/config/chains';
-import { BridgeKitFlow } from './BridgeKitFlow';
+import { useToast } from '@/hooks/useToast';
+import { ArrowDownCircle, Loader2, CheckCircle2, Info, Coins } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface DepositFlowProps {
   signer: ethers.Signer | null;
-  userAddress: string | null;
-  chainId: number | null;
   onSuccess?: () => void;
 }
 
-export function DepositFlow({ signer, userAddress, chainId, onSuccess }: DepositFlowProps) {
+export function DepositFlow({ signer, onSuccess }: DepositFlowProps) {
   const [amount, setAmount] = useState('');
   const [isApproving, setIsApproving] = useState(false);
   const [isDepositing, setIsDepositing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [showBridgeFlow, setShowBridgeFlow] = useState(false);
-  
-  // Check if user is on spoke chain - if so, show bridge flow first
-  useEffect(() => {
-    if (chainId === CHAINS.SPOKE.id) {
-      setShowBridgeFlow(true);
-    } else {
-      setShowBridgeFlow(false);
-    }
-  }, [chainId]);
+  const { success: showSuccess, error: showError, loading: showLoading, removeToast } = useToast();
+  const [loadingToastId, setLoadingToastId] = useState<string | null>(null);
 
   const handleDeposit = async () => {
     if (!signer || !amount) return;
     
-    setError(null);
-    setSuccess(null);
+    const toastId = showLoading('Processing transaction...');
+    setLoadingToastId(toastId);
     
     try {
       const parsedAmount = parseAmount(amount);
       
       if (parsedAmount <= 0) {
-        setError('Amount must be greater than 0');
+        removeToast(toastId);
+        showError('Amount must be greater than 0');
         return;
       }
 
       // Step 1: Approve USDC
       setIsApproving(true);
+      removeToast(toastId);
+      const approveToastId = showLoading('Approving USDC spending...');
+      setLoadingToastId(approveToastId);
+      
       const usdc = getUSDCContract(signer);
       const approveTx = await usdc.approve(CONTRACTS.HUB_VAULT, parsedAmount);
       await waitForTransaction(approveTx);
       setIsApproving(false);
+      removeToast(approveToastId);
+      showSuccess('USDC approved successfully!');
 
       // Step 2: Deposit to vault
       setIsDepositing(true);
+      const depositToastId = showLoading('Depositing USDC and minting USDX...');
+      setLoadingToastId(depositToastId);
+      
       const vault = getHubVaultContract(signer);
       const depositTx = await vault.deposit(parsedAmount);
       const receipt = await waitForTransaction(depositTx);
       setIsDepositing(false);
+      removeToast(depositToastId);
 
       if (receipt) {
-        setSuccess(`Successfully deposited ${amount} USDC and minted USDX!`);
+        showSuccess(`Successfully deposited ${amount} USDC and minted USDX!`);
         setAmount('');
         onSuccess?.();
       }
     } catch (err: any) {
       console.error('Deposit failed:', err);
-      setError(err.message || 'Transaction failed');
+      if (loadingToastId) {
+        removeToast(loadingToastId);
+        setLoadingToastId(null);
+      }
+      showError(err.message || 'Transaction failed');
       setIsApproving(false);
       setIsDepositing(false);
     }
@@ -74,114 +78,123 @@ export function DepositFlow({ signer, userAddress, chainId, onSuccess }: Deposit
 
   if (!signer) {
     return (
-      <div className="card">
-        <h2 className="text-xl font-bold mb-4">Deposit USDC</h2>
-        <p className="text-gray-500">Connect your wallet to deposit</p>
-      </div>
-    );
-  }
-
-  // If on spoke chain, show bridge flow first
-  if (showBridgeFlow && chainId === CHAINS.SPOKE.id) {
-    return (
-      <div className="space-y-4">
-        <BridgeKitFlow
-          userAddress={userAddress}
-          currentChainId={chainId}
-          onSuccess={() => {
-            setShowBridgeFlow(false);
-            // After bridging, show success message
-            // User will need to switch to hub chain to deposit
-            // This is handled by the UI state change
-          }}
-        />
-        <div className="card bg-green-50 border-green-200">
-          <h3 className="text-lg font-bold mb-2 text-green-800">Next Steps After Bridging</h3>
-          <ol className="text-sm text-gray-700 space-y-2 list-decimal list-inside">
-            <li className="font-medium">Bridge USDC to hub chain using Bridge Kit above</li>
-            <li className="font-medium">Switch your wallet to Hub chain (Ethereum Sepolia)</li>
-            <li className="font-medium">Deposit the bridged USDC to mint USDX</li>
-          </ol>
-          <p className="text-xs text-gray-600 mt-3 pt-3 border-t border-green-200">
-            💡 Tip: The bridge may take a few minutes. Once complete, switch chains and refresh this page.
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="card"
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-3 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl">
+            <ArrowDownCircle className="h-6 w-6 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Deposit USDC</h2>
+        </div>
+        <div className="flex flex-col items-center justify-center py-8 text-center">
+          <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-full mb-4">
+            <Coins className="h-8 w-8 text-gray-400" />
+          </div>
+          <p className="text-gray-500 dark:text-gray-400 font-medium">
+            Connect your wallet to deposit
           </p>
         </div>
-      </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="card">
-      <h2 className="text-xl font-bold mb-4">Deposit USDC → Mint USDX</h2>
-      <p className="text-sm text-gray-600 mb-4">
-        Deposit USDC on hub chain to mint USDX 1:1. Your USDC will be deposited into Yearn for yield.
-        {chainId === CHAINS.SPOKE.id && (
-          <span className="block mt-2 text-yellow-600">
-            ⚠️ You're on a spoke chain. Bridge USDC to hub chain first, then deposit.
-          </span>
-        )}
-      </p>
-
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-2">Amount (USDC)</label>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="0.00"
-            className="input w-full"
-            disabled={isApproving || isDepositing}
-            step="0.000001"
-            min="0"
-          />
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="card"
+    >
+      <div className="flex items-center gap-3 mb-4">
+        <div className="p-3 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl shadow-lg">
+          <ArrowDownCircle className="h-6 w-6 text-white" />
         </div>
-
-        <button
-          onClick={handleDeposit}
-          disabled={!amount || isApproving || isDepositing}
-          className="btn btn-primary w-full"
-        >
-          {isApproving && 'Approving USDC...'}
-          {isDepositing && 'Depositing...'}
-          {!isApproving && !isDepositing && 'Deposit & Mint'}
-        </button>
-
-        {error && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-600">{error}</p>
-          </div>
-        )}
-
-        {success && (
-          <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-sm text-green-600">{success}</p>
-          </div>
-        )}
-
-        <div className="p-4 bg-blue-50 rounded-lg">
-          <h3 className="font-medium mb-2">How it works:</h3>
-          <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
-            {chainId === CHAINS.SPOKE.id ? (
-              <>
-                <li>Bridge USDC from spoke chain to hub chain (Circle Bridge Kit)</li>
-                <li>Switch to hub chain</li>
-                <li>Approve USDC spending</li>
-                <li>Vault deposits USDC into Yearn</li>
-                <li>You receive USDX 1:1</li>
-                <li>Earn yield on your deposit</li>
-              </>
-            ) : (
-              <>
-                <li>Approve USDC spending</li>
-                <li>Vault deposits USDC into Yearn</li>
-                <li>You receive USDX 1:1</li>
-                <li>Earn yield on your deposit</li>
-              </>
-            )}
-          </ol>
+        <div>
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Deposit USDC</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Mint USDX 1:1</p>
         </div>
       </div>
-    </div>
+
+      <div className="space-y-5">
+        <div>
+          <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">
+            Amount (USDC)
+          </label>
+          <div className="relative">
+            <input
+              type="number"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="0.00"
+              className="input h-14 text-lg pr-12"
+              disabled={isApproving || isDepositing}
+              step="0.000001"
+              min="0"
+            />
+            <div className="absolute right-4 top-1/2 -translate-y-1/2">
+              <span className="text-sm font-semibold text-gray-500 dark:text-gray-400">USDC</span>
+            </div>
+          </div>
+        </div>
+
+        <motion.button
+          whileHover={{ scale: isApproving || isDepositing || !amount ? 1 : 1.02 }}
+          whileTap={{ scale: isApproving || isDepositing || !amount ? 1 : 0.98 }}
+          onClick={handleDeposit}
+          disabled={!amount || isApproving || isDepositing}
+          className="btn bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 hover:shadow-lg shadow-sm w-full text-base py-4"
+        >
+          {isApproving && (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              Approving USDC...
+            </>
+          )}
+          {isDepositing && (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              Depositing & Minting...
+            </>
+          )}
+          {!isApproving && !isDepositing && (
+            <>
+              <ArrowDownCircle className="h-5 w-5" />
+              Deposit & Mint USDX
+            </>
+          )}
+        </motion.button>
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="p-5 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl border border-blue-200 dark:border-blue-800"
+        >
+          <div className="flex items-start gap-3 mb-3">
+            <Info className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+            <h3 className="font-semibold text-gray-900 dark:text-gray-100">How it works:</h3>
+          </div>
+          <ol className="text-sm text-gray-700 dark:text-gray-300 space-y-2 ml-8">
+            <li className="flex items-start gap-2">
+              <span className="font-bold text-blue-600 dark:text-blue-400">1.</span>
+              <span>Approve USDC spending for the vault</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="font-bold text-blue-600 dark:text-blue-400">2.</span>
+              <span>Vault deposits USDC into Yearn Finance</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="font-bold text-blue-600 dark:text-blue-400">3.</span>
+              <span>You receive USDX tokens 1:1</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="font-bold text-blue-600 dark:text-blue-400">4.</span>
+              <span>Earn yield automatically on your deposit</span>
+            </li>
+          </ol>
+        </motion.div>
+      </div>
+    </motion.div>
   );
 }
