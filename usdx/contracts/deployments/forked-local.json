@@ -1,0 +1,47 @@
+{
+  "chainId": 1,
+  "networkName": "Ethereum Mainnet (Forked)",
+  "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+  "blockNumber": 23856726,
+  "contracts": {
+    "mockUSDC": {
+      "address": "0x1687d4BDE380019748605231C956335a473Fd3dc",
+      "decimals": 6,
+      "symbol": "USDC",
+      "name": "USD Coin"
+    },
+    "mockYearnVault": {
+      "address": "0x9f3F78951bBf68fc3cBA976f1370a87B0Fc13cd4",
+      "symbol": "yUSDC"
+    },
+    "hubUSDX": {
+      "address": "0xF1a7a5060f22edA40b1A94a858995fa2bcf5E75A",
+      "decimals": 6,
+      "symbol": "USDX",
+      "name": "USDX Stablecoin"
+    },
+    "hubVault": {
+      "address": "0x18903fF6E49c98615Ab741aE33b5CD202Ccc0158"
+    },
+    "spokeUSDX": {
+      "address": "0xFb314854baCb329200778B82cb816CFB6500De9D",
+      "decimals": 6,
+      "symbol": "USDX",
+      "name": "USDX Stablecoin"
+    },
+    "spokeMinter": {
+      "address": "0x18eed2c26276A42c70E064D25d4f773c3626478e"
+    }
+  },
+  "accounts": {
+    "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "treasury": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "positionOracle": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+  },
+  "notes": {
+    "deploymentType": "Forked Mainnet (Local)",
+    "useCase": "Frontend Development & Testing",
+    "usdcFaucet": "Deployer has 1,000,000 USDC minted",
+    "command": "forge script script/DeployForked.s.sol:DeployForked --fork-url <YOUR_RPC> --broadcast"
+  }
+}
