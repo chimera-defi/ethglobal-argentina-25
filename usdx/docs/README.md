@@ -48,10 +48,21 @@ All USDX protocol documentation is organized here.
 
 24. **[10-open-questions.md](./10-open-questions.md)** - Open questions and clarifications needed (many answered)
 25. **[SELF-ASSESSMENT.md](./SELF-ASSESSMENT.md)** - Honest assessment of work completed
-26. **[REVIEW-SUMMARY.md](./REVIEW-SUMMARY.md)** - Consolidated review summary (security, status, remaining work)
-27. **[SESSION-SUMMARY.md](./SESSION-SUMMARY.md)** - Development session summaries and milestones
-28. **[AGENT-META-LEARNINGS.md](./AGENT-META-LEARNINGS.md)** - Critical development practices and learnings
-29. **[07-circle-cctp-research.md](./07-circle-cctp-research.md)** - Circle CCTP research (reference - Bridge Kit recommended)
+26. **[REVIEW-SUMMARY.md](./REVIEW-SUMMARY.md)** - **Consolidated review summary** - Security, status, remaining work, detailed task lists
+27. **[FINAL-REVIEW-AND-REMAINING-WORK.md](./FINAL-REVIEW-AND-REMAINING-WORK.md)** - Detailed remaining work with specific fixes and deployment script updates
+28. **[COMPREHENSIVE-REVIEW-AND-TODO.md](./COMPREHENSIVE-REVIEW-AND-TODO.md)** - Comprehensive review with detailed test status and architecture verification
+29. **[CODE-REVIEW-AND-FIXES.md](./CODE-REVIEW-AND-FIXES.md)** - Line-by-line code review with fixes applied
+30. **[FINAL-REVIEW-AND-ASSESSMENT.md](./FINAL-REVIEW-AND-ASSESSMENT.md)** - Multi-pass review with honest self-assessment
+31. **[FRONTEND-COMPLETE-SUMMARY.md](./FRONTEND-COMPLETE-SUMMARY.md)** - Complete frontend implementation summary
+32. **[FINAL-SESSION-SUMMARY.md](./FINAL-SESSION-SUMMARY.md)** - Final session summary with statistics and next steps
+33. **[SESSION-SUMMARY.md](./SESSION-SUMMARY.md)** - Development session summaries and milestones
+34. **[AGENT-META-LEARNINGS.md](./AGENT-META-LEARNINGS.md)** - Critical development practices and learnings
+35. **[TEST-SUMMARY.md](./TEST-SUMMARY.md)** - Complete testing report with test-by-test breakdown
+36. **[SECURITY-FIXES-SUMMARY.md](./SECURITY-FIXES-SUMMARY.md)** - Summary of security fixes applied
+37. **[CRITICAL-FIXES-APPLIED.md](./CRITICAL-FIXES-APPLIED.md)** - Critical fixes that were applied
+38. **[DEVELOPMENT-ENVIRONMENT-SUMMARY.md](./DEVELOPMENT-ENVIRONMENT-SUMMARY.md)** - Development environment setup summary
+39. **[TEST-FIXES-COMPLETE.md](./TEST-FIXES-COMPLETE.md)** - Test fixes completion summary
+40. **[07-circle-cctp-research.md](./07-circle-cctp-research.md)** - Circle CCTP research (reference - Bridge Kit recommended)
 
 ## Quick Navigation
 

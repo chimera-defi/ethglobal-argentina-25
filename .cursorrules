@@ -48,7 +48,9 @@
 - If documentation doesn't match actual API, STOP and find correct API from type definitions
 
 ## Documentation Consolidation
-- Consolidate duplicate documentation files - don't leave multiple versions of the same information
-- Remove outdated session summaries and completion files after consolidating
-- Keep only essential documentation - remove redundant FINAL-*, COMPLETE-*, SUMMARY-* files after consolidation
+- Consolidate duplicate documentation files - preserve all important information (task lists, architectural decisions, implementation details)
+- When consolidating, ensure task lists, TODOs, architectural decisions, and specific fixes are preserved
+- Keep reference documents that contain unique information (detailed reviews, specific fixes, architectural decisions)
+- Only remove true duplicates - files with no unique information beyond what's in consolidated versions
 - All deployment guides should be in `usdx/docs/` not root directory
+- When in doubt, preserve the document rather than delete it
