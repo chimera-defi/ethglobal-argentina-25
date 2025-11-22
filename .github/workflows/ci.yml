@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps || true
       
+      - name: Install Foundry dependencies
+        run: forge install foundry-rs/forge-std OpenZeppelin/openzeppelin-contracts --no-git || true
+      
       - name: Build contracts
         run: forge build
       
