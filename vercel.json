@@ -1,6 +1,8 @@
 {
   "version": 2,
-  "buildCommand": "npm install && npm run build",
-  "outputDirectory": ".next",
-  "installCommand": "npm install"
+  "buildCommand": "npm run vercel-build",
+  "outputDirectory": "usdx/frontend/.next",
+  "installCommand": "npm install",
+  "framework": null,
+  "devCommand": "cd usdx/frontend && npm run dev"
 }
