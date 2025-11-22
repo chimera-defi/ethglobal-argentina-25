@@ -1,158 +1,156 @@
 # USDX Cross-Chain Stablecoin Protocol
 
-## Overview
+## Quick Start
 
-USDX is a cross-chain stablecoin protocol that enables users to mint USDX tokens by depositing USDC collateral into vaults on any supported chain. The protocol uses a **hub-and-spoke architecture** where all USDC collateral and yield generation is centralized on Ethereum (hub), while users can mint and use USDX on multiple spoke chains.
+**New to the project?** 
+1. Read **[AGENT-INSTRUCTIONS.md](./AGENT-INSTRUCTIONS.md)** - Agent-specific instructions
+2. Read **[SETUP.md](./SETUP.md)** - Development environment setup
+3. Read **[docs/HANDOFF-GUIDE.md](./docs/HANDOFF-GUIDE.md)** - Complete handoff guide
 
-## Key Features
+## Project Structure
 
-- **Cross-Chain Stablecoin**: Mint USDX on any chain, use it on any other supported chain
-- **USDC Collateral**: 1:1 backing with USDC
-- **Yield Generation**: USDC collateral earns yield while locked (via Yearn USDC vault)
-- **Fast Transfers**: Leverage LayerZero and Hyperlane for near-instant cross-chain transfers
-- **Secure**: Built on battle-tested protocols (Bridge Kit/CCTP, LayerZero, Hyperlane)
+```
+usdx/
+├── docs/                    # All documentation
+├── contracts/               # Smart contracts (Foundry + Hardhat)
+├── frontend/                # Next.js frontend application
+├── backend/                 # Backend services (optional)
+├── infrastructure/           # Infrastructure as code, monitoring
+└── README.md                # This file
+```
 
-## Architecture Highlights
+## Agent-Specific Instructions
 
-### Hub-and-Spoke Model
+### 🤖 For Smart Contracts Agent
 
-- **Hub Chain (Ethereum)**: Single source of USDC collateral and yield generation
-- **Spoke Chains**: Polygon, Arbitrum, Optimism, Base, etc. (where users mint and use USDX)
+**Start Here**: **[docs/21-smart-contract-development-setup.md](./docs/21-smart-contract-development-setup.md)**
 
-### Core Components
+**Quick Setup**:
+```bash
+cd contracts
+foundryup  # Install Foundry
+npm install  # Install Hardhat dependencies
+cp .env.example .env  # Configure environment
+```
 
-**Hub Chain**:
-- `USDXVault.sol` - Manages USDC deposits via OVault/Yield Routes
-- `OVault/Yield Routes` - Cross-chain yield vaults wrapping Yearn USDC vault
-- `Yearn USDC Vault` - Single source of yield for all USDC collateral
+**Key Documents**:
+- **[docs/21-smart-contract-development-setup.md](./docs/21-smart-contract-development-setup.md)** - Complete setup guide
+- **[docs/22-detailed-task-breakdown.md](./docs/22-detailed-task-breakdown.md)** - Phase 2 tasks
+- **[docs/05-technical-specification.md](./docs/05-technical-specification.md)** - Contract interfaces
 
-**Spoke Chains**:
-- `USDXSpokeMinter.sol` - Allows minting USDX using hub positions
-- `USDXToken.sol` - ERC20 token deployed on all chains
-- `CrossChainBridge.sol` - Handles USDX transfers between spokes
+**First Tasks**:
+1. Set up Foundry + Hardhat
+2. Configure mainnet forking
+3. Start with USDXToken.sol (Week 2)
 
-**Infrastructure**:
-- **Bridge Kit SDK** - For USDC transfers between spokes and hub (no API key, SDK-only)
-- **LayerZero** - Primary cross-chain messaging for USDX transfers + OVault
-- **Hyperlane** - Secondary cross-chain messaging for USDX transfers + Yield Routes
+### 🎨 For Frontend Agent
 
-## Documentation Structure
+**Start Here**: **[docs/20-frontend-architecture.md](./docs/20-frontend-architecture.md)**
 
-### 🚀 Start Here
+**Quick Setup**:
+```bash
+cd frontend
+pnpm install  # Install dependencies
+cp .env.example .env.local  # Configure environment
+pnpm dev  # Start development server
+```
 
-1. **[HANDOFF-GUIDE.md](./HANDOFF-GUIDE.md)** - **Essential reading for all developers** - Quick start guide and handoff information
-2. **[01-overview.md](./01-overview.md)** - High-level overview and core concepts
-3. **[02-architecture.md](./02-architecture.md)** - Complete system architecture and component design
+**Key Documents**:
+- **[docs/20-frontend-architecture.md](./docs/20-frontend-architecture.md)** - Complete architecture & MVP features
+- **[docs/22-detailed-task-breakdown.md](./docs/22-detailed-task-breakdown.md)** - Phase 4 tasks
+- **[docs/03-flow-diagrams.md](./docs/03-flow-diagrams.md)** - User flows
 
-### Core Documentation
+**First Tasks**:
+1. Set up Next.js project
+2. Configure wagmi + RainbowKit
+3. Build wallet connection component
 
-4. **[03-flow-diagrams.md](./03-flow-diagrams.md)** - Visual flow diagrams for key processes
-5. **[04-concept-exploration.md](./04-concept-exploration.md)** - Design decisions and concept exploration
-6. **[05-technical-specification.md](./05-technical-specification.md)** - Detailed technical specifications and contract interfaces
-7. **[06-implementation-plan.md](./06-implementation-plan.md)** - Implementation roadmap and phases
+### ⚙️ For Backend Agent
 
-### Research & Integration Guides
+**Start Here**: **[docs/02-architecture.md](./docs/02-architecture.md)** (Layer 4: Infrastructure Services)
 
-8. **[RESEARCH-bridge-kit.md](./RESEARCH-bridge-kit.md)** - **Complete Bridge Kit guide** - Consolidated research, verified findings, integration patterns
-9. **[RESEARCH-hyperlane.md](./RESEARCH-hyperlane.md)** - **Complete Hyperlane guide** - Consolidated research, ISM selection, Yield Routes integration
-10. **[08-layerzero-research.md](./08-layerzero-research.md)** - LayerZero integration research
-11. **[13-layerzero-ovault-research.md](./13-layerzero-ovault-research.md)** - LayerZero OVault specific research
+**Quick Setup**:
+```bash
+cd backend
+npm install  # Install dependencies
+cp .env.example .env  # Configure environment
+npm run dev  # Start development server
+```
 
-### Implementation Guides
+**Key Documents**:
+- **[docs/RESEARCH-bridge-kit.md](./docs/RESEARCH-bridge-kit.md)** - Bridge Kit backend integration
+- **[docs/02-architecture.md](./docs/02-architecture.md)** - System architecture
+- **[docs/22-detailed-task-breakdown.md](./docs/22-detailed-task-breakdown.md)** - Backend tasks
 
-12. **[20-frontend-architecture.md](./20-frontend-architecture.md)** - Frontend architecture, MVP features, technology stack
-13. **[21-smart-contract-development-setup.md](./21-smart-contract-development-setup.md)** - Smart contract setup, Foundry/Hardhat, mainnet forking
-14. **[22-detailed-task-breakdown.md](./22-detailed-task-breakdown.md)** - Comprehensive task breakdown with dependencies
-15. **[23-implementation-details-summary.md](./23-implementation-details-summary.md)** - Summary of new implementation guides and improvements
+**First Tasks**:
+1. Set up Node.js/Express service
+2. Integrate Bridge Kit SDK (optional - can be frontend-only)
+3. Set up transaction indexing
 
-### Reference & Questions
+### 🏗️ For Infrastructure Agent
 
-16. **[10-open-questions.md](./10-open-questions.md)** - Open questions and clarifications needed (many answered)
-17. **[07-circle-cctp-research.md](./07-circle-cctp-research.md)** - Circle CCTP research (reference - Bridge Kit recommended)
+**Start Here**: **[docs/02-architecture.md](./docs/02-architecture.md)** (Infrastructure section)
 
-### Legacy/Archive Documents
+**Quick Setup**:
+```bash
+cd infrastructure
+# Set up monitoring, indexing, deployment configs
+```
 
-*Note: The following documents have been consolidated into RESEARCH-*.md files but are kept for reference:*
-- `11-circle-bridge-kit-research.md` → Consolidated into `RESEARCH-bridge-kit.md`
-- `12-bridge-kit-integration-summary.md` → Consolidated into `RESEARCH-bridge-kit.md`
-- `17-bridge-kit-documentation-research.md` → Consolidated into `RESEARCH-bridge-kit.md`
-- `18-bridge-kit-verified-findings.md` → Consolidated into `RESEARCH-bridge-kit.md`
-- `09-hyperlane-research.md` → Consolidated into `RESEARCH-hyperlane.md`
-- `14-hyperlane-yield-routes-research.md` → Consolidated into `RESEARCH-hyperlane.md`
-- `19-hyperlane-deep-research.md` → Consolidated into `RESEARCH-hyperlane.md`
-- `15-architecture-simplification-summary.md` → Information merged into `02-architecture.md`
-- `16-hub-spoke-architecture.md` → Information merged into `02-architecture.md`
+**Key Documents**:
+- **[docs/02-architecture.md](./docs/02-architecture.md)** - Infrastructure requirements
+- **[docs/06-implementation-plan.md](./docs/06-implementation-plan.md)** - Deployment phases
+- **[docs/22-detailed-task-breakdown.md](./docs/22-detailed-task-breakdown.md)** - Infrastructure tasks
 
-## User Flow (High Level)
+**First Tasks**:
+1. Set up monitoring (Tenderly, OpenZeppelin Defender)
+2. Configure indexer (The Graph or custom)
+3. Set up CI/CD pipelines
 
-1. **Deposit**: User bridges USDC from Spoke Chain → Hub Chain (Ethereum) via Bridge Kit
-2. **Vault**: User deposits USDC into USDXVault on Hub Chain
-3. **Yield**: USDXVault → OVault/Yield Routes → Yearn USDC Vault (yield accrues automatically)
-4. **Mint**: User mints USDX on any Spoke Chain using hub position
-5. **Transfer**: User transfers USDX between Spoke Chains via LayerZero/Hyperlane
-6. **Withdraw**: User withdraws USDC from Hub → bridges back to Spoke Chain
+## Documentation
 
-## Supported Chains (Planned)
+All documentation is in the `docs/` folder. See **[docs/README.md](./docs/README.md)** for complete documentation index.
 
-### Hub Chain
-- **Ethereum** - Single source of USDC collateral and yield
+## Development Workflow
 
-### Spoke Chains (Initial)
-- Polygon
-- Arbitrum
-- Optimism
-- Base
-- Avalanche
-- (More chains can be added as spokes)
+1. **Read agent-specific instructions** above
+2. **Set up development environment** (see setup guides)
+3. **Follow task breakdown** in `docs/22-detailed-task-breakdown.md`
+4. **Check open questions** in `docs/10-open-questions.md`
+
+## Technology Stack
+
+### Smart Contracts
+- Foundry (primary) + Hardhat (secondary)
+- Solidity ^0.8.20
+- OpenZeppelin Contracts
+
+### Frontend
+- Next.js 14+ (App Router)
+- TypeScript
+- wagmi v2 + viem
+- RainbowKit
+- Bridge Kit SDK
+
+### Backend (Optional)
+- Node.js + Express
+- Bridge Kit SDK
+- PostgreSQL (for indexing)
+
+### Infrastructure
+- The Graph (indexing)
+- Tenderly (monitoring)
+- OpenZeppelin Defender (security)
+
+## Getting Help
+
+- **Architecture questions**: See `docs/02-architecture.md`
+- **Implementation questions**: See `docs/22-detailed-task-breakdown.md`
+- **Protocol questions**: See `docs/RESEARCH-*.md` files
+- **Open questions**: See `docs/10-open-questions.md`
 
 ## Status
 
-**Current Phase**: Design and Planning ✅ Complete
-- ✅ Architecture design complete
-- ✅ Flow diagrams created
-- ✅ Technical specifications drafted
-- ✅ Research consolidated
-- ✅ Implementation planning complete
-- ⏳ Ready for code development
+**Current Phase**: Design Complete ✅ | Ready for Implementation
 
-## Next Steps
-
-1. Review **[HANDOFF-GUIDE.md](./HANDOFF-GUIDE.md)** for implementation priorities
-2. Set up development environment
-3. Begin smart contract development (Phase 2 in implementation plan)
-4. Create test infrastructure
-5. Security audit planning
-
-## Key Design Decisions
-
-1. **Bridge Kit for USDC**: Use Circle Bridge Kit SDK (not direct CCTP)
-   - ✅ No API key required
-   - ✅ SDK-only (custom UI required)
-   - ✅ Works directly with smart contracts
-
-2. **OVault + Yield Routes**: Dual yield strategy
-   - Primary: LayerZero OVault
-   - Secondary: Hyperlane Yield Routes
-   - Both wrap Yearn USDC vault
-
-3. **LayerZero + Hyperlane**: Dual cross-chain messaging
-   - Primary: LayerZero
-   - Secondary: Hyperlane
-   - Provides redundancy
-
-4. **Yearn USDC Vault**: Single source of yield
-   - All collateral in one vault
-   - ERC-4626 compatible
-   - Well-audited and battle-tested
-
-## Resources
-
-- [Circle Bridge Kit Documentation](https://developers.circle.com/bridge-kit) (Recommended)
-- [Circle CCTP Documentation](https://developers.circle.com/stablecoin/docs/cctp-overview) (Reference)
-- [LayerZero Documentation](https://layerzero.gitbook.io/docs/)
-- [Hyperlane Documentation](https://docs.hyperlane.xyz/)
-- [Yearn Finance Documentation](https://docs.yearn.fi/)
-
-## License
-
-TBD
+**Next Phase**: Phase 1 - Setup & Infrastructure (Week 1)
