@@ -1,3 +1,4 @@
 @openzeppelin/=lib/openzeppelin-contracts/
 @layerzero-v2/=lib/LayerZero-v2/
+@layerzerolabs/=lib/LayerZero-v2/packages/
 forge-std/=lib/forge-std/src/

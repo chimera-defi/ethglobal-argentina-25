@@ -1,16 +1,27 @@
 #!/usr/bin/env node
 
 /**
- * Bridge Relayer for USDX Protocol (MVP)
+ * Bridge Relayer for USDX Protocol (DEPRECATED)
  * 
- * This script simulates cross-chain messaging between hub and spoke chains.
- * It watches for deposit events on the hub chain and syncs user positions
- * to the spoke chain minter.
+ * ⚠️  THIS SCRIPT IS DEPRECATED AND NO LONGER NEEDED ⚠️
  * 
- * In production, this will be replaced by:
- * - LayerZero OApp for secure cross-chain messaging
- * - Hyperlane ISM for alternative routing
- * - Circle CCTP for native USDC bridging
+ * USDX Protocol now uses LayerZero's decentralized infrastructure for all
+ * cross-chain operations. This centralized relayer has been replaced by:
+ * 
+ * - LayerZero OVault: For cross-chain yield vault operations
+ * - LayerZero OFT: For USDX token cross-chain transfers
+ * - LayerZero OApp: For general cross-chain messaging
+ * 
+ * All cross-chain communication is now handled by LayerZero's decentralized
+ * validator network (DVN) and executor network, eliminating the need for
+ * centralized relayers.
+ * 
+ * See:
+ * - USDXVaultComposerSync.sol: OVault composer for cross-chain deposits/redemptions
+ * - USDXToken.sol: OFT implementation for USDX cross-chain transfers
+ * - USDXShareOFT.sol: OFT for vault shares on spoke chains
+ * 
+ * This file is kept for reference only and should not be used in production.
  */
 
 const { ethers } = require('ethers');

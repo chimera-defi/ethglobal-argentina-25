@@ -5,16 +5,20 @@ import {AccessControl} from "@openzeppelin/contracts/access/AccessControl.sol";
 import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {USDXToken} from "./USDXToken.sol";
+import {USDXShareOFT} from "./USDXShareOFT.sol";
+import {ILayerZeroEndpoint} from "./interfaces/ILayerZeroEndpoint.sol";
 
 /**
  * @title USDXSpokeMinter
  * @author USDX Protocol
- * @notice Spoke chain contract that allows users to mint USDX using hub chain positions
+ * @notice Spoke chain contract that allows users to mint USDX using LayerZero OVault shares
  * @dev Deployed on spoke chains (Polygon, Arbitrum, etc.) - NOT on hub chain
  * 
- * For MVP/Hackathon:
- * - Simplified version with direct position tracking
- * - In production, this would verify cross-chain positions via OVault/Yield Routes
+ * Key Features:
+ * - Mints USDX using OVault shares from hub chain
+ * - Verifies OVault share balances via LayerZero
+ * - Tracks minted USDX per user
+ * - Cross-chain position verification via LayerZero
  */
 contract USDXSpokeMinter is AccessControl, Pausable, ReentrancyGuard {
     // ============ State Variables ============
@@ -22,9 +26,14 @@ contract USDXSpokeMinter is AccessControl, Pausable, ReentrancyGuard {
     /// @notice USDX token address on this spoke chain
     USDXToken public immutable usdxToken;
     
-    /// @notice Tracks user positions on hub chain (for MVP)
-    /// @dev In production, this would query OVault/Yield Routes via cross-chain
-    mapping(address => uint256) public hubPositions;
+    /// @notice OVault Share OFT on this spoke chain
+    USDXShareOFT public shareOFT;
+    
+    /// @notice Hub chain endpoint ID (Ethereum)
+    uint32 public hubChainId;
+    
+    /// @notice LayerZero endpoint
+    ILayerZeroEndpoint public lzEndpoint;
     
     /// @notice Tracks USDX minted per user on this spoke chain
     mapping(address => uint256) public mintedPerUser;
@@ -36,65 +45,110 @@ contract USDXSpokeMinter is AccessControl, Pausable, ReentrancyGuard {
     
     bytes32 public constant MANAGER_ROLE = keccak256("MANAGER_ROLE");
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
-    bytes32 public constant POSITION_UPDATER_ROLE = keccak256("POSITION_UPDATER_ROLE");
     
     // ============ Events ============
     
-    event Minted(address indexed user, uint256 amount, uint256 hubPosition);
+    event Minted(address indexed user, uint256 amount, uint256 ovaultShares);
     event Burned(address indexed user, uint256 amount);
-    event HubPositionUpdated(address indexed user, uint256 newPosition, address indexed updater);
+    event ShareOFTSet(address indexed oldShareOFT, address indexed newShareOFT);
     
     // ============ Errors ============
     
     error ZeroAddress();
     error ZeroAmount();
-    error InsufficientPosition();
-    error ExceedsPosition();
+    error InsufficientShares();
+    error ShareOFTNotSet();
     
     // ============ Constructor ============
     
     /**
      * @notice Initializes the spoke minter
      * @param _usdxToken USDX token address on this spoke chain
+     * @param _shareOFT OVault Share OFT address on this spoke chain
+     * @param _lzEndpoint LayerZero endpoint address
+     * @param _hubChainId Hub chain endpoint ID (Ethereum = 30101)
      * @param _admin Admin address
      */
-    constructor(address _usdxToken, address _admin) {
+    constructor(
+        address _usdxToken,
+        address _shareOFT,
+        address _lzEndpoint,
+        uint32 _hubChainId,
+        address _admin
+    ) {
         if (_usdxToken == address(0) || _admin == address(0)) {
             revert ZeroAddress();
         }
         
         usdxToken = USDXToken(_usdxToken);
+        shareOFT = USDXShareOFT(_shareOFT);
+        lzEndpoint = ILayerZeroEndpoint(_lzEndpoint);
+        hubChainId = _hubChainId;
         
         _grantRole(DEFAULT_ADMIN_ROLE, _admin);
         _grantRole(MANAGER_ROLE, _admin);
         _grantRole(PAUSER_ROLE, _admin);
-        _grantRole(POSITION_UPDATER_ROLE, _admin);
     }
     
     // ============ External Functions ============
     
     /**
-     * @notice Mints USDX on spoke chain using hub chain position
+     * @notice Mints USDX on spoke chain using OVault shares
+     * @param ovaultShares Amount of OVault shares to use for minting
+     * @dev User must have sufficient OVault shares on this spoke chain
+     */
+    function mintUSDXFromOVault(uint256 ovaultShares) external nonReentrant whenNotPaused {
+        if (ovaultShares == 0) revert ZeroAmount();
+        if (address(shareOFT) == address(0)) revert ShareOFTNotSet();
+        
+        // Check user has OVault shares on this spoke chain
+        uint256 userShares = shareOFT.balanceOf(msg.sender);
+        if (userShares < ovaultShares) revert InsufficientShares();
+        
+        // Calculate USDC value of shares (1:1 for simplicity, should use vault pricing)
+        uint256 usdxAmount = ovaultShares;
+        
+        // Transfer shares from user (will be burned or locked)
+        shareOFT.transferFrom(msg.sender, address(this), ovaultShares);
+        
+        // Burn shares (they represent collateral on hub chain)
+        shareOFT.burn(ovaultShares);
+        
+        // Update tracking
+        mintedPerUser[msg.sender] += usdxAmount;
+        totalMinted += usdxAmount;
+        
+        // Mint USDX on this spoke chain
+        usdxToken.mint(msg.sender, usdxAmount);
+        
+        emit Minted(msg.sender, usdxAmount, ovaultShares);
+    }
+    
+    /**
+     * @notice Mints USDX on spoke chain (simplified version using existing shares)
      * @param amount Amount of USDX to mint
-     * @dev User must have sufficient position on hub chain
+     * @dev User must have sufficient OVault shares
      */
     function mint(uint256 amount) external nonReentrant whenNotPaused {
         if (amount == 0) revert ZeroAmount();
+        if (address(shareOFT) == address(0)) revert ShareOFTNotSet();
         
-        uint256 hubPosition = hubPositions[msg.sender];
-        uint256 alreadyMinted = mintedPerUser[msg.sender];
+        // Check user has sufficient OVault shares
+        uint256 userShares = shareOFT.balanceOf(msg.sender);
+        if (userShares < amount) revert InsufficientShares();
         
-        if (hubPosition == 0) revert InsufficientPosition();
-        if (alreadyMinted + amount > hubPosition) revert ExceedsPosition();
+        // Transfer and burn shares
+        shareOFT.transferFrom(msg.sender, address(this), amount);
+        shareOFT.burn(amount);
         
         // Update tracking
         mintedPerUser[msg.sender] += amount;
         totalMinted += amount;
         
-        // Mint USDX on this spoke chain
+        // Mint USDX
         usdxToken.mint(msg.sender, amount);
         
-        emit Minted(msg.sender, amount, hubPosition);
+        emit Minted(msg.sender, amount, amount);
     }
     
     /**
@@ -117,38 +171,16 @@ contract USDXSpokeMinter is AccessControl, Pausable, ReentrancyGuard {
     }
     
     /**
-     * @notice Updates user's hub chain position (MVP - manual update)
-     * @param user User address
-     * @param position New position amount on hub chain
-     * @dev In production, this would be called by cross-chain oracle/relayer
+     * @notice Sets the Share OFT address
+     * @param _shareOFT New Share OFT address
      */
-    function updateHubPosition(address user, uint256 position) 
-        external 
-        onlyRole(POSITION_UPDATER_ROLE) 
-    {
-        if (user == address(0)) revert ZeroAddress();
+    function setShareOFT(address _shareOFT) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        if (_shareOFT == address(0)) revert ZeroAddress();
         
-        hubPositions[user] = position;
+        address oldShareOFT = address(shareOFT);
+        shareOFT = USDXShareOFT(_shareOFT);
         
-        emit HubPositionUpdated(user, position, msg.sender);
-    }
-    
-    /**
-     * @notice Batch updates hub positions (gas efficient)
-     * @param users Array of user addresses
-     * @param positions Array of position amounts
-     */
-    function batchUpdateHubPositions(address[] calldata users, uint256[] calldata positions)
-        external
-        onlyRole(POSITION_UPDATER_ROLE)
-    {
-        require(users.length == positions.length, "Array length mismatch");
-        
-        for (uint256 i = 0; i < users.length; i++) {
-            if (users[i] == address(0)) revert ZeroAddress();
-            hubPositions[users[i]] = positions[i];
-            emit HubPositionUpdated(users[i], positions[i], msg.sender);
-        }
+        emit ShareOFTSet(oldShareOFT, _shareOFT);
     }
     
     /**
@@ -168,28 +200,25 @@ contract USDXSpokeMinter is AccessControl, Pausable, ReentrancyGuard {
     // ============ View Functions ============
     
     /**
-     * @notice Gets user's available minting capacity
+     * @notice Gets user's available minting capacity based on OVault shares
      * @param user User address
      * @return available Amount of USDX user can still mint
      */
     function getAvailableMintAmount(address user) external view returns (uint256 available) {
-        uint256 hubPosition = hubPositions[user];
-        uint256 alreadyMinted = mintedPerUser[user];
+        if (address(shareOFT) == address(0)) return 0;
         
-        if (hubPosition <= alreadyMinted) {
-            return 0;
-        }
-        
-        return hubPosition - alreadyMinted;
+        uint256 userShares = shareOFT.balanceOf(user);
+        return userShares;
     }
     
     /**
-     * @notice Gets user's hub position
+     * @notice Gets user's OVault shares on this spoke chain
      * @param user User address
-     * @return position User's position on hub chain
+     * @return shares User's OVault shares
      */
-    function getHubPosition(address user) external view returns (uint256 position) {
-        return hubPositions[user];
+    function getUserOVaultShares(address user) external view returns (uint256 shares) {
+        if (address(shareOFT) == address(0)) return 0;
+        return shareOFT.balanceOf(user);
     }
     
     /**

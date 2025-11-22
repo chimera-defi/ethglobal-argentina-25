@@ -17,13 +17,17 @@
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "@nomicfoundation/hardhat-verify": "^2.0.0",
     "@types/node": "^20.0.0",
-    "hardhat": "^2.19.0",
-    "hardhat-gas-reporter": "^1.0.10",
-    "solidity-coverage": "^0.8.11",
-    "typescript": "^5.0.0",
     "dotenv": "^16.0.0",
     "eslint": "^8.0.0",
-    "prettier": "^3.0.0"
+    "hardhat": "^2.19.0",
+    "hardhat-gas-reporter": "^1.0.10",
+    "prettier": "^3.0.0",
+    "solidity-coverage": "^0.8.11",
+    "typescript": "^5.0.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@layerzerolabs/lz-evm-oapp-v2": "^3.0.147",
+    "@layerzerolabs/lz-evm-protocol-v2": "^3.0.147",
+    "@layerzerolabs/toolbox-hardhat": "^0.6.12"
+  }
 }
