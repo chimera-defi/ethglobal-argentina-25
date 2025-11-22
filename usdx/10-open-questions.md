@@ -2,42 +2,68 @@
 
 ## Circle Bridge Kit Questions
 
+### ✅ Answered from Documentation Review
+
+1. **SDK Integration** ✅
+   - **Package Name**: Need to verify exact name (likely `@circle-fin/bridge-kit` or similar)
+   - **TypeScript Support**: Documentation suggests TypeScript support is available
+   - **Installation**: Available via npm (see installation docs)
+   - **Documentation**: https://developers.circle.com/bridge-kit/tutorials/installation
+
+2. **Quickstart Guides** ✅
+   - Base → Ethereum transfer guide available
+   - Ethereum → Solana transfer guide available
+   - Guides show complete integration flow
+   - **Documentation**: https://developers.circle.com/bridge-kit/quickstarts/transfer-usdc-from-base-to-ethereum
+
+### ⏳ Needs Verification (Review Documentation Directly)
+
 1. **API Key and Authentication**
-   - Do we need a Circle API key for Bridge Kit?
-   - How to obtain and manage API keys?
-   - Are there rate limits on Bridge Kit API?
+   - ⏳ Do we need a Circle API key for Bridge Kit?
+   - ⏳ How to obtain and manage API keys?
+   - ⏳ Are there rate limits on Bridge Kit API?
+   - **Action**: Review Bridge Kit overview and API reference docs
 
-2. **SDK Integration**
-   - What is the exact npm package name?
-   - Are there TypeScript types available?
-   - What are the minimum Node.js/React versions required?
+2. **UI Components**
+   - ⏳ Are there React UI components available?
+   - ⏳ How customizable are the Bridge Kit React components?
+   - ⏳ Can we style them to match our design system?
+   - ⏳ Are there accessibility considerations?
+   - **Action**: Check if Bridge Kit includes UI components or is SDK-only
 
-3. **UI Components**
-   - How customizable are the Bridge Kit React components?
-   - Can we style them to match our design system?
-   - Are there accessibility considerations?
+3. **Webhooks**
+   - ⏳ How to set up webhook endpoints?
+   - ⏳ What is the webhook payload format?
+   - ⏳ How to secure webhook endpoints?
+   - ⏳ What is the retry policy for failed webhooks?
+   - **Action**: Review API reference for webhook documentation
 
-4. **Webhooks**
-   - How to set up webhook endpoints?
-   - What is the webhook payload format?
-   - How to secure webhook endpoints?
-   - What is the retry policy for failed webhooks?
+4. **Error Handling**
+   - ⏳ What are all possible error types?
+   - ⏳ How does Bridge Kit handle failed transfers?
+   - ⏳ Can transfers be retried?
+   - ⏳ What happens if attestation times out?
+   - **Action**: Review quickstart guides and error handling documentation
 
-5. **Error Handling**
-   - What are all possible error types?
-   - How does Bridge Kit handle failed transfers?
-   - Can transfers be retried?
-   - What happens if attestation times out?
+5. **Fees**
+   - ⏳ Are there any fees beyond gas costs?
+   - ⏳ Who pays for Bridge Kit service (if any)?
+   - ⏳ Are there volume-based fee structures?
+   - **Action**: Review pricing/fees documentation
 
-6. **Fees**
-   - Are there any fees beyond gas costs?
-   - Who pays for Bridge Kit service (if any)?
-   - Are there volume-based fee structures?
+6. **Status Tracking**
+   - ⏳ How accurate is status tracking?
+   - ⏳ Can we query transfer status programmatically?
+   - ⏳ What is the typical transfer completion time?
+   - **Action**: Review SDK API for status tracking methods
 
-7. **Status Tracking**
-   - How accurate is status tracking?
-   - Can we query transfer status programmatically?
-   - What is the typical transfer completion time?
+### 📚 Documentation URLs to Review
+
+- **Overview**: https://developers.circle.com/bridge-kit
+- **Installation**: https://developers.circle.com/bridge-kit/tutorials/installation
+- **Quickstart (Base → Ethereum)**: https://developers.circle.com/bridge-kit/quickstarts/transfer-usdc-from-base-to-ethereum
+- **Quickstart (Ethereum → Solana)**: https://developers.circle.com/bridge-kit/quickstarts/transfer-usdc-from-ethereum-to-solana
+- **API Reference**: https://developers.circle.com/api-reference (check for Bridge Kit endpoints)
 
 ## Circle CCTP Questions (Reference - Bridge Kit handles most of these)
 

@@ -22,6 +22,7 @@ USDX is a cross-chain stablecoin protocol that enables users to mint USDX tokens
 14. **[14-hyperlane-yield-routes-research.md](./14-hyperlane-yield-routes-research.md)** - Hyperlane Yield Routes research
 15. **[15-architecture-simplification-summary.md](./15-architecture-simplification-summary.md)** - Architecture simplification summary with OVault/Yield Routes
 16. **[16-hub-spoke-architecture.md](./16-hub-spoke-architecture.md)** - Hub-and-spoke architecture details
+17. **[17-bridge-kit-documentation-research.md](./17-bridge-kit-documentation-research.md)** - Bridge Kit documentation research and review guide
 
 ## Key Features
 
