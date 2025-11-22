@@ -210,6 +210,9 @@ contract USDXToken is ERC20, ERC20Burnable, ERC20Permit, AccessControl, Pausable
     /**
      * @notice Receive tokens from cross-chain transfer via LayerZero
      * @dev Called by LayerZero endpoint
+     * @dev This function mints tokens without MINTER_ROLE because LayerZero endpoint
+     *      verification provides sufficient security. The endpoint ensures only valid
+     *      cross-chain messages are delivered.
      */
     function lzReceive(
         uint32 srcEid,
@@ -222,12 +225,18 @@ contract USDXToken is ERC20, ERC20Burnable, ERC20Permit, AccessControl, Pausable
         if (msg.sender != address(lzEndpoint)) revert Unauthorized();
         
         // Verify trusted remote
-        if (trustedRemotes[srcEid] != sender) revert InvalidRemote();
+        if (trustedRemotes[srcEid] == bytes32(0) || trustedRemotes[srcEid] != sender) {
+            revert InvalidRemote();
+        }
         
         // Decode payload
         (address user, uint256 amount) = abi.decode(payload, (address, uint256));
         
+        if (user == address(0)) revert ZeroAddress();
+        if (amount == 0) revert("USDXToken: amount is zero");
+        
         // Mint tokens to user
+        // Security: LayerZero endpoint verification ensures this is a valid cross-chain message
         _mint(user, amount);
         
         emit CrossChainReceived(srcEid, sender, amount);

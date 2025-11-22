@@ -233,8 +233,10 @@ contract USDXVault is AccessControl, Pausable, ReentrancyGuard {
         
         // Note: Shares will be sent to destination chain via LayerZero
         // User can query their shares on the destination chain
+        // We don't know the exact share amount here as it's handled by the composer
+        // Return 0 as placeholder - shares are tracked on destination chain
         
-        return shares;
+        return 0; // Shares sent to destination chain via LayerZero
     }
     
     /**

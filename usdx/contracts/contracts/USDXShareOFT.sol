@@ -131,10 +131,15 @@ contract USDXShareOFT is ERC20, Ownable {
         if (msg.sender != address(lzEndpoint)) revert Unauthorized();
         
         // Verify trusted remote
-        if (trustedRemotes[srcEid] != sender) revert InvalidRemote();
+        if (trustedRemotes[srcEid] == bytes32(0) || trustedRemotes[srcEid] != sender) {
+            revert InvalidRemote();
+        }
         
         // Decode payload
         (address user, uint256 amount) = abi.decode(payload, (address, uint256));
+        
+        if (user == address(0)) revert ZeroAddress();
+        if (amount == 0) revert ZeroAmount();
         
         // Mint tokens to user
         _mint(user, amount);

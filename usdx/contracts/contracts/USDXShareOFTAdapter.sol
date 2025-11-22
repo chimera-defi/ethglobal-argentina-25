@@ -2,11 +2,11 @@
 pragma solidity ^0.8.23;
 
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import {ERC20Burnable} from "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {USDXYearnVaultWrapper} from "./USDXYearnVaultWrapper.sol";
 import {ILayerZeroEndpoint} from "./interfaces/ILayerZeroEndpoint.sol";
-import {IOFT} from "./interfaces/IOFT.sol";
 
 /**
  * @title USDXShareOFTAdapter
@@ -21,7 +21,7 @@ import {IOFT} from "./interfaces/IOFT.sol";
  * NOTE: This is a simplified implementation. In production, you would use
  * LayerZero's official OFTAdapter contract from their SDK.
  */
-contract USDXShareOFTAdapter is ERC20, Ownable {
+contract USDXShareOFTAdapter is ERC20, ERC20Burnable, Ownable {
     USDXYearnVaultWrapper public immutable vault;
     ILayerZeroEndpoint public immutable lzEndpoint;
     
@@ -111,7 +111,8 @@ contract USDXShareOFTAdapter is ERC20, Ownable {
         if (shares == 0) revert ZeroAmount();
         if (lockedShares[msg.sender] < shares) revert InsufficientShares();
         
-        // Burn representative tokens
+        // Burn representative tokens (must have balance)
+        if (balanceOf(msg.sender) < shares) revert InsufficientShares();
         _burn(msg.sender, shares);
         
         // Unlock shares
@@ -121,6 +122,38 @@ contract USDXShareOFTAdapter is ERC20, Ownable {
         IERC20(address(vault)).transfer(msg.sender, shares);
         
         emit SharesUnlocked(msg.sender, shares);
+    }
+    
+    /**
+     * @notice Unlock shares for a specific address (for composer)
+     * @param account Address to unlock shares for
+     * @param shares Amount of shares to unlock
+     */
+    function unlockSharesFor(address account, uint256 shares) external {
+        if (shares == 0) revert ZeroAmount();
+        if (account == address(0)) revert ZeroAddress();
+        if (lockedShares[account] < shares) revert InsufficientShares();
+        
+        // Burn representative tokens from account (must have balance)
+        if (balanceOf(account) < shares) revert InsufficientShares();
+        _burn(account, shares);
+        
+        // Unlock shares
+        lockedShares[account] -= shares;
+        
+        // Transfer shares back to account
+        IERC20(address(vault)).transfer(account, shares);
+        
+        emit SharesUnlocked(account, shares);
+    }
+    
+    /**
+     * @notice Burn tokens (inherited from ERC20Burnable)
+     * @param amount Amount to burn
+     */
+    function burn(uint256 amount) public override {
+        // Allow burning without unlocking shares (for cross-chain transfers)
+        _burn(msg.sender, amount);
     }
     
     /**
@@ -162,6 +195,7 @@ contract USDXShareOFTAdapter is ERC20, Ownable {
     /**
      * @notice Receive shares from cross-chain transfer
      * @dev Called by LayerZero endpoint
+     * @dev This mints OFT tokens representing shares that are locked on hub chain
      */
     function lzReceive(
         uint32 srcEid,
@@ -174,14 +208,18 @@ contract USDXShareOFTAdapter is ERC20, Ownable {
         if (msg.sender != address(lzEndpoint)) revert Unauthorized();
         
         // Verify trusted remote
-        if (trustedRemotes[srcEid] != sender) revert InvalidRemote();
+        if (trustedRemotes[srcEid] == bytes32(0) || trustedRemotes[srcEid] != sender) {
+            revert InvalidRemote();
+        }
         
         // Decode payload
         (address user, uint256 shares) = abi.decode(payload, (address, uint256));
         
-        // Lock shares in vault (they should already be locked on source chain)
-        // For simplicity, we mint representative tokens here
-        // In production, you'd need proper accounting
+        if (user == address(0)) revert ZeroAddress();
+        if (shares == 0) revert ZeroAmount();
+        
+        // Mint OFT tokens representing shares locked on hub chain
+        // Shares are locked in the adapter on hub chain, OFT tokens represent them here
         _mint(user, shares);
         
         emit CrossChainReceived(srcEid, sender, shares);

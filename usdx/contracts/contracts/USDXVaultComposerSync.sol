@@ -123,10 +123,9 @@ contract USDXVaultComposerSync is Ownable, ReentrancyGuard, IOVaultComposer {
         uint256 shares = vault.deposit(_params.assets, address(this));
         
         // Lock shares in share OFT adapter
-        if (!vault.approve(address(shareOFT), shares)) {
-            revert TransferFailed();
-        }
-        shareOFT.lockShares(shares);
+        // Vault is ERC4626 which extends ERC20, so we can approve
+        IERC20(address(vault)).approve(address(shareOFT), shares);
+        shareOFT.lockSharesFrom(address(this), shares);
         
         // Build payload for cross-chain transfer
         bytes memory payload = abi.encode(
@@ -171,13 +170,15 @@ contract USDXVaultComposerSync is Ownable, ReentrancyGuard, IOVaultComposer {
         if (processedOperations[operationId]) revert OperationAlreadyProcessed();
         processedOperations[operationId] = true;
         
-        // Transfer shares from user (should be from share OFT)
+        // Transfer share OFT tokens from user
         if (!shareOFT.transferFrom(msg.sender, address(this), _params.shares)) {
             revert TransferFailed();
         }
         
         // Unlock shares from share OFT adapter
-        shareOFT.unlockShares(_params.shares);
+        // This will burn the OFT tokens and unlock the underlying shares
+        // Shares were locked by this contract during deposit, so we can unlock them
+        shareOFT.unlockSharesFor(address(this), _params.shares);
         
         // Redeem from vault
         uint256 assets = vault.redeem(_params.shares, address(this), address(this));

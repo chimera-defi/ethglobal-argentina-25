@@ -3,7 +3,6 @@ pragma solidity ^0.8.23;
 
 import {ERC4626} from "@openzeppelin/contracts/token/ERC20/extensions/ERC4626.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import {Pausable} from "@openzeppelin/contracts/utils/Pausable.sol";
@@ -134,6 +133,7 @@ contract USDXYearnVaultWrapper is ERC4626, Ownable, ReentrancyGuard, Pausable {
 
     /**
      * @notice Convert assets to shares using Yearn vault pricing
+     * @dev This maintains 1:1 relationship with Yearn shares
      */
     function _convertToShares(uint256 assets, Math.Rounding rounding)
         internal
@@ -141,13 +141,8 @@ contract USDXYearnVaultWrapper is ERC4626, Ownable, ReentrancyGuard, Pausable {
         override
         returns (uint256)
     {
-        uint256 supply = totalSupply();
-        if (supply == 0) {
-            // First deposit: use Yearn's conversion
-            return yearnVault.convertToShares(assets);
-        }
-        
-        // Use Yearn's conversion for consistency
+        // Direct conversion: wrapper shares = Yearn shares
+        // This maintains 1:1 relationship for simplicity
         return yearnVault.convertToShares(assets);
     }
 
