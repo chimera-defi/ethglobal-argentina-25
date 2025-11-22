@@ -15,20 +15,17 @@ Circle Bridge Kit is a comprehensive SDK and set of tools that simplifies cross-
   - Error handling
   - Transaction status tracking
 
-### 2. Bridge Kit UI Components
-- **React Components**: Pre-built UI components for bridge functionality
-- **Features**:
-  - Chain selector
-  - Amount input
-  - Transfer status display
-  - Transaction history
+### 2. Bridge Kit SDK (No UI Components)
+- **Type**: SDK/library only - no UI components provided
+- **Language**: TypeScript/JavaScript
+- **Package**: `@circle-fin/bridge-kit`
+- **Adapter**: `@circle-fin/adapter-viem-v2` (for viem integration)
+- **Note**: Custom UI must be built using the SDK
 
-### 3. Bridge Kit API
-- **Function**: Backend API for bridge operations
-- **Features**:
-  - Transfer initiation
-  - Status tracking
-  - Webhook support
+### 3. Bridge Kit API (No Backend API)
+- **Type**: Direct blockchain interaction via SDK
+- **No API Key Required**: Works directly with smart contracts
+- **No Backend Service**: SDK handles all operations client-side
 
 ## Bridge Kit vs Direct CCTP Integration
 
@@ -90,11 +87,27 @@ npm install @circle-fin/bridge-kit
 
 ```typescript
 import { BridgeKit } from '@circle-fin/bridge-kit';
+import { createViemAdapter } from '@circle-fin/adapter-viem-v2';
+import { createPublicClient, createWalletClient, http } from 'viem';
+import { baseSepolia, sepolia } from 'viem/chains';
 
+// No API key needed!
 const bridgeKit = new BridgeKit({
-  apiKey: process.env.CIRCLE_API_KEY,
-  sourceChain: 'ethereum',
-  destinationChain: 'polygon',
+  adapter: createViemAdapter({
+    sourcePublicClient: createPublicClient({
+      chain: baseSepolia,
+      transport: http(),
+    }),
+    sourceWalletClient: createWalletClient({
+      chain: baseSepolia,
+      transport: http(),
+      account: privateKeyToAccount(process.env.PRIVATE_KEY as `0x${string}`),
+    }),
+    destinationPublicClient: createPublicClient({
+      chain: sepolia,
+      transport: http(),
+    }),
+  }),
 });
 ```
 
@@ -139,41 +152,41 @@ const status = await bridgeKit.getTransferStatus(transferId);
 // - 'failed': Transfer failed
 ```
 
-## Bridge Kit UI Components
+## Custom UI Implementation (Bridge Kit SDK Only)
 
-### React Integration
+**Note**: Bridge Kit does NOT provide UI components. We need to build our own UI using the SDK.
 
-```typescript
-import { BridgeKitProvider, BridgeWidget } from '@circle-fin/bridge-kit-react';
-
-function App() {
-  return (
-    <BridgeKitProvider apiKey={process.env.CIRCLE_API_KEY}>
-      <BridgeWidget
-        sourceChain="ethereum"
-        destinationChain="polygon"
-        onTransferComplete={(transfer) => {
-          console.log('Transfer completed:', transfer);
-        }}
-      />
-    </BridgeKitProvider>
-  );
-}
-```
-
-### Custom UI with Bridge Kit Hooks
+### React Integration Example
 
 ```typescript
-import { useBridgeKit } from '@circle-fin/bridge-kit-react';
+// Bridge Kit doesn't provide React components - we build our own
+
+import { BridgeKit } from '@circle-fin/bridge-kit';
+import { useState } from 'react';
 
 function CustomBridge() {
-  const { transfer, status, error } = useBridgeKit();
+  const [status, setStatus] = useState<string>('idle');
+  const [error, setError] = useState<Error | null>(null);
+  const bridgeKit = new BridgeKit({ /* adapter config */ });
   
   const handleTransfer = async () => {
-    await transfer({
-      amount: '1000000',
-      recipient: destinationAddress,
-    });
+    try {
+      setStatus('initiating');
+      const transfer = await bridgeKit.transfer({
+        amount: '1000000',
+        recipient: destinationAddress,
+        sourceChain: 'base',
+        destinationChain: 'ethereum',
+        onStatusUpdate: (newStatus) => {
+          setStatus(newStatus);
+        },
+      });
+      
+      setStatus('completed');
+    } catch (err) {
+      setError(err as Error);
+      setStatus('failed');
+    }
   };
   
   return (
@@ -333,7 +346,8 @@ app.post('/webhook/bridge-kit', async (req, res) => {
 | Ease of Integration | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ |
 | Control | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
 | Gas Optimization | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| UI Components | ⭐⭐⭐⭐⭐ | ⭐ |
+| UI Components | ❌ None (SDK only) | ❌ None |
+| API Key Required | ❌ No | ❌ No |
 | Error Handling | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ |
 | Attestation Polling | ⭐⭐⭐⭐⭐ | ⭐⭐ |
 | Customization | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
@@ -342,21 +356,21 @@ app.post('/webhook/bridge-kit', async (req, res) => {
 ## Recommendation for USDX
 
 ### Use Bridge Kit For:
-1. **User-Facing UI**: Pre-built components for deposit/withdrawal flows
-2. **Frontend Integration**: Simplified SDK for React/Next.js apps
-3. **Status Tracking**: Built-in status updates and progress indicators
-4. **Error Handling**: Comprehensive error handling and retry logic
+1. **Frontend Integration**: SDK for React/Next.js apps (custom UI required)
+2. **Status Tracking**: Built-in status updates via callbacks
+3. **Error Handling**: Comprehensive error handling and retry logic
+4. **Simplified Integration**: No API key, no backend API needed
 
 ### Use Direct CCTP For:
 1. **Smart Contract Logic**: Contract-to-contract interactions
-2. **Automated Operations**: Backend services and bots
-3. **Gas Optimization**: When gas costs are critical
-4. **Custom Logic**: Complex integration requirements
+2. **Gas Optimization**: When gas costs are critical
+3. **Custom Logic**: Complex integration requirements
 
-### Hybrid Approach (Recommended):
-- **Frontend**: Bridge Kit for user interactions
-- **Backend/Smart Contracts**: Direct CCTP for protocol logic
-- **Best of Both**: Simplicity where needed, control where required
+### Recommended Approach:
+- **Frontend**: Bridge Kit SDK for user interactions (custom UI)
+- **Backend (Optional)**: Bridge Kit SDK for automated operations
+- **Smart Contracts**: Direct CCTP for protocol logic if needed
+- **Best of Both**: Bridge Kit simplicity for user flows, direct CCTP for advanced cases
 
 ## Integration Checklist
 
@@ -372,15 +386,22 @@ app.post('/webhook/bridge-kit', async (req, res) => {
 ## Resources
 
 - **Bridge Kit Documentation**: https://developers.circle.com/bridge-kit
-- **Bridge Kit SDK**: https://github.com/circlefin/bridge-kit
-- **Bridge Kit UI**: https://github.com/circlefin/bridge-kit-ui
-- **API Reference**: https://developers.circle.com/bridge-kit/api-reference
+- **Bridge Kit SDK**: https://github.com/circlefin/bridge-kit (verify GitHub URL)
+- **SDK Reference**: https://developers.circle.com/bridge-kit/references/sdk-reference
+- **Quickstart**: https://developers.circle.com/bridge-kit/quickstarts/transfer-usdc-from-base-to-ethereum
 
-## Questions to Resolve
+## Questions Resolved
 
-1. **API Key**: Do we need a Circle API key for Bridge Kit?
-2. **Rate Limits**: Are there rate limits on Bridge Kit API?
-3. **Fees**: Are there additional fees beyond gas costs?
-4. **Customization**: How customizable are the UI components?
-5. **Smart Contract Integration**: Can Bridge Kit be used from smart contracts?
-6. **Webhook Security**: How to secure webhook endpoints?
+1. **API Key**: ✅ No API key required - Bridge Kit works directly with contracts
+2. **UI Components**: ✅ No UI components - SDK only, custom UI required
+3. **Package Name**: ✅ `@circle-fin/bridge-kit` and `@circle-fin/adapter-viem-v2`
+4. **TypeScript**: ✅ Full TypeScript support
+
+## Questions Still Open
+
+1. **Rate Limits**: ⏳ Are there any rate limits on Bridge Kit operations?
+2. **Fees**: ⏳ Are there additional fees beyond gas costs?
+3. **Webhooks**: ⏳ Does Bridge Kit support webhooks? (Likely not, since it's SDK-only)
+4. **Error Types**: ⏳ What are all possible error types?
+5. **Retry Logic**: ⏳ Built-in retry mechanisms?
+6. **Status Tracking**: ⏳ How to track transfer status programmatically?
