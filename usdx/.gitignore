@@ -34,8 +34,8 @@ npm-debug.log*
 coverage/
 .coverage/
 
-# Foundry
-lib/
+# Foundry (only ignore lib/ in contracts directory)
+usdx/contracts/lib/
 
 # Vercel
 .vercel
