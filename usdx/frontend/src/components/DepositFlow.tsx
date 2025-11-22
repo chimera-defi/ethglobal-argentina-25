@@ -117,7 +117,7 @@ export function DepositFlow({ signer, userAddress, chainId, onSuccess }: Deposit
         Deposit USDC on hub chain to mint USDX 1:1. Your USDC will be deposited into Yearn for yield.
         {chainId === CHAINS.SPOKE.id && (
           <span className="block mt-2 text-yellow-600">
-            ⚠️ You're on a spoke chain. Bridge USDC to hub chain first, then deposit.
+            ⚠️ You&apos;re on a spoke chain. Bridge USDC to hub chain first, then deposit.
           </span>
         )}
       </p>
