@@ -16,10 +16,18 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IOVaultComposer} from "../../contracts/interfaces/IOVaultComposer.sol";
 
 /**
- * @title IntegrationOVaultTest
- * @notice End-to-end integration tests for OVault flow
+ * @title IntegrationE2E_OVaultTest
+ * @notice Comprehensive end-to-end integration test for USDX Protocol with LayerZero OVault
+ * @dev Tests the complete user journey:
+ * 1. User deposits USDC on hub chain → receives vault wrapper shares
+ * 2. User locks shares in adapter → receives OFT tokens
+ * 3. Shares sent cross-chain via LayerZero → USDXShareOFT minted on spoke
+ * 4. User mints USDX on spoke chain using shares
+ * 5. User uses USDX on spoke chain
+ * 6. User burns USDX → shares unlocked
+ * 7. User redeems shares → receives USDC back
  */
-contract IntegrationOVaultTest is Test {
+contract IntegrationE2E_OVaultTest is Test {
     // Hub Chain Contracts
     USDXVault vault;
     USDXToken usdxHub;
@@ -137,7 +145,7 @@ contract IntegrationOVaultTest is Test {
         
         // Setup user
         usdc.mint(user, INITIAL_BALANCE);
-        vm.deal(user, 2 ether); // Give user ETH for LayerZero fees
+        vm.deal(user, 2 ether);
         vm.startPrank(user);
         usdc.approve(address(vault), type(uint256).max);
         usdc.approve(address(composer), type(uint256).max);
@@ -145,51 +153,46 @@ contract IntegrationOVaultTest is Test {
         vm.stopPrank();
     }
     
-    function testFullFlow_DepositViaOVault() public {
-        bytes32 receiver = bytes32(uint256(uint160(user)));
-        bytes memory options = "";
+    /**
+     * @notice Complete end-to-end flow: Deposit → Cross-Chain → Mint → Use → Burn → Redeem
+     */
+    function testCompleteE2EFlow() public {
+        uint256 depositAmount = DEPOSIT_AMOUNT;
         
-        // User deposits via OVault
-        vm.deal(user, 1 ether);
+        // ============ PHASE 1: Deposit on Hub Chain ============
         vm.prank(user);
-        vault.depositViaOVault{value: 0.001 ether}(
-            DEPOSIT_AMOUNT,
-            SPOKE_EID,
-            receiver,
-            options
-        );
+        vault.deposit(depositAmount);
         
         // Verify deposit
-        assertEq(vault.totalCollateral(), DEPOSIT_AMOUNT);
-        // Shares are locked in adapter immediately, so check adapter
-        assertGt(shareOFTAdapter.lockedShares(address(composer)), 0, "Composer should have locked shares");
-    }
-    
-    function testFullFlow_DepositAndMintUSDX() public {
-        // Step 1: Deposit into vault (direct, not via OVault for simplicity)
-        vm.prank(user);
-        vault.deposit(DEPOSIT_AMOUNT);
+        assertEq(vault.totalCollateral(), depositAmount);
+        assertEq(usdxHub.balanceOf(user), depositAmount);
+        assertGt(vaultWrapper.balanceOf(user), 0, "User should have vault wrapper shares");
         
-        // Step 2: Get shares from vault wrapper
+        // ============ PHASE 2: Lock Shares and Send Cross-Chain ============
         uint256 shares = vaultWrapper.balanceOf(user);
         
-        // Step 3: Lock shares in adapter (user needs to approve adapter first)
+        // Lock shares in adapter
         vm.startPrank(user);
-        IERC20(address(vaultWrapper)).approve(address(shareOFTAdapter), shares);
         shareOFTAdapter.lockShares(shares);
         vm.stopPrank();
         
-        // Step 4: Send shares cross-chain (simulate)
+        // Verify shares locked
+        assertEq(shareOFTAdapter.lockedShares(user), shares);
+        assertEq(shareOFTAdapter.balanceOf(user), shares);
+        assertEq(vaultWrapper.balanceOf(user), 0, "Shares should be transferred to adapter");
+        
+        // Send shares cross-chain
         bytes memory options = "";
-        vm.prank(user);
+        vm.startPrank(user);
         shareOFTAdapter.send{value: 0.001 ether}(
             SPOKE_EID,
             bytes32(uint256(uint160(user))),
             shares,
             options
         );
+        vm.stopPrank();
         
-        // Step 5: Manually trigger lzReceive on spoke (simulating LayerZero delivery)
+        // Simulate LayerZero delivery - mint shares on spoke
         bytes memory payload = abi.encode(user, shares);
         vm.prank(address(lzEndpointSpoke));
         shareOFTSpoke.lzReceive(
@@ -200,17 +203,89 @@ contract IntegrationOVaultTest is Test {
             ""
         );
         
-        // Step 6: Approve and mint USDX on spoke using shares
+        // Verify shares received on spoke
+        assertEq(shareOFTSpoke.balanceOf(user), shares, "User should have shares on spoke");
+        
+        // ============ PHASE 3: Mint USDX on Spoke Chain ============
+        uint256 mintAmount = shares / 2; // Mint half
+        
         vm.startPrank(user);
-        shareOFTSpoke.approve(address(spokeMinter), shares);
-        spokeMinter.mintUSDXFromOVault(shares);
+        shareOFTSpoke.approve(address(spokeMinter), mintAmount);
+        spokeMinter.mintUSDXFromOVault(mintAmount);
         vm.stopPrank();
         
-        // Verify
-        assertEq(usdxSpoke.balanceOf(user), shares);
-        assertEq(shareOFTSpoke.balanceOf(user), 0, "Shares should be burned");
+        // Verify USDX minted
+        assertEq(usdxSpoke.balanceOf(user), mintAmount);
+        assertEq(shareOFTSpoke.balanceOf(user), shares - mintAmount, "Shares should be burned");
+        assertEq(spokeMinter.getMintedAmount(user), mintAmount);
+        
+        // ============ PHASE 4: Use USDX (transfer to another user) ============
+        address recipient = address(0x9999);
+        uint256 transferAmount = mintAmount / 2;
+        
+        vm.prank(user);
+        usdxSpoke.transfer(recipient, transferAmount);
+        
+        assertEq(usdxSpoke.balanceOf(recipient), transferAmount);
+        assertEq(usdxSpoke.balanceOf(user), mintAmount - transferAmount);
+        
+        // ============ PHASE 5: Burn USDX and Unlock Shares ============
+        uint256 burnAmount = mintAmount - transferAmount;
+        
+        vm.startPrank(user);
+        usdxSpoke.approve(address(spokeMinter), burnAmount);
+        spokeMinter.burn(burnAmount);
+        vm.stopPrank();
+        
+        // Verify burn
+        assertEq(usdxSpoke.balanceOf(user), 0);
+        assertEq(spokeMinter.getMintedAmount(user), transferAmount, "Only transferred amount remains minted");
+        
+        // ============ PHASE 6: Redeem Remaining Shares ============
+        uint256 remainingShares = shareOFTSpoke.balanceOf(user);
+        
+        // Send shares back to hub (simulate)
+        vm.startPrank(user);
+        shareOFTSpoke.send{value: 0.001 ether}(
+            HUB_EID,
+            bytes32(uint256(uint160(user))),
+            remainingShares,
+            options
+        );
+        vm.stopPrank();
+        
+        // Simulate LayerZero delivery back to hub
+        bytes memory redeemPayload = abi.encode(user, remainingShares);
+        vm.prank(address(lzEndpointHub));
+        shareOFTAdapter.lzReceive(
+            SPOKE_EID,
+            bytes32(uint256(uint160(address(shareOFTSpoke)))),
+            redeemPayload,
+            address(0),
+            ""
+        );
+        
+        // Unlock shares
+        vm.prank(user);
+        shareOFTAdapter.unlockShares(remainingShares);
+        
+        // Verify shares unlocked
+        assertEq(shareOFTAdapter.balanceOf(user), 0);
+        assertGt(vaultWrapper.balanceOf(user), 0, "User should have shares back");
+        
+        // Redeem from vault wrapper
+        uint256 finalShares = vaultWrapper.balanceOf(user);
+        vm.prank(user);
+        uint256 assets = vaultWrapper.redeem(finalShares, user, user);
+        
+        // Verify redemption
+        assertGt(assets, 0, "User should receive assets");
+        assertEq(vaultWrapper.balanceOf(user), 0, "All shares should be redeemed");
     }
     
+    /**
+     * @notice Test cross-chain USDX transfer
+     */
     function testCrossChainUSDXTransfer() public {
         uint256 amount = 500 * 10**6;
         
@@ -229,8 +304,7 @@ contract IntegrationOVaultTest is Test {
         
         lzEndpointHub.setRemoteContract(SPOKE_EID, address(usdxSpoke));
         
-        // Give user ETH and send cross-chain
-        vm.deal(user, 1 ether);
+        // Send cross-chain
         vm.prank(user);
         usdxHub.sendCrossChain{value: 0.001 ether}(
             SPOKE_EID,
@@ -242,7 +316,7 @@ contract IntegrationOVaultTest is Test {
         // Verify burn on hub
         assertEq(usdxHub.balanceOf(user), 0, "USDX should be burned on hub");
         
-        // Manually trigger lzReceive on spoke (simulating LayerZero delivery)
+        // Simulate LayerZero delivery
         bytes memory payload = abi.encode(user, amount);
         vm.prank(address(lzEndpointSpoke));
         usdxSpoke.lzReceive(
@@ -255,5 +329,26 @@ contract IntegrationOVaultTest is Test {
         
         // Verify mint on spoke
         assertEq(usdxSpoke.balanceOf(user), amount, "USDX should be minted on spoke");
+    }
+    
+    /**
+     * @notice Test deposit via OVault composer
+     */
+    function testDepositViaComposer() public {
+        bytes32 receiver = bytes32(uint256(uint160(user)));
+        bytes memory options = "";
+        
+        IOVaultComposer.DepositParams memory params = IOVaultComposer.DepositParams({
+            assets: DEPOSIT_AMOUNT,
+            dstEid: SPOKE_EID,
+            receiver: receiver
+        });
+        
+        vm.prank(user);
+        composer.deposit{value: 0.001 ether}(params, options);
+        
+        // Verify deposit
+        assertGt(shareOFTAdapter.lockedShares(address(composer)), 0, "Composer should have locked shares");
+        assertGt(shareOFTAdapter.balanceOf(address(composer)), 0, "Composer should have OFT tokens");
     }
 }

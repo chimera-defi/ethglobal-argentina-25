@@ -119,7 +119,10 @@ contract USDXVaultComposerSync is Ownable, ReentrancyGuard, IOVaultComposer {
             revert TransferFailed();
         }
         
-        // Deposit into vault
+        // Approve vault wrapper to spend assets
+        assetOFT.approve(address(vault), _params.assets);
+        
+        // Deposit into vault wrapper (vault is USDXYearnVaultWrapper)
         uint256 shares = vault.deposit(_params.assets, address(this));
         
         // Lock shares in share OFT adapter

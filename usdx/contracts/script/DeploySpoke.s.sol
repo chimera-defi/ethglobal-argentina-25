@@ -4,6 +4,8 @@ pragma solidity ^0.8.23;
 import {Script, console2} from "forge-std/Script.sol";
 import {USDXToken} from "../contracts/USDXToken.sol";
 import {USDXSpokeMinter} from "../contracts/USDXSpokeMinter.sol";
+import {USDXShareOFT} from "../contracts/USDXShareOFT.sol";
+import {ILayerZeroEndpoint} from "../contracts/interfaces/ILayerZeroEndpoint.sol";
 
 /**
  * @title DeploySpoke
@@ -50,26 +52,43 @@ contract DeploySpoke is Script {
         USDXToken usdx = new USDXToken(deployer);
         console2.log("   USDXToken deployed at:", address(usdx));
         
-        // 2. Deploy USDXSpokeMinter
-        console2.log("\n2. Deploying USDXSpokeMinter...");
+        // Configuration - Update these with actual addresses
+        address LZ_ENDPOINT = address(0); // TODO: Set LayerZero endpoint address
+        uint32 HUB_CHAIN_ID = 30101; // Ethereum endpoint ID
+        uint32 LOCAL_EID = chainId == 137 ? 30109 : 30110; // Polygon or Mumbai
+        
+        // 2. Deploy USDXShareOFT (OVault shares on spoke chain)
+        console2.log("\n2. Deploying USDXShareOFT...");
+        USDXShareOFT shareOFT = new USDXShareOFT(
+            "USDX Vault Shares",
+            "USDX-SHARES",
+            LZ_ENDPOINT, // TODO: Set actual LayerZero endpoint
+            LOCAL_EID,
+            deployer
+        );
+        console2.log("   USDXShareOFT deployed at:", address(shareOFT));
+        
+        // 3. Deploy USDXSpokeMinter
+        console2.log("\n3. Deploying USDXSpokeMinter...");
         USDXSpokeMinter minter = new USDXSpokeMinter(
             address(usdx),
+            address(shareOFT),
+            LZ_ENDPOINT, // TODO: Set actual LayerZero endpoint
+            HUB_CHAIN_ID,
             deployer
         );
         console2.log("   USDXSpokeMinter deployed at:", address(minter));
         
-        // 3. Grant minter permissions on USDX token
-        console2.log("\n3. Setting up permissions...");
+        // 4. Grant minter permissions on USDX token
+        console2.log("\n4. Setting up permissions...");
         usdx.grantRole(MINTER_ROLE, address(minter));
         console2.log("   Granted MINTER_ROLE to minter");
         
         usdx.grantRole(BURNER_ROLE, address(minter));
         console2.log("   Granted BURNER_ROLE to minter");
         
-        // 4. Grant position updater role
-        console2.log("\n4. Setting up oracle permissions...");
-        minter.grantRole(POSITION_UPDATER_ROLE, POSITION_ORACLE);
-        console2.log("   Granted POSITION_UPDATER_ROLE to oracle");
+        shareOFT.setMinter(address(minter)); // Minter can mint shares
+        console2.log("   Set minter on USDXShareOFT");
         
         vm.stopBroadcast();
         

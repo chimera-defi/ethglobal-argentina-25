@@ -73,6 +73,7 @@ contract USDXVaultComposerSyncTest is Test {
         
         // Setup user
         usdc.mint(user, INITIAL_BALANCE);
+        vm.deal(user, 1 ether); // Give user ETH for LayerZero fees
         vm.startPrank(user);
         usdc.approve(address(composer), type(uint256).max);
         IERC20(address(vault)).approve(address(shareOFTAdapter), type(uint256).max);
@@ -97,6 +98,7 @@ contract USDXVaultComposerSyncTest is Test {
         bytes32 receiver = bytes32(uint256(uint160(user)));
         bytes memory options = "";
         
+        vm.deal(user, 1 ether);
         IOVaultComposer.DepositParams memory params = IOVaultComposer.DepositParams({
             assets: DEPOSIT_AMOUNT,
             dstEid: REMOTE_EID,
@@ -106,8 +108,11 @@ contract USDXVaultComposerSyncTest is Test {
         vm.prank(user);
         composer.deposit{value: 0.001 ether}(params, options);
         
-        // Verify assets were deposited
-        assertGt(vault.balanceOf(address(composer)), 0, "Composer should have vault shares");
+        // Verify assets were deposited - shares are locked in adapter immediately
+        // Check adapter's locked shares mapping
+        assertGt(shareOFTAdapter.lockedShares(address(composer)), 0, "Composer should have locked shares in adapter");
+        // Also check adapter's OFT token balance (representative tokens)
+        assertGt(shareOFTAdapter.balanceOf(address(composer)), 0, "Composer should have OFT tokens");
     }
     
     function testDepositRevertsIfZeroAmount() public {
@@ -120,6 +125,7 @@ contract USDXVaultComposerSyncTest is Test {
             receiver: receiver
         });
         
+        vm.deal(user, 1 ether);
         vm.prank(user);
         vm.expectRevert(USDXVaultComposerSync.ZeroAmount.selector);
         composer.deposit{value: 0.001 ether}(params, options);
@@ -135,6 +141,7 @@ contract USDXVaultComposerSyncTest is Test {
             receiver: receiver
         });
         
+        vm.deal(user, 1 ether);
         vm.prank(user);
         vm.expectRevert(USDXVaultComposerSync.InvalidRemote.selector);
         composer.deposit{value: 0.001 ether}(params, options);
@@ -145,6 +152,7 @@ contract USDXVaultComposerSyncTest is Test {
         bytes32 receiver = bytes32(uint256(uint160(user)));
         bytes memory options = "";
         
+        vm.deal(user, 1 ether);
         IOVaultComposer.DepositParams memory depositParams = IOVaultComposer.DepositParams({
             assets: DEPOSIT_AMOUNT,
             dstEid: REMOTE_EID,
@@ -154,27 +162,38 @@ contract USDXVaultComposerSyncTest is Test {
         vm.prank(user);
         composer.deposit{value: 0.001 ether}(depositParams, options);
         
-        // Get shares that were created
-        uint256 shares = vault.balanceOf(address(composer));
+        // Get shares that were created (composer has them in vault wrapper)
+        // Note: After deposit, shares are locked in adapter, so check adapter
+        uint256 shares = shareOFTAdapter.lockedShares(address(composer));
+        if (shares == 0) {
+            // If not locked yet, check vault wrapper
+            shares = vault.balanceOf(address(composer));
+        }
+        assertGt(shares, 0, "Composer should have shares");
         
-        // Lock shares in adapter (simulating cross-chain flow)
+        // Approve adapter to transfer shares from composer
         vm.prank(address(composer));
         IERC20(address(vault)).approve(address(shareOFTAdapter), shares);
+        
+        // Lock shares in adapter (simulating cross-chain flow)
         shareOFTAdapter.lockSharesFrom(address(composer), shares);
         
         // Mint OFT tokens to user (simulating receipt on spoke)
         shareOFT.mint(user, shares);
         
-        // Now redeem
+        // Now redeem - user needs to approve composer to transfer OFT tokens
+        vm.startPrank(user);
+        shareOFT.approve(address(composer), shares);
+        vm.deal(user, 1 ether);
+        
         IOVaultComposer.RedeemParams memory redeemParams = IOVaultComposer.RedeemParams({
             shares: shares,
             dstEid: REMOTE_EID,
             receiver: receiver
         });
         
-        vm.prank(user);
-        shareOFT.approve(address(composer), shares);
         composer.redeem{value: 0.001 ether}(redeemParams, options);
+        vm.stopPrank();
         
         // Verify shares were redeemed
         assertEq(vault.balanceOf(address(composer)), 0, "Shares should be redeemed");

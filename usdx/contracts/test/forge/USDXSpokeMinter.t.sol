@@ -85,9 +85,13 @@ contract USDXSpokeMinterTest is Test {
         vm.prank(admin);
         shareOFT.mint(user1, shares);
         
+        // Approve minter to transfer shares
+        vm.startPrank(user1);
+        shareOFT.approve(address(minter), mintAmount);
+        
         // Mint USDX
-        vm.prank(user1);
         minter.mint(mintAmount);
+        vm.stopPrank();
         
         // Verify
         assertEq(usdx.balanceOf(user1), mintAmount, "User should have USDX");
