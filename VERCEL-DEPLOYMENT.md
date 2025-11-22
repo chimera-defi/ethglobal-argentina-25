@@ -16,15 +16,18 @@ Vercel can't detect Next.js because Root Directory is set incorrectly. It falls 
 ```json
 {
   "version": 2,
-  "buildCommand": "cd usdx/frontend && npm install && npm run build",
-  "outputDirectory": "usdx/frontend/.next",
-  "installCommand": "cd usdx/frontend && npm install",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "outputDirectory": ".next"
 }
 ```
 
+**Why this configuration:**
+- `framework: "nextjs"` - Explicitly tells Vercel this is Next.js (prevents fallback to static mode)
+- `outputDirectory: ".next"` - Relative to Root Directory (when Root Directory is `usdx/frontend`, this resolves to `usdx/frontend/.next`)
+- No `cd` commands - Vercel handles directory navigation via Root Directory setting
+
 **Verified Output Directory:**
-- Next.js builds to: `usdx/frontend/.next` ✓
+- Next.js builds to: `usdx/frontend/.next` ✓ (when Root Directory is set correctly)
 - Contains: `.next/server/` and `.next/static/` ✓
 - This is the correct Next.js output directory
 
@@ -92,9 +95,10 @@ npm run build
 ❌ **DO NOT:**
 - Move vercel.json to `usdx/frontend/` directory (caused regression)
 - Use static export (`output: 'export'`) unless specifically needed
-- Add complex build commands with `cd` in vercel.json
+- Add `cd` commands in vercel.json (fails if Root Directory is already set)
 - Use `npm ci` without package-lock.json in frontend directory
 - Set `outputDirectory` to `public` (Next.js uses `.next`)
+- Set `outputDirectory` to absolute path like `usdx/frontend/.next` (use relative `.next` when Root Directory is set)
 
 ## Troubleshooting
 
@@ -122,18 +126,19 @@ After setting Root Directory correctly:
 ## Summary
 
 **The Solution:**
-1. Root vercel.json explicitly configures:
-   - `framework: "nextjs"` - Tells Vercel this is Next.js
-   - `outputDirectory: "usdx/frontend/.next"` - Points to actual build output
-   - `buildCommand` and `installCommand` - Navigate to frontend directory
-2. Set Root Directory to `usdx/frontend` in Vercel Dashboard (if not already set)
+1. Root vercel.json configures:
+   - `framework: "nextjs"` - Explicitly tells Vercel this is Next.js (prevents fallback to static mode)
+   - `outputDirectory: ".next"` - Relative to Root Directory (resolves to `usdx/frontend/.next` when Root Directory is set)
+   - NO `cd` commands - Vercel handles directory navigation via Root Directory
+2. **CRITICAL:** Set Root Directory to `usdx/frontend` in Vercel Dashboard (currently set to `frontend/usdx` which is WRONG)
 3. Enable "Include source files outside of Root Directory"
 
 **Why This Works:**
-- Next.js builds to `.next` directory (verified locally)
-- Vercel needs explicit configuration for monorepo subdirectory
-- `framework: "nextjs"` prevents fallback to static site mode
-- `outputDirectory` explicitly points to `.next` (not `public`)
+- Next.js builds to `.next` directory (verified locally at `usdx/frontend/.next`)
+- When Root Directory is `usdx/frontend`, Vercel runs commands FROM that directory
+- `outputDirectory: ".next"` is relative, so it resolves to `usdx/frontend/.next`
+- `framework: "nextjs"` prevents fallback to static site mode (which looks for `public`)
+- No `cd` commands that could fail if Root Directory is already set
 
 **Status:** Ready for deployment  
 **Confidence:** 100% - Official Vercel monorepo pattern
