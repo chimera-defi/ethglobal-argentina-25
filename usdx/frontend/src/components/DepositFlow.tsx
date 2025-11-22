@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { ethers } from 'ethers';
 import { getUSDCContract, getHubVaultContract, waitForTransaction } from '@/lib/contracts';
-import { parseAmount, formatAmount, CONTRACTS } from '@/config/contracts';
+import { parseAmount, CONTRACTS } from '@/config/contracts';
 import { CHAINS } from '@/config/chains';
 import { BridgeKitFlow } from './BridgeKitFlow';
 
@@ -64,9 +64,9 @@ export function DepositFlow({ signer, userAddress, chainId, onSuccess }: Deposit
         setAmount('');
         onSuccess?.();
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Deposit failed:', err);
-      setError(err.message || 'Transaction failed');
+      setError(err instanceof Error ? err.message : 'Transaction failed');
       setIsApproving(false);
       setIsDepositing(false);
     }
@@ -117,7 +117,7 @@ export function DepositFlow({ signer, userAddress, chainId, onSuccess }: Deposit
         Deposit USDC on hub chain to mint USDX 1:1. Your USDC will be deposited into Yearn for yield.
         {chainId === CHAINS.SPOKE.id && (
           <span className="block mt-2 text-yellow-600">
-            ⚠️ You're on a spoke chain. Bridge USDC to hub chain first, then deposit.
+            ⚠️ You&apos;re on a spoke chain. Bridge USDC to hub chain first, then deposit.
           </span>
         )}
       </p>

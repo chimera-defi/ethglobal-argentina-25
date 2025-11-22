@@ -65,7 +65,7 @@ export function useBridgeKit(): UseBridgeKitReturn {
 
         // Set up event handlers for status updates
         // Listen for all bridge actions to track progress
-        kit.on('*', (payload) => {
+        kit.on('*', (payload: { method?: string }) => {
           // Update status when bridge actions occur
           // Bridge actions: approve, burn, attestation, mint
           if (payload.method === 'approve' || payload.method === 'burn' || payload.method === 'mint') {
@@ -132,7 +132,7 @@ export function useBridgeKit(): UseBridgeKitReturn {
       } else if (result.state === 'error') {
         setTransferStatus('error');
         // Check result.steps for detailed error information
-        const errorDetails = result.steps?.find(step => step.state === 'error');
+        const errorDetails = result.steps?.find((step: { state?: string; name?: string }) => step.state === 'error');
         const errorMessage = errorDetails 
           ? `Bridge transfer failed: ${errorDetails.name || 'Unknown error'}`
           : 'Bridge transfer failed. Check result.steps for details.';

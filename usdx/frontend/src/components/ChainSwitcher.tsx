@@ -1,6 +1,6 @@
 'use client';
 
-import { CHAINS, ChainType } from '@/config/chains';
+import { ChainType } from '@/config/chains';
 
 interface ChainSwitcherProps {
   currentChain: ChainType;

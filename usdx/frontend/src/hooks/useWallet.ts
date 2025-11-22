@@ -52,9 +52,9 @@ export function useWallet() {
       if (Number(network.chainId) !== CHAIN_CONFIG.chainId) {
         await switchToChain(CHAIN_CONFIG.chainId);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to connect wallet:', err);
-      setError(err.message || 'Failed to connect wallet');
+      setError(err instanceof Error ? err.message : 'Failed to connect wallet');
     } finally {
       setIsConnecting(false);
     }
@@ -74,8 +74,8 @@ export function useWallet() {
     try {
       await switchToChain(targetChainId);
       setChainId(targetChainId);
-    } catch (err: any) {
-      setError(err.message || 'Failed to switch network');
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to switch network');
       throw err;
     }
   }, []);

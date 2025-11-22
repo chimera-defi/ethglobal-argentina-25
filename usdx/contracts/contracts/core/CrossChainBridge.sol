@@ -71,8 +71,8 @@ contract CrossChainBridge is AccessControl, ReentrancyGuard {
         require(supportedChains[destinationChainId], "CrossChainBridge: unsupported destination chain");
         require(destinationAddress != address(0), "CrossChainBridge: invalid destination address");
         
-        // Burn USDX on source chain
-        usdxToken.burnFrom(msg.sender, amount);
+        // Burn USDX on source chain using burnForCrossChain
+        usdxToken.burnForCrossChain(amount, destinationChainId, destinationAddress);
         
         // Create transfer record
         transferId = keccak256(abi.encodePacked(
@@ -122,8 +122,9 @@ contract CrossChainBridge is AccessControl, ReentrancyGuard {
         
         processedTransfers[transferId] = true;
         
-        // Mint USDX on destination chain
-        usdxToken.mint(destinationAddress, amount);
+        // Mint USDX on destination chain using mintFromCrossChain
+        bytes32 messageHash = keccak256(abi.encodePacked(transferId, sourceChainId, sourceUser, amount));
+        usdxToken.mintFromCrossChain(destinationAddress, amount, sourceChainId, messageHash);
         
         emit TransferCompleted(
             transferId,

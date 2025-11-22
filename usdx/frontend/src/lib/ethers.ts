@@ -26,7 +26,7 @@ export async function requestAccounts(): Promise<string[]> {
   if (typeof window === 'undefined' || !window.ethereum) {
     throw new Error('No wallet found');
   }
-  return await window.ethereum.request({ method: 'eth_requestAccounts' });
+  return await window.ethereum.request<string[]>({ method: 'eth_requestAccounts' });
 }
 
 // Check if wallet is connected
@@ -34,7 +34,7 @@ export async function isConnected(): Promise<boolean> {
   if (typeof window === 'undefined' || !window.ethereum) {
     return false;
   }
-  const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+  const accounts = await window.ethereum.request<string[]>({ method: 'eth_accounts' });
   return accounts.length > 0;
 }
 
@@ -49,9 +49,9 @@ export async function switchToChain(chainId: number): Promise<void> {
       method: 'wallet_switchEthereumChain',
       params: [{ chainId: `0x${chainId.toString(16)}` }],
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     // If chain doesn't exist, try to add it
-    if (error.code === 4902) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 4902) {
       throw new Error(`Chain ${chainId} not found. Please add it to your wallet.`);
     }
     throw error;
@@ -64,11 +64,15 @@ export function onAccountsChanged(callback: (accounts: string[]) => void): () =>
     return () => {};
   }
   
-  window.ethereum.on('accountsChanged', callback);
+  const wrappedCallback = (...args: unknown[]) => {
+    callback(args as string[]);
+  };
+  
+  window.ethereum.on('accountsChanged', wrappedCallback);
   
   return () => {
     if (window.ethereum) {
-      window.ethereum.removeListener('accountsChanged', callback);
+      window.ethereum.removeListener('accountsChanged', wrappedCallback);
     }
   };
 }
@@ -79,11 +83,15 @@ export function onChainChanged(callback: (chainId: string) => void): () => void 
     return () => {};
   }
   
-  window.ethereum.on('chainChanged', callback);
+  const wrappedCallback = (...args: unknown[]) => {
+    callback(args[0] as string);
+  };
+  
+  window.ethereum.on('chainChanged', wrappedCallback);
   
   return () => {
     if (window.ethereum) {
-      window.ethereum.removeListener('chainChanged', callback);
+      window.ethereum.removeListener('chainChanged', wrappedCallback);
     }
   };
 }
@@ -98,9 +106,9 @@ export function formatAddress(address: string): string {
 declare global {
   interface Window {
     ethereum?: {
-      request: (args: { method: string; params?: any[] }) => Promise<any>;
-      on: (event: string, callback: (...args: any[]) => void) => void;
-      removeListener: (event: string, callback: (...args: any[]) => void) => void;
+      request: <T = unknown>(args: { method: string; params?: unknown[] }) => Promise<T>;
+      on: (event: string, callback: (...args: unknown[]) => void) => void;
+      removeListener: (event: string, callback: (...args: unknown[]) => void) => void;
     };
   }
 }

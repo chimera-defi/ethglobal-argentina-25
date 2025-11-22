@@ -9,7 +9,7 @@ import MockUSDCABI from '@/abis/MockUSDC.json';
 export function getUSDCContract(signerOrProvider: ethers.Signer | ethers.Provider): ethers.Contract {
   return new ethers.Contract(
     CONTRACTS.MOCK_USDC,
-    MockUSDCABI as any,
+    MockUSDCABI as unknown as ethers.InterfaceAbi,
     signerOrProvider
   );
 }
@@ -18,7 +18,7 @@ export function getUSDCContract(signerOrProvider: ethers.Signer | ethers.Provide
 export function getHubUSDXContract(signerOrProvider: ethers.Signer | ethers.Provider): ethers.Contract {
   return new ethers.Contract(
     CONTRACTS.HUB_USDX,
-    USDXTokenABI as any,
+    USDXTokenABI as unknown as ethers.InterfaceAbi,
     signerOrProvider
   );
 }
@@ -27,7 +27,7 @@ export function getHubUSDXContract(signerOrProvider: ethers.Signer | ethers.Prov
 export function getSpokeUSDXContract(signerOrProvider: ethers.Signer | ethers.Provider): ethers.Contract {
   return new ethers.Contract(
     CONTRACTS.SPOKE_USDX,
-    USDXTokenABI as any,
+    USDXTokenABI as unknown as ethers.InterfaceAbi,
     signerOrProvider
   );
 }
@@ -36,7 +36,7 @@ export function getSpokeUSDXContract(signerOrProvider: ethers.Signer | ethers.Pr
 export function getHubVaultContract(signerOrProvider: ethers.Signer | ethers.Provider): ethers.Contract {
   return new ethers.Contract(
     CONTRACTS.HUB_VAULT,
-    USDXVaultABI as any,
+    USDXVaultABI as unknown as ethers.InterfaceAbi,
     signerOrProvider
   );
 }
@@ -45,7 +45,7 @@ export function getHubVaultContract(signerOrProvider: ethers.Signer | ethers.Pro
 export function getSpokeMinterContract(signerOrProvider: ethers.Signer | ethers.Provider): ethers.Contract {
   return new ethers.Contract(
     CONTRACTS.SPOKE_MINTER,
-    USDXSpokeMinterABI as any,
+    USDXSpokeMinterABI as unknown as ethers.InterfaceAbi,
     signerOrProvider
   );
 }

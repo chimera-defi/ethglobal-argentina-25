@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useBridgeKit, TransferStatus } from '@/hooks/useBridgeKit';
-import { parseAmount, formatAmount, CONTRACTS } from '@/config/contracts';
+import { parseAmount, CONTRACTS } from '@/config/contracts';
 import { CHAINS } from '@/config/chains';
 
 interface BridgeKitFlowProps {
@@ -59,7 +59,7 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
           }
         },
       });
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Bridge failed:', err);
       setIsBridging(false);
     }

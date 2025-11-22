@@ -83,9 +83,9 @@ export function SpokeMintFlow({ signer, userAddress, onSuccess }: SpokeMintFlowP
         setAmount('');
         onSuccess?.();
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Mint failed:', err);
-      setError(err.message || 'Transaction failed');
+      setError(err instanceof Error ? err.message : 'Transaction failed');
       setIsMinting(false);
     }
   };

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
 import { getHubUSDXContract, getHubVaultContract, waitForTransaction } from '@/lib/contracts';
-import { parseAmount, formatAmount, CONTRACTS } from '@/config/contracts';
+import { parseAmount, CONTRACTS } from '@/config/contracts';
 
 interface WithdrawFlowProps {
   signer: ethers.Signer | null;
@@ -50,9 +50,9 @@ export function WithdrawFlow({ signer, onSuccess }: WithdrawFlowProps) {
         setAmount('');
         onSuccess?.();
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Withdrawal failed:', err);
-      setError(err.message || 'Transaction failed');
+      setError(err instanceof Error ? err.message : 'Transaction failed');
       setIsApproving(false);
       setIsWithdrawing(false);
     }
