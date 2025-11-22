@@ -48,13 +48,13 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
         sourceChainId,
         destinationChainId,
         amount: amountString,
-        recipient: CONTRACTS.HUB_VAULT as `0x${string}`, // Bridge to vault address
+        recipientAddress: CONTRACTS.HUB_VAULT as `0x${string}`, // Bridge to vault address
         onStatusUpdate: (status) => {
-          if (status === 'completed') {
+          if (status === 'success') {
             setIsBridging(false);
             setAmount('');
             onSuccess?.();
-          } else if (status === 'failed') {
+          } else if (status === 'error') {
             setIsBridging(false);
           }
         },
@@ -68,14 +68,10 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
   const getStatusMessage = (status: TransferStatus): string => {
     switch (status) {
       case 'pending':
-        return 'Waiting for attestation...';
-      case 'attested':
-        return 'Attestation received, minting on destination chain...';
-      case 'minting':
-        return 'Minting USDC on destination chain...';
-      case 'completed':
+        return 'Bridge in progress...';
+      case 'success':
         return 'Bridge completed successfully!';
-      case 'failed':
+      case 'error':
         return 'Bridge failed';
       default:
         return '';
@@ -164,8 +160,8 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
           <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
             <div className="flex items-center gap-2 mb-2">
               <div className={`w-2 h-2 rounded-full ${
-                transferStatus === 'completed' ? 'bg-green-500' :
-                transferStatus === 'failed' ? 'bg-red-500' :
+                transferStatus === 'success' ? 'bg-green-500' :
+                transferStatus === 'error' ? 'bg-red-500' :
                 'bg-blue-500 animate-pulse'
               }`}></div>
               <p className="text-sm font-medium">{getStatusMessage(transferStatus)}</p>
