@@ -33,12 +33,13 @@ All USDX protocol documentation is organized here.
 16. **[21-smart-contract-development-setup.md](./21-smart-contract-development-setup.md)** - Smart contract setup, Foundry/Hardhat, mainnet forking
 17. **[22-detailed-task-breakdown.md](./22-detailed-task-breakdown.md)** - Comprehensive task breakdown with dependencies
 18. **[23-implementation-details-summary.md](./23-implementation-details-summary.md)** - Summary of new implementation guides
+19. **[24-mim-lessons-implementation-checklist.md](./24-mim-lessons-implementation-checklist.md)** - **MIM Lessons Implementation Checklist** - Comprehensive checklist to ensure MIM pitfalls are avoided
 
 ### Reference & Assessment
 
-19. **[10-open-questions.md](./10-open-questions.md)** - Open questions and clarifications needed (many answered)
-20. **[SELF-ASSESSMENT.md](./SELF-ASSESSMENT.md)** - Honest assessment of work completed
-21. **[07-circle-cctp-research.md](./07-circle-cctp-research.md)** - Circle CCTP research (reference - Bridge Kit recommended)
+20. **[10-open-questions.md](./10-open-questions.md)** - Open questions and clarifications needed (many answered)
+21. **[SELF-ASSESSMENT.md](./SELF-ASSESSMENT.md)** - Honest assessment of work completed
+22. **[07-circle-cctp-research.md](./07-circle-cctp-research.md)** - Circle CCTP research (reference - Bridge Kit recommended)
 
 ### Legacy/Archive Documents
 

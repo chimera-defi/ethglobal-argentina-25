@@ -170,20 +170,62 @@ USDXToken.mint() on Chain B
 
 ## Security Considerations
 
+> **Lessons from MIM**: MIM suffered from security vulnerabilities due to complex multi-protocol interactions, bridge dependencies, and insufficient access controls. USDX addresses these through simplified architecture, multiple bridge redundancy, and comprehensive security measures.
+
 1. **Access Control**: Role-based access control (RBAC)
    - Admin: Protocol upgrades, parameter changes
    - Vault: Mint/burn USDX
    - Yield Manager: Manage yield strategies
+   - Peg Manager: Manage peg stability mechanisms (new)
+   - Emergency Pauser: Can pause specific functions (new)
 
 2. **Rate Limiting**: Prevent rapid mint/burn cycles
+   - Cooldown periods for large operations
+   - Daily limits per user
+   - Circuit breakers for unusual activity
+
 3. **Pause Mechanism**: Emergency pause for all chains
+   - Per-function pause capability
+   - Time-locked unpause (24-48 hours)
+   - Multi-sig required for pause/unpause
+
 4. **Multi-sig**: Admin functions require multi-sig
+   - Minimum 3-of-5 for critical operations
+   - Minimum 4-of-7 for emergency operations
+   - Timelock for non-emergency changes
+
 5. **Audits**: Comprehensive security audits before mainnet
+   - Multiple audit firms
+   - Bug bounty program
+   - Continuous security monitoring
 
 6. **Cross-Chain Security**:
    - LayerZero: Relayer network + Oracle network
    - Hyperlane: Validator network + ISM
-   - Consider using both for redundancy
+   - **Bridge Redundancy**: Both bridges active simultaneously
+   - **Failover Mechanism**: Automatic switch if one bridge fails
+   - **Message Verification**: Double verification for critical operations
+
+7. **Simplified Architecture** (MIM Lesson):
+   - Single collateral type (USDC) reduces attack surface
+   - Single yield strategy (Yearn) reduces complexity
+   - Hub-and-spoke model centralizes security-critical operations
+   - Minimal external dependencies
+
+8. **Reentrancy Protection**:
+   - OpenZeppelin ReentrancyGuard on all state-changing functions
+   - Checks-effects-interactions pattern enforced
+   - Cross-chain callback locks
+
+9. **Input Validation**:
+   - All inputs validated and sanitized
+   - Bounds checking on all amounts
+   - Address validation (non-zero, not contract where not allowed)
+
+10. **Time-locked Upgrades**:
+    - All protocol changes require timelock (minimum 48 hours)
+    - Community notification period
+    - Emergency upgrades only with multi-sig approval
 
 ## Yield Strategy Architecture (Simplified with OVault/Yield Routes)
 
@@ -213,6 +255,143 @@ USDXToken.mint() on Chain B
 
 **Recommendation**: Option A for simplicity and protocol sustainability
 
+## Peg Stability Mechanisms
+
+> **Critical MIM Lesson**: MIM failed to maintain peg stability due to insufficient mechanisms. USDX implements multiple layers of peg protection.
+
+### Primary Peg Mechanism: Direct USDC Backing
+
+1. **1:1 USDC Collateralization**
+   - Every USDX minted is backed by 1 USDC (or more)
+   - Direct redemption to USDC at any time
+   - Transparent on-chain verification
+
+2. **Immediate Redemption**
+   - Users can burn USDX and receive USDC instantly
+   - No delays or queuing
+   - Works across all chains (via Bridge Kit)
+
+### Secondary Peg Mechanisms
+
+3. **Protocol Reserve Fund**
+   - Maintains USDC reserves for peg support
+   - Used for arbitrage opportunities
+   - Funded from protocol yield (percentage of yield)
+
+4. **Arbitrage Incentives**
+   - Direct redemption path creates natural arbitrage
+   - If USDX < $1.00: Buy USDX, redeem for USDC, profit
+   - If USDX > $1.00: Mint USDX, sell for USDC, profit
+   - No fees on redemption to encourage arbitrage
+
+5. **Liquidity Pool Management**
+   - Maintain deep liquidity pools on major DEXs
+   - Protocol can provide liquidity directly
+   - Incentivize LP providers if needed
+
+6. **Peg Monitoring and Alerts**
+   - Real-time price monitoring
+   - Automatic alerts if peg deviates >0.5%
+   - Protocol can intervene if peg deviates >1%
+
+7. **Circuit Breakers**
+   - Pause minting if peg deviates significantly (>2%)
+   - Allow redemption to continue (helps restore peg)
+   - Automatic resume when peg stabilizes
+
+### Peg Stability Architecture
+
+```
+Peg Stability System
+├── Primary: Direct USDC Backing (1:1)
+├── Secondary: Protocol Reserve Fund
+├── Tertiary: Liquidity Pools
+├── Monitoring: Real-time Price Tracking
+└── Intervention: Circuit Breakers + Manual Actions
+```
+
+### Comparison with MIM
+
+| Feature | MIM | USDX |
+|---------|-----|------|
+| **Backing** | Multiple yield-bearing assets | Single USDC (most liquid) |
+| **Collateralization** | 80-90% (leveraged) | 100%+ (1:1, can adjust) |
+| **Redemption** | Complex, sometimes delayed | Direct, instant |
+| **Reserve Fund** | None | Yes (from yield) |
+| **Arbitrage** | Limited mechanisms | Strong incentives |
+| **Monitoring** | Limited | Comprehensive |
+
+## Bridge Redundancy and Failover
+
+> **Critical MIM Lesson**: MIM's over-reliance on Multichain bridge led to protocol failure when the bridge collapsed. USDX uses multiple bridges with automatic failover.
+
+### Multi-Bridge Architecture
+
+1. **Primary Bridge: Circle Bridge Kit (CCTP)**
+   - Used for USDC transfers (Spoke ↔ Hub)
+   - Most trusted and secure
+   - Native Circle support
+
+2. **Secondary Bridges: LayerZero + Hyperlane**
+   - Used for USDX transfers (Spoke ↔ Spoke)
+   - Both active simultaneously
+   - Automatic failover if one fails
+
+### Failover Mechanisms
+
+3. **Bridge Health Monitoring**
+   - Real-time monitoring of all bridges
+   - Track success rates, delays, failures
+   - Automatic routing based on bridge health
+
+4. **Automatic Failover**
+   - If LayerZero fails: Route to Hyperlane
+   - If Hyperlane fails: Route to LayerZero
+   - If both fail: Pause cross-chain transfers, allow redemption
+
+5. **Manual Override**
+   - Admin can manually switch bridges
+   - Emergency pause for all bridges
+   - Gradual rollout of new bridges
+
+### Bridge Risk Mitigation
+
+6. **No Single Point of Failure**
+   - Multiple bridges for redundancy
+   - Different security models (LayerZero vs Hyperlane)
+   - Independent validator sets
+
+7. **Bridge Limits**
+   - Per-bridge TVL limits
+   - Per-transaction limits
+   - Gradual increase as confidence grows
+
+## Liquidity Management
+
+> **MIM Lesson**: MIM struggled with liquidity, leading to peg instability. USDX proactively manages liquidity.
+
+### Liquidity Strategy
+
+1. **Primary Liquidity Pools**
+   - USDX/USDC pools on major DEXs (Uniswap, Curve, etc.)
+   - Maintained on all spoke chains
+   - Minimum liquidity thresholds
+
+2. **Protocol-Owned Liquidity**
+   - Protocol can provide liquidity directly
+   - Funded from protocol treasury
+   - Managed by yield managers
+
+3. **Liquidity Incentives**
+   - LP token rewards (if needed)
+   - Fee sharing with LPs
+   - Bootstrap liquidity on new chains
+
+4. **Liquidity Monitoring**
+   - Track pool depths across all chains
+   - Alert if liquidity drops below thresholds
+   - Automatic intervention if needed
+
 ## State Management
 
 ### Per-Chain State
@@ -220,8 +399,13 @@ USDXToken.mint() on Chain B
 - Total USDX minted
 - Yield accrued
 - User balances
+- **Peg deviation tracking** (new)
+- **Bridge health status** (new)
+- **Liquidity pool addresses** (new)
 
 ### Cross-Chain State
 - USDX supply per chain
 - Cross-chain transfer queue
 - Message nonces (prevent replay attacks)
+- **Bridge routing preferences** (new)
+- **Peg status per chain** (new)
