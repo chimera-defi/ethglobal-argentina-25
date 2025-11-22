@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-USDX is a cross-chain stablecoin protocol that enables users to mint USDX tokens by depositing USDC collateral into vaults on any supported chain. The protocol leverages Circle's Cross-Chain Transfer Protocol (CCTP) for secure USDC transfers, and LayerZero/Hyperlane for cross-chain messaging to maintain USDX balance consistency across chains.
+USDX is a cross-chain stablecoin protocol that enables users to mint USDX tokens by depositing USDC collateral into vaults on any supported chain. The protocol leverages Circle's Bridge Kit (built on CCTP) for secure USDC cross-chain transfers, and LayerZero/Hyperlane for cross-chain messaging to maintain USDX balance consistency across chains.
 
 ## Core Concept
 
@@ -15,9 +15,9 @@ USDX is a cross-chain stablecoin protocol that enables users to mint USDX tokens
 
 1. **Vault Contracts**: Store USDC collateral and mint USDX
 2. **Cross-Chain Messaging**: LayerZero/Hyperlane for USDX balance synchronization
-3. **CCTP Integration**: Circle's protocol for USDC cross-chain transfers
+3. **Bridge Kit Integration**: Circle's Bridge Kit SDK for USDC cross-chain transfers (simplified CCTP integration)
 4. **Yield Strategy**: DeFi protocols for earning yield on idle USDC
-5. **UI/UX**: Frontend for user interactions across chains
+5. **UI/UX**: Frontend for user interactions across chains (includes Bridge Kit UI components)
 
 ## Supported Chains (Initial)
 
@@ -45,4 +45,4 @@ USDX is a cross-chain stablecoin protocol that enables users to mint USDX tokens
 - **Yield accrual**: Yield earned on USDC benefits the protocol (revenue model)
 - **Non-custodial**: Users maintain control of their collateral
 - **Cross-chain composability**: USDX works seamlessly across chains
-- **Security**: Leverage battle-tested protocols (CCTP, LayerZero, Hyperlane)
+- **Security**: Leverage battle-tested protocols (Bridge Kit/CCTP, LayerZero, Hyperlane)

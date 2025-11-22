@@ -59,18 +59,20 @@ interface IUSDXVault {
     function withdrawUSDC(uint256 usdxAmount) external returns (uint256 usdcAmount);
     function withdrawUSDCTo(address to, uint256 usdxAmount) external returns (uint256 usdcAmount);
     
-    // Cross-chain deposit (using CCTP)
-    function initiateCCTPDeposit(
-        uint256 amount,
-        uint16 destinationChainId,
-        bytes32 destinationVault
-    ) external payable returns (bytes32 messageHash);
+    // Cross-chain deposit (called by backend service after Bridge Kit transfer)
+    function mintUSDXForCrossChainDeposit(
+        address user,
+        uint256 usdcAmount,
+        uint16 sourceChainId,
+        bytes32 bridgeKitTransferId
+    ) external; // Only authorized bridge service
     
     // View functions
     function getUserCollateral(address user) external view returns (uint256);
     function getTotalCollateral() external view returns (uint256);
     function getTotalUSDXMinted() external view returns (uint256);
     function getCollateralRatio() external view returns (uint256); // Should be 1:1
+    function isTransferProcessed(bytes32 transferId) external view returns (bool);
     
     // Yield functions
     function depositToYieldStrategy(uint256 amount) external; // Only yield manager
@@ -113,27 +115,94 @@ interface ICrossChainBridge {
 }
 ```
 
-### CCTPAdapter.sol
+### Bridge Kit Integration (Frontend/Backend)
+
+**Note**: Bridge Kit is a frontend/backend SDK, not a smart contract. Integration happens in off-chain services.
+
+#### Frontend Integration
+
+```typescript
+// Using Bridge Kit SDK in frontend
+import { BridgeKit } from '@circle-fin/bridge-kit';
+
+const bridgeKit = new BridgeKit({
+  sourceChain: 'ethereum',
+  destinationChain: 'polygon',
+});
+
+// Transfer USDC
+const transfer = await bridgeKit.transfer({
+  amount: usdcAmount,
+  recipient: vaultAddress,
+  onStatusUpdate: (status) => {
+    if (status === 'completed') {
+      // Call vault contract to mint USDX
+      vaultContract.mintUSDX(userAddress, usdcAmount);
+    }
+  },
+});
+```
+
+#### Backend Service Integration
+
+```typescript
+// Backend service using Bridge Kit SDK
+class USDXBridgeService {
+  async handleCrossChainDeposit(
+    sourceChain: string,
+    destinationChain: string,
+    userAddress: string,
+    amount: string
+  ) {
+    const bridgeKit = new BridgeKit({
+      sourceChain,
+      destinationChain,
+    });
+    
+    const transfer = await bridgeKit.transfer({
+      amount,
+      recipient: vaultAddress,
+    });
+    
+    // Wait for completion (or use webhook)
+    await this.waitForTransfer(transfer.id);
+    
+    // Call vault contract
+    await vaultContract.mintUSDX(userAddress, amount);
+  }
+}
+```
+
+#### Webhook Handler
+
+```typescript
+// Webhook endpoint for Bridge Kit
+app.post('/webhook/bridge-kit', async (req, res) => {
+  const { transferId, status, data } = req.body;
+  
+  if (status === 'completed') {
+    // Call vault contract to mint USDX
+    await vaultContract.mintUSDX(data.recipient, data.amount);
+  }
+  
+  res.status(200).send('OK');
+});
+```
+
+#### Vault Contract Interface (for Bridge Kit integration)
 
 ```solidity
-interface ICCTPAdapter {
-    // Initiate CCTP transfer
-    function initiateTransfer(
-        uint256 amount,
-        uint32 destinationDomain,
-        bytes32 mintRecipient
-    ) external returns (bytes32 messageHash);
+interface IUSDXVault {
+    // Called by backend service after Bridge Kit transfer completes
+    function mintUSDXForCrossChainDeposit(
+        address user,
+        uint256 usdcAmount,
+        uint16 sourceChainId,
+        bytes32 transferId
+    ) external; // Only authorized backend service
     
-    // Complete CCTP transfer (called by Circle's contracts)
-    function receiveMessage(
-        bytes32 messageHash,
-        bytes calldata message,
-        bytes calldata attestation
-    ) external;
-    
-    // View functions
-    function getPendingTransfers() external view returns (PendingTransfer[] memory);
-    function getCCTPDomain(uint16 chainId) external view returns (uint32);
+    // View function to check if transfer was already processed
+    function isTransferProcessed(bytes32 transferId) external view returns (bool);
 }
 ```
 

@@ -30,10 +30,10 @@
    - Tracks yield accrual
    - Handles yield distribution (protocol revenue)
 
-5. **CCTPAdapter.sol**
-   - Wrapper around Circle CCTP contracts
-   - Handles USDC cross-chain transfers
-   - Manages attestation and verification
+5. **BridgeKitAdapter.sol** (Optional - for smart contract integration)
+   - Optional wrapper if Bridge Kit SDK needs to be called from contracts
+   - Most Bridge Kit usage will be in frontend/backend services
+   - Note: Bridge Kit is primarily a frontend/backend SDK, not a smart contract library
 
 ### Layer 2: Cross-Chain Infrastructure
 
@@ -61,13 +61,27 @@
 - Balance display (cross-chain aggregated)
 - Transaction history
 
+#### Bridge Kit Integration
+- **Bridge Kit SDK**: For cross-chain USDC transfers
+- **Bridge Kit UI Components**: Pre-built React components for bridge functionality
+- **Bridge Kit API**: Backend API for transfer status tracking (optional)
+- **Webhook Support**: For transfer completion notifications
+
 ### Layer 4: Infrastructure Services
 
-#### Off-Chain Services (Optional)
+#### Off-Chain Services
+- **Bridge Kit Service**: Backend service using Bridge Kit SDK for USDC transfers
+- **Webhook Handler**: Process Bridge Kit webhooks for transfer completion
 - Indexer: Track cross-chain transactions
 - API: Provide aggregated balance data
 - Monitoring: Track vault health, yield rates
 - Analytics: Protocol metrics dashboard
+
+#### Bridge Kit Architecture
+- **Frontend**: Uses Bridge Kit React components and SDK
+- **Backend Service**: Uses Bridge Kit SDK for automated transfers
+- **Webhooks**: Bridge Kit sends webhooks on transfer status changes
+- **Smart Contracts**: Called by backend service after Bridge Kit transfers complete
 
 ## Contract Interaction Flow
 
@@ -76,7 +90,7 @@ User → USDXVault → USDXToken (mint)
                 ↓
          YieldStrategy (deposit USDC)
                 ↓
-         CCTPAdapter (if cross-chain USDC needed)
+         Bridge Kit SDK (frontend/backend service for cross-chain USDC)
 ```
 
 ## Cross-Chain Message Flow

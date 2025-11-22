@@ -1,8 +1,29 @@
-# Circle CCTP Research
+# Circle CCTP and Bridge Kit Research
 
 ## Overview
 
 Circle's Cross-Chain Transfer Protocol (CCTP) is a permissionless on-chain utility that enables developers to build cross-chain applications with native USDC transfers. It uses a burn-and-mint mechanism with attestation verification.
+
+**Circle Bridge Kit** is a higher-level SDK and UI components that simplifies CCTP integration, providing pre-built components and simplified APIs for cross-chain USDC transfers.
+
+## Bridge Kit vs Direct CCTP
+
+### Recommendation: Use Bridge Kit
+
+For USDX protocol, **Bridge Kit is recommended** over direct CCTP integration because:
+- **Simplified Integration**: Higher-level API reduces complexity
+- **Pre-built UI Components**: Faster frontend development
+- **Automatic Attestation Polling**: SDK handles waiting for attestations
+- **Better Error Handling**: Comprehensive error types and retry mechanisms
+- **Status Tracking**: Built-in transaction status updates
+
+See **[11-circle-bridge-kit-research.md](./11-circle-bridge-kit-research.md)** for detailed Bridge Kit documentation.
+
+---
+
+## Direct CCTP Integration (Reference)
+
+*Note: While Bridge Kit is recommended, understanding direct CCTP is still valuable for advanced use cases.*
 
 ## Key Components
 
