@@ -251,6 +251,7 @@ function quoteDispatch(
 - **GitHub**: https://github.com/hyperlane-xyz
 - **Contract Addresses**: https://docs.hyperlane.xyz/docs/resources/contract-addresses
 - **ISM Guide**: https://docs.hyperlane.xyz/docs/build-with-hyperlane/apis-and-sdks/ism
+- **Deep Research**: See **[19-hyperlane-deep-research.md](./19-hyperlane-deep-research.md)** for comprehensive answers to outstanding questions from Hackathon Success Guide review
 
 ## Example: USDX Transfer Message
 
