@@ -1,5 +1,7 @@
 # USDX Cross-Chain Stablecoin - Overview
 
+> **Why USDX?** USDX is being developed as a modern replacement for MIM (Magic Internet Money), a pioneering yield-bearing stablecoin that enabled cross-chain minting but is no longer operational. See **[00-why-and-previous-projects.md](./00-why-and-previous-projects.md)** for detailed context on MIM, why it failed, and how USDX improves upon it.
+
 ## Executive Summary
 
 USDX is a cross-chain stablecoin protocol that uses a **hub-and-spoke architecture** where all USDC collateral and yield generation is centralized on a single hub chain (Ethereum), while users can mint and use USDX on multiple spoke chains. The protocol leverages Circle's Bridge Kit (built on CCTP) for secure USDC transfers between spokes and hub, and LayerZero/Hyperlane for cross-chain USDX transfers between spokes.
