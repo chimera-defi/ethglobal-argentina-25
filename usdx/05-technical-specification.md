@@ -8,17 +8,20 @@
 USDX Protocol
 ├── Core Contracts
 │   ├── USDXToken.sol (ERC20)
-│   ├── USDXVault.sol
-│   └── CrossChainBridge.sol
+│   ├── USDXVault.sol (Hub Chain Only)
+│   ├── USDXSpokeMinter.sol (Spoke Chains Only)
+│   └── CrossChainBridge.sol (All Chains)
 ├── Integration Contracts
-│   ├── CCTPAdapter.sol
-│   ├── LayerZeroAdapter.sol
-│   ├── HyperlaneAdapter.sol
-│   └── YieldStrategy.sol
+│   ├── LayerZeroAdapter.sol (All Chains)
+│   └── HyperlaneAdapter.sol (All Chains)
 └── Utility Contracts
     ├── AccessControl.sol
     ├── Pausable.sol
     └── ReentrancyGuard.sol
+
+Note: Bridge Kit is SDK-only (no smart contract adapter needed)
+Note: OVault/Yield Routes are external contracts (not part of USDX codebase)
+Note: YieldStrategy.sol removed - using OVault/Yield Routes instead
 ```
 
 ## Contract Interfaces
@@ -360,12 +363,13 @@ mapping(address => uint256) public userCollateral; // user => USDC amount
 uint256 public totalCollateral; // Total USDC deposited
 uint256 public totalUSDXMinted; // Total USDX minted
 
-// Yield tracking
+// Yield tracking (via OVault/Yield Routes)
 uint256 public yieldAccrued; // Total yield earned
-uint256 public yieldStrategyDeposits; // USDC in yield strategies
+mapping(address => uint256) public userOVaultShares; // user => OVault shares
+mapping(address => uint256) public userYieldRoutesShares; // user => Yield Routes shares
 
-// CCTP tracking
-mapping(bytes32 => PendingCCTPTransfer) public pendingCCTPTransfers;
+// Bridge Kit tracking (for cross-chain deposits)
+mapping(bytes32 => bool) public processedBridgeKitTransfers; // Prevent replay
 ```
 
 ### CrossChainBridge State
