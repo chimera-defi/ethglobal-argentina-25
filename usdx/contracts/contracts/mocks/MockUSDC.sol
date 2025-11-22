@@ -9,7 +9,9 @@ import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
  * @dev Mimics USDC with 6 decimals and free minting for testing
  */
 contract MockUSDC is ERC20 {
-    constructor() ERC20("USD Coin", "USDC") {}
+    constructor() ERC20("USD Coin", "USDC") {
+        _mint(msg.sender, 1000000 * 10**6); // Mint 1M USDC for testing
+    }
     
     /**
      * @notice Returns 6 decimals (same as real USDC)
