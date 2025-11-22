@@ -53,12 +53,12 @@ This guide provides essential information for different development teams/agents
    - Works directly with smart contracts
 
 2. **OVault + Yield Routes for Yield**: Dual strategy
-   - Primary: LayerZero OVault
+   - Primary: LayerZero OVault (see [layerzero/README.md](./layerzero/README.md))
    - Secondary: Hyperlane Yield Routes
    - Both wrap Yearn USDC vault
 
 3. **LayerZero + Hyperlane for USDX**: Dual protocol
-   - Primary: LayerZero
+   - Primary: LayerZero (see [layerzero/README.md](./layerzero/README.md))
    - Secondary: Hyperlane
    - Provides redundancy
 
@@ -286,8 +286,7 @@ const transfer = await kit.transfer({
 ### Research Documents
 - `RESEARCH-bridge-kit.md` - Bridge Kit complete guide
 - `RESEARCH-hyperlane.md` - Hyperlane complete guide
-- `08-layerzero-research.md` - LayerZero research
-- `13-layerzero-ovault-research.md` - OVault research
+- `layerzero/` - All LayerZero documentation (see [layerzero/README.md](./layerzero/README.md))
 
 ### Reference Documents
 - `10-open-questions.md` - Open questions

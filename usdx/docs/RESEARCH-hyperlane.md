@@ -323,7 +323,6 @@ contract USDXVault {
 
 ## Related Documents
 
-- **[08-layerzero-research.md](./08-layerzero-research.md)** - LayerZero research (primary protocol)
-- **[13-layerzero-ovault-research.md](./13-layerzero-ovault-research.md)** - OVault research
+- **[layerzero/README.md](./layerzero/README.md)** - All LayerZero documentation (primary protocol)
 - **[14-hyperlane-yield-routes-research.md](./14-hyperlane-yield-routes-research.md)** - Yield Routes specific research
 - **[02-architecture.md](./02-architecture.md)** - USDX architecture incorporating Hyperlane

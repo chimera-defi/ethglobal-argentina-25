@@ -136,7 +136,7 @@ This document provides a comprehensive, step-by-step breakdown of all tasks requ
   - [ ] Cross-chain deposit handling
   - [ ] View functions
   - [ ] Access control
-- [ ] Research OVault contracts and interfaces
+- [ ] Research OVault contracts and interfaces (see [layerzero/README.md](./layerzero/README.md))
   - [ ] Find OVault contract addresses
   - [ ] Review OVault interface
   - [ ] Understand OVault integration pattern
@@ -195,12 +195,12 @@ This document provides a comprehensive, step-by-step breakdown of all tasks requ
 - 90%+ test coverage
 - Gas optimized
 
-### 2.4 Cross-Chain Infrastructure - LayerZero (Week 4)
+### 2.4 Cross-Chain Infrastructure - LayerZero (Week 4) (see [layerzero/README.md](./layerzero/README.md))
 
 **Duration**: 4 days
 
 **Tasks**:
-- [ ] Research LayerZero OApp standard
+- [ ] Research LayerZero OApp standard (see [layerzero/README.md](./layerzero/README.md))
   - [ ] Review OApp documentation
   - [ ] Understand OApp architecture
   - [ ] Review example implementations

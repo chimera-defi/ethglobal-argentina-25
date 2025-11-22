@@ -214,7 +214,7 @@ The integration of OVault and Yield Routes significantly simplifies the USDX arc
 
 ## Resources
 
-- **[13-layerzero-ovault-research.md](./13-layerzero-ovault-research.md)** - OVault research
+- **[layerzero/README.md](./layerzero/README.md)** - All LayerZero and OVault documentation
 - **[14-hyperlane-yield-routes-research.md](./14-hyperlane-yield-routes-research.md)** - Yield Routes research
 - **[02-architecture.md](./02-architecture.md)** - Updated architecture
 - **[03-flow-diagrams.md](./03-flow-diagrams.md)** - Updated flow diagrams
