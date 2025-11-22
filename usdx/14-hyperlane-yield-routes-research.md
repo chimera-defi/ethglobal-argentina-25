@@ -190,17 +190,33 @@ We could support both:
 - **Secondary**: Yield Routes (Hyperlane)
 - **Benefits**: Redundancy, user choice, risk mitigation
 
-## Questions to Resolve
+## Questions to Resolve ✅
 
-1. Is Yield Routes mainnet ready?
-2. Does Yield Routes support Yearn vaults?
-3. How do we handle withdrawals?
-4. What are the gas costs?
-5. How do we track positions across chains?
-6. Can we use both OVault and Yield Routes simultaneously?
+✅ **All questions answered** - See **[19-hyperlane-deep-research.md](./19-hyperlane-deep-research.md)** for comprehensive answers.
+
+1. ✅ **Is Yield Routes mainnet ready?**
+   - **Answer**: Yes, launched March 2024 with multiple launch partners. Permissionless deployment available.
+
+2. ✅ **Does Yield Routes support Yearn vaults?**
+   - **Answer**: Yes, Yield Routes are ERC-4626 compatible, and Yearn vaults are ERC-4626 compatible, so full support.
+
+3. ✅ **How do we handle withdrawals?**
+   - **Answer**: When bridging back, collateral is automatically redeemed from vault. Yield allocation is configurable.
+
+4. ✅ **What are the gas costs?**
+   - **Answer**: Similar to standard Warp Routes with minimal overhead for vault interactions. Can be optimized by batching.
+
+5. ✅ **How do we track positions across chains?**
+   - **Answer**: Yield Routes handles this automatically via Hyperlane messaging. Representative tokens are minted on destination chains.
+
+6. ✅ **Can we use both OVault and Yield Routes simultaneously?**
+   - **Answer**: Yes, can support both for redundancy, user choice, and risk mitigation.
 
 ## Resources
 
 - [Hyperlane Yield Routes Blog Post](https://www.hyperlane.xyz/post/introducing-yield-routes)
-- Hyperlane Yield Routes Documentation (to be found)
-- Yield Routes GitHub Repository (to be found)
+- [Hyperlane Documentation](https://docs.hyperlane.xyz)
+- [Warp Routes Documentation](https://docs.hyperlane.xyz/docs/protocol/warp-routes)
+- [ISM Guide](https://docs.hyperlane.xyz/docs/protocol/ISM/modular-security)
+- [Hyperlane Monorepo](https://github.com/hyperlane-xyz/hyperlane-monorepo)
+- [Deep Research Document](./19-hyperlane-deep-research.md)

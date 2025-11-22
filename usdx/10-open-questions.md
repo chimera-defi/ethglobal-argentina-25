@@ -115,24 +115,35 @@
 
 ## Hyperlane Questions
 
-1. **ISM Selection**
-   - Which ISM type is best for USDX?
-   - Multisig vs Custom ISM?
-   - How many validators should we use?
+✅ **Answered** - See **[19-hyperlane-deep-research.md](./19-hyperlane-deep-research.md)** for comprehensive answers.
 
-2. **Validator Network**
-   - How decentralized is the validator network?
-   - What are the security guarantees?
-   - Are there any centralization risks?
+1. **ISM Selection** ✅
+   - **Answer**: Start with Multisig ISM (5-of-9 validators) for good security/decentralization balance
+   - Can upgrade to Custom ISM later if needed
+   - Recommended validator count: 5-9 for production
 
-3. **Message Fees**
-   - How are fees calculated?
-   - What are typical fee ranges?
-   - Can fees be estimated accurately?
+2. **Validator Network** ✅
+   - **Answer**: Permissionless network with economic security (staking + slashing)
+   - Decentralization depends on validator participation
+   - Some centralization risk in early stages, mitigated by multisig ISM
 
-4. **Address Format**
-   - Confirmation needed on bytes32 address conversion
-   - Any edge cases to consider?
+3. **Message Fees** ✅
+   - **Answer**: Fees paid in native token, based on destination chain gas costs
+   - Can be estimated accurately using `quoteDispatch()`
+   - Typical fees: < $0.10 for simple messages, varies by chain
+
+4. **Address Format** ✅
+   - **Answer**: Standard bytes32 conversion functions work correctly
+   - No special edge cases for standard Ethereum addresses
+   - Conversion functions confirmed in research
+
+5. **Yield Routes Specific** ✅
+   - **Mainnet Ready**: Yes, launched March 2024
+   - **Yearn Support**: Yes, ERC-4626 compatible
+   - **Withdrawals**: Handled automatically by Yield Routes contract
+   - **Gas Costs**: Similar to Warp Routes, minimal overhead
+   - **Position Tracking**: Automatic via Hyperlane messaging
+   - **Dual Strategy**: Can use both OVault and Yield Routes simultaneously
 
 ## Protocol Design Questions
 
