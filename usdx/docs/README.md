@@ -6,10 +6,11 @@ All USDX protocol documentation is organized here.
 
 ### 🚀 Start Here
 
-1. **[00-why-and-previous-projects.md](./00-why-and-previous-projects.md)** - **Why USDX exists and lessons from MIM**
-2. **[HANDOFF-GUIDE.md](./HANDOFF-GUIDE.md)** - **Essential reading for all developers**
-3. **[README.md](../README.md)** - Project overview and quick start
-4. **[AGENT-INSTRUCTIONS.md](../AGENT-INSTRUCTIONS.md)** - Agent-specific instructions
+1. **[USDX-PROSPECTUS.md](./USDX-PROSPECTUS.md)** - **📄 Executive Prospectus** - Concise overview for VCs and engineers (start here!)
+2. **[00-why-and-previous-projects.md](./00-why-and-previous-projects.md)** - **Why USDX exists and lessons from MIM**
+3. **[HANDOFF-GUIDE.md](./HANDOFF-GUIDE.md)** - **Essential reading for all developers**
+4. **[README.md](../README.md)** - Project overview and quick start
+5. **[AGENT-INSTRUCTIONS.md](../AGENT-INSTRUCTIONS.md)** - Agent-specific instructions
 
 ### Core Documentation
 
