@@ -62,26 +62,6 @@ export const BRIDGE_KIT_CHAINS = {
 
 export type ChainType = keyof typeof CHAINS;
 
-// Contract addresses per chain
-export const CONTRACTS = {
-  HUB: {
-    MOCK_USDC: '', // Set after deployment
-    MOCK_YEARN_VAULT: '',
-    USDX_TOKEN: '',
-    VAULT: '',
-  },
-  SPOKE: {
-    USDX_TOKEN: '',
-    MINTER: '',
-  },
-};
-
-// Load from deployment files if available
-if (typeof window !== 'undefined') {
-  // These will be populated from deployment JSON files
-  // For now, use placeholder values
-}
-
 export function getChainById(chainId: number): ChainType | null {
   if (chainId === CHAINS.HUB.id) return 'HUB';
   if (chainId === CHAINS.SPOKE.id) return 'SPOKE';

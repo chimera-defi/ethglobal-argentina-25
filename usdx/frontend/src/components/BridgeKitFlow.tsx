@@ -110,8 +110,8 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
               className="input w-full"
               disabled={isBridging}
             >
-              <option value={CHAINS.SPOKE.id}>Spoke Chain (Polygon)</option>
-              <option value={CHAINS.HUB.id}>Hub Chain (Ethereum)</option>
+              <option value={CHAINS.SPOKE.id}>Spoke Chain (Base Sepolia)</option>
+              <option value={CHAINS.HUB.id}>Hub Chain (Ethereum Sepolia)</option>
             </select>
           </div>
           <div>
@@ -122,8 +122,8 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
               className="input w-full"
               disabled={isBridging}
             >
-              <option value={CHAINS.HUB.id}>Hub Chain (Ethereum)</option>
-              <option value={CHAINS.SPOKE.id}>Spoke Chain (Polygon)</option>
+              <option value={CHAINS.HUB.id}>Hub Chain (Ethereum Sepolia)</option>
+              <option value={CHAINS.SPOKE.id}>Spoke Chain (Base Sepolia)</option>
             </select>
           </div>
         </div>

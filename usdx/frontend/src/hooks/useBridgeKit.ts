@@ -116,19 +116,56 @@ export function useBridgeKit(): UseBridgeKitReturn {
     setTransferId(null);
 
     try {
-      // Initialize Bridge Kit if not already initialized
-      if (!bridgeKit) {
+      // Initialize Bridge Kit if not already initialized or if chain changed
+      let kit = bridgeKit;
+      if (!kit) {
         await initializeBridgeKit(sourceChainId, destinationChainId);
-        // Re-initialize to get the new instance
-        await initializeBridgeKit(sourceChainId, destinationChainId);
+        // Get the newly created instance - we need to create it fresh
+        // Since state update is async, we'll create it directly here
+        const sourceChain = getViemChain(sourceChainId);
+        const destinationChain = getViemChain(destinationChainId);
+
+        if (!sourceChain || !destinationChain) {
+          throw new Error(`Unsupported chain: ${sourceChainId} or ${destinationChainId}`);
+        }
+
+        if (typeof window === 'undefined' || !window.ethereum) {
+          throw new Error('No wallet found. Please install MetaMask or another compatible wallet.');
+        }
+
+        const sourcePublicClient = createPublicClient({
+          chain: sourceChain,
+          transport: http(),
+        });
+
+        const destinationPublicClient = createPublicClient({
+          chain: destinationChain,
+          transport: http(),
+        });
+
+        const browserTransport = custom(window.ethereum);
+        
+        const sourceWalletClient = createWalletClient({
+          chain: sourceChain,
+          transport: browserTransport,
+        });
+
+        const adapter = createViemAdapter({
+          sourcePublicClient,
+          sourceWalletClient,
+          destinationPublicClient,
+        });
+
+        kit = new BridgeKit({ adapter });
+        setBridgeKit(kit);
       }
 
-      if (!bridgeKit) {
+      if (!kit) {
         throw new Error('Bridge Kit not initialized');
       }
 
       // Perform transfer
-      const transfer = await bridgeKit.transfer({
+      const transfer = await kit.transfer({
         amount,
         recipient,
         onStatusUpdate: (status) => {
