@@ -27,6 +27,15 @@ LayerZero is an omnichain interoperability protocol that enables cross-chain app
   - OApp Core
   - OApp PreCrime (optional)
 
+### 4. OVault
+- **Function**: Cross-chain yield vault that makes any vault accessible everywhere
+- **Benefits**: Simplified yield management, cross-chain access to yield positions
+- **Components**:
+  - OVault contract (wraps underlying vault, e.g., Yearn)
+  - Cross-chain position tracking
+  - Representative token minting on destination chains
+- **Use Case**: USDX uses OVault to wrap Yearn USDC vault for cross-chain yield access
+
 ## Supported Chains
 
 - Ethereum

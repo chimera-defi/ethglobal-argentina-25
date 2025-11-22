@@ -38,10 +38,16 @@
   - Multi-sig integration
 
 ### Week 3: Integration Contracts
-- [ ] YieldStrategy.sol
-  - Aave integration
-  - Deposit/withdrawal logic
-  - Yield tracking
+- [ ] OVault Integration
+  - Research OVault contracts and interfaces
+  - Integrate OVault into USDXVault
+  - Test OVault deposit/withdrawal flows
+  - Verify Yearn USDC vault integration
+- [ ] Yield Routes Integration
+  - Research Yield Routes contracts and interfaces
+  - Integrate Yield Routes into USDXVault (as secondary option)
+  - Test Yield Routes deposit/withdrawal flows
+  - Verify Yearn USDC vault integration
 - [ ] Bridge Kit Integration Planning
   - Research Bridge Kit SDK
   - Design backend service architecture
@@ -192,17 +198,19 @@
 2. **LayerZero**
    - Endpoint contract
    - OApp standard
+   - OVault (cross-chain yield vault)
    - Relayer network
 
 3. **Hyperlane**
    - Mailbox contract
    - Interchain Security Module
+   - Yield Routes (cross-chain yield vault)
    - Validator network
 
-4. **Yield Protocols**
-   - Aave (primary)
-   - Compound (secondary)
-   - Yearn (future)
+4. **Yearn Finance**
+   - Yearn USDC Vault (yUSDC)
+   - Single source of yield for all USDC collateral
+   - Integrated via OVault/Yield Routes
 
 ### Development Tools
 - Foundry

@@ -7,11 +7,11 @@
 #### Core Contracts
 
 1. **USDXVault.sol**
-   - Manages USDC deposits
+   - Manages USDC deposits via OVault/Yield Routes
    - Mints/burns USDX tokens
-   - Tracks user collateral balances
-   - Integrates with yield strategies
-   - Handles CCTP for USDC transfers
+   - Tracks user collateral balances (OVault/Yield Routes positions)
+   - Integrates with OVault (LayerZero) and Yield Routes (Hyperlane)
+   - Handles cross-chain position tracking
 
 2. **USDXToken.sol**
    - ERC20 token implementation
@@ -24,30 +24,35 @@
    - Manages message passing and verification
    - Coordinates burn on source chain and mint on destination chain
 
-4. **YieldStrategy.sol**
-   - Manages yield generation on idle USDC
-   - Integrates with DeFi protocols (Aave, Compound, etc.)
-   - Tracks yield accrual
-   - Handles yield distribution (protocol revenue)
+4. **OVault Integration** (LayerZero)
+   - Wraps Yearn USDC vault
+   - Provides cross-chain access to yield positions
+   - Tracks positions across chains
+   - Yield accrues automatically in Yearn vault
 
-5. **BridgeKitAdapter.sol** (Optional - for smart contract integration)
-   - Optional wrapper if Bridge Kit SDK needs to be called from contracts
-   - Most Bridge Kit usage will be in frontend/backend services
-   - Note: Bridge Kit is primarily a frontend/backend SDK, not a smart contract library
+5. **Yield Routes Integration** (Hyperlane)
+   - Wraps Yearn USDC vault
+   - Provides cross-chain access to yield positions
+   - Tracks positions across chains
+   - Yield accrues automatically in Yearn vault
+   - Used as secondary/redundant option to OVault
 
 ### Layer 2: Cross-Chain Infrastructure
 
 #### LayerZero Integration
 - **Endpoint**: LayerZero endpoint contract
-- **OApp**: USDX OApp implementation
+- **OApp**: USDX OApp implementation for USDX transfers
+- **OVault**: Cross-chain yield vault (wraps Yearn USDC vault)
 - **Message Types**: 
   - Mint request
   - Burn confirmation
   - Balance sync
+  - OVault position sync
 
 #### Hyperlane Integration
 - **Mailbox**: Hyperlane mailbox contract
 - **Interchain Security Module (ISM)**: Custom ISM for USDX
+- **Yield Routes**: Cross-chain yield vault (wraps Yearn USDC vault)
 - **Message Types**: Same as LayerZero (redundancy/fallback)
 
 ### Layer 3: Frontend/UI
@@ -85,12 +90,29 @@
 
 ## Contract Interaction Flow
 
+### Simplified Flow with OVault/Yield Routes
+
 ```
-User → USDXVault → USDXToken (mint)
+User → Bridge Kit SDK → USDC bridged to source chain
                 ↓
-         YieldStrategy (deposit USDC)
+         USDXVault → OVault/Yield Routes → Yearn USDC Vault
                 ↓
-         Bridge Kit SDK (frontend/backend service for cross-chain USDC)
+         USDXToken (mint on any chain)
+                ↓
+         Yield accrues automatically in Yearn vault
+```
+
+### Detailed Flow
+
+```
+1. User bridges USDC (Chain A → Chain B) via Bridge Kit
+2. USDC arrives on Chain B (source chain, e.g., Ethereum)
+3. User deposits USDC into USDXVault on Chain B
+4. USDXVault deposits into OVault/Yield Routes
+5. OVault/Yield Routes deposits into Yearn USDC vault
+6. User receives OVault/Yield Routes position
+7. User can mint USDX on any chain using OVault/Yield Routes position
+8. Yield accrues automatically in Yearn vault on Chain B
 ```
 
 ## Cross-Chain Message Flow
@@ -126,16 +148,29 @@ USDXToken.mint() on Chain B
    - Hyperlane: Validator network + ISM
    - Consider using both for redundancy
 
-## Yield Strategy Architecture
+## Yield Strategy Architecture (Simplified with OVault/Yield Routes)
 
-### Strategy Options
-1. **Aave**: Lend USDC for aUSDC tokens
-2. **Compound**: Lend USDC for cUSDC tokens
-3. **Yearn**: Deposit into USDC vault
-4. **Custom**: Direct lending protocols
+### Yield Source: Yearn USDC Vault
+- **Single Source**: All USDC collateral deposited into Yearn USDC vault
+- **Location**: Source chain (Ethereum)
+- **Management**: Handled by OVault/Yield Routes
+- **Cross-Chain Access**: Via OVault/Yield Routes representative tokens
+
+### How It Works
+1. **Deposit**: USDC → OVault/Yield Routes → Yearn USDC vault
+2. **Yield Accrual**: Automatic via Yearn vault
+3. **Cross-Chain Access**: OVault/Yield Routes mints representative tokens on other chains
+4. **Withdrawal**: Reverse flow through OVault/Yield Routes
+
+### Benefits
+- **Simplified**: No need for YieldStrategy contract per chain
+- **Single Source**: All yield from one Yearn vault
+- **Automatic**: Yield accrues without manual intervention
+- **Cross-Chain**: Access yield position from any chain
+- **Reduced Gas**: No need to bridge yield tokens
 
 ### Yield Distribution
-- **Option A**: Yield accrues to protocol treasury
+- **Option A**: Yield accrues to protocol treasury (recommended)
 - **Option B**: Yield shared with USDX holders (rebasing)
 - **Option C**: Yield used to buy back USDX (deflationary)
 
