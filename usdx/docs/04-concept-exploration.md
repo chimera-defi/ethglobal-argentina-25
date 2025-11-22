@@ -170,6 +170,8 @@ USDX provides:
 
 ## Comparison with Similar Protocols
 
+> **Note**: For detailed analysis of MIM (Magic Internet Money) and why USDX is being developed as its replacement, see **[00-why-and-previous-projects.md](./00-why-and-previous-projects.md)**.
+
 ### vs. Katana Vault Bridge
 **Similarities:**
 - Yield generation on collateral
