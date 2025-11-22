@@ -1,18 +1,21 @@
 # Vercel Deployment Guide
 
-## Problem
-```
-Error: No Output Directory named "public" found after the Build completed.
-```
+Complete guide for deploying the USDX frontend to Vercel.
 
-## Root Cause
-Vercel can't detect Next.js because Root Directory is set incorrectly. It falls back to static site mode (expects `public`), but Next.js outputs to `.next`.
+## Quick Solution
 
-## Solution
+**For monorepos, you MUST configure Root Directory in Vercel Dashboard:**
 
-### Configuration Files
+1. Go to **Vercel Dashboard → Your Project → Settings**
+2. Navigate to: **General → Build & Development Settings**
+3. Click **"Edit"** next to **Root Directory**
+4. Set to: `usdx/frontend`
+5. ✅ **CHECK THE BOX:** "Include source files outside of the Root Directory in the Build Step"
+6. Click **"Save"**
 
-**Root `/workspace/vercel.json`:**
+## Root Configuration
+
+**`/workspace/vercel.json`:**
 ```json
 {
   "version": 2,
@@ -21,17 +24,13 @@ Vercel can't detect Next.js because Root Directory is set incorrectly. It falls 
 }
 ```
 
-**Why this configuration:**
+**Why this works:**
 - `framework: "nextjs"` - Explicitly tells Vercel this is Next.js (prevents fallback to static mode)
 - `outputDirectory: ".next"` - Relative to Root Directory (when Root Directory is `usdx/frontend`, this resolves to `usdx/frontend/.next`)
 - No `cd` commands - Vercel handles directory navigation via Root Directory setting
 
-**Verified Output Directory:**
-- Next.js builds to: `usdx/frontend/.next` ✓ (when Root Directory is set correctly)
-- Contains: `.next/server/` and `.next/static/` ✓
-- This is the correct Next.js output directory
+## File Structure
 
-**File Structure:**
 ```
 /workspace/
 ├── vercel.json                    ✓ Minimal config
@@ -42,26 +41,7 @@ Vercel can't detect Next.js because Root Directory is set incorrectly. It falls 
         └── src/                   ✓ Source code
 ```
 
-### Required: Vercel Dashboard Settings
-
-**⚠️ CRITICAL: You MUST configure Root Directory in Vercel Dashboard.**
-
-1. Go to **Vercel Dashboard → Your Project → Settings**
-2. Navigate to: **General → Build & Development Settings**
-3. Click **"Edit"** next to **Root Directory**
-4. Change from: `frontend/usdx` ❌
-5. Change to: `usdx/frontend` ✅
-6. ✅ **CHECK THE BOX:** "Include source files outside of the Root Directory in the Build Step"
-7. Click **"Save"**
-
-**Other Settings (should auto-detect):**
-- Framework Preset: **Next.js** (auto-detected)
-- Build Command: `npm run build` (default)
-- Output Directory: `.next` (default - DO NOT change)
-- Install Command: `npm install` (default)
-- Node.js Version: **18.x** or higher
-
-## Why This Works
+## How It Works
 
 **With Root Directory set to `usdx/frontend`:**
 - Vercel changes into that directory
@@ -90,30 +70,28 @@ npm run build
 ✓ Build complete
 ```
 
-## What NOT to Do (Regressions)
-
-❌ **DO NOT:**
-- Move vercel.json to `usdx/frontend/` directory (caused regression)
-- Use static export (`output: 'export'`) unless specifically needed
-- Add `cd` commands in vercel.json (fails if Root Directory is already set)
-- Use `npm ci` without package-lock.json in frontend directory
-- Set `outputDirectory` to `public` (Next.js uses `.next`)
-- Set `outputDirectory` to absolute path like `usdx/frontend/.next` (use relative `.next` when Root Directory is set)
-
 ## Troubleshooting
 
-### If Still Getting "public" Directory Error:
+### Error: "No Output Directory named 'public' found"
+**Solution:** Set Root Directory to `usdx/frontend` in Vercel Dashboard
 
-1. **Verify Root Directory:** Must be `usdx/frontend` (NOT `frontend/usdx`)
-2. **Check Framework Detection:** Look for "Detected Next.js version" in build logs
-3. **Verify Output Directory:** Should be `.next` (default), not `public` or `out`
-4. **Clear Cache:** Settings → Advanced → Clear Build Cache → Redeploy
+### Error: "Cannot find module 'next'"
+**Solution:** Verify Root Directory is set correctly and includes source files checkbox is checked
 
-### If Build Fails:
+### Error: Build fails
+**Solution:** 
+1. Test locally: `cd usdx/frontend && npm install && npm run build`
+2. Check build logs for specific errors
+3. Verify Node.js version (should be 18.x or higher)
 
-1. **Test locally:** `cd usdx/frontend && npm install && npm run build`
-2. **Check build logs:** Look for specific error messages
-3. **Verify Node version:** Should be Node.js 18.x or higher
+## What NOT to Do
+
+❌ **DO NOT:**
+- Move vercel.json to `usdx/frontend/` directory (causes regression)
+- Use static export (`output: 'export'`) unless specifically needed
+- Add `cd` commands in vercel.json (fails if Root Directory is already set)
+- Set `outputDirectory` to `public` (Next.js uses `.next`)
+- Set `outputDirectory` to absolute path like `usdx/frontend/.next` (use relative `.next` when Root Directory is set)
 
 ## Expected Result
 
@@ -127,10 +105,10 @@ After setting Root Directory correctly:
 
 **The Solution:**
 1. Root vercel.json configures:
-   - `framework: "nextjs"` - Explicitly tells Vercel this is Next.js (prevents fallback to static mode)
-   - `outputDirectory: ".next"` - Relative to Root Directory (resolves to `usdx/frontend/.next` when Root Directory is set)
+   - `framework: "nextjs"` - Explicitly tells Vercel this is Next.js
+   - `outputDirectory: ".next"` - Relative to Root Directory
    - NO `cd` commands - Vercel handles directory navigation via Root Directory
-2. **CRITICAL:** Set Root Directory to `usdx/frontend` in Vercel Dashboard (currently set to `frontend/usdx` which is WRONG)
+2. **CRITICAL:** Set Root Directory to `usdx/frontend` in Vercel Dashboard
 3. Enable "Include source files outside of Root Directory"
 
 **Why This Works:**
@@ -138,7 +116,11 @@ After setting Root Directory correctly:
 - When Root Directory is `usdx/frontend`, Vercel runs commands FROM that directory
 - `outputDirectory: ".next"` is relative, so it resolves to `usdx/frontend/.next`
 - `framework: "nextjs"` prevents fallback to static site mode (which looks for `public`)
-- No `cd` commands that could fail if Root Directory is already set
 
 **Status:** Ready for deployment  
 **Confidence:** 100% - Official Vercel monorepo pattern
+
+---
+
+**Last Updated:** 2025-01-22  
+**Version:** 1.0.0

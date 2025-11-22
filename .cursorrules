@@ -39,3 +39,16 @@
 - Tests go in `usdx/contracts/test/forge/`
 - Scripts go in `usdx/contracts/script/`
 - Documentation goes in `usdx/docs/`
+
+## API Verification (Critical)
+- **ALWAYS verify external APIs before writing code** - Check type definitions (`.d.ts` files) in `node_modules` FIRST
+- Never trust documentation blindly - verify against actual package type definitions
+- Run `npm run type-check` IMMEDIATELY after writing TypeScript code
+- Use incremental development - write minimal test case first, verify each step
+- If documentation doesn't match actual API, STOP and find correct API from type definitions
+
+## Documentation Consolidation
+- Consolidate duplicate documentation files - don't leave multiple versions of the same information
+- Remove outdated session summaries and completion files after consolidating
+- Keep only essential documentation - remove redundant FINAL-*, COMPLETE-*, SUMMARY-* files after consolidation
+- All deployment guides should be in `usdx/docs/` not root directory

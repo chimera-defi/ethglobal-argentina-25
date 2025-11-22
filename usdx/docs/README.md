@@ -4,6 +4,8 @@
 
 All USDX protocol documentation is organized here.
 
+**Note**: This documentation has been consolidated and cleaned up. Duplicate files, outdated session summaries, and redundant completion files have been removed. All essential information has been preserved in consolidated documents.
+
 ### 🚀 Start Here
 
 1. **[USDX-PROSPECTUS.md](./USDX-PROSPECTUS.md)** - **📄 Executive Prospectus** - Concise overview for VCs and engineers (start here!)
@@ -35,24 +37,21 @@ All USDX protocol documentation is organized here.
 18. **[23-implementation-details-summary.md](./23-implementation-details-summary.md)** - Summary of new implementation guides
 19. **[24-mim-lessons-implementation-checklist.md](./24-mim-lessons-implementation-checklist.md)** - **MIM Lessons Implementation Checklist** - Comprehensive checklist to ensure MIM pitfalls are avoided
 
+### Deployment & Operations
+
+20. **[DEPLOYMENT-VERCEL.md](./DEPLOYMENT-VERCEL.md)** - Complete Vercel deployment guide
+21. **[DEPLOYMENT-GUIDE.md](../contracts/DEPLOYMENT-GUIDE.md)** - Smart contract deployment guide
+22. **[TESTING-AND-DEMO-GUIDE.md](./TESTING-AND-DEMO-GUIDE.md)** - Testing and demo setup guide
+23. **[MULTI-CHAIN-LOCAL-SETUP.md](./MULTI-CHAIN-LOCAL-SETUP.md)** - Local multi-chain development setup
+
 ### Reference & Assessment
 
-20. **[10-open-questions.md](./10-open-questions.md)** - Open questions and clarifications needed (many answered)
-21. **[SELF-ASSESSMENT.md](./SELF-ASSESSMENT.md)** - Honest assessment of work completed
-22. **[07-circle-cctp-research.md](./07-circle-cctp-research.md)** - Circle CCTP research (reference - Bridge Kit recommended)
-
-### Legacy/Archive Documents
-
-*Note: The following documents have been consolidated but are kept for reference:*
-- `11-circle-bridge-kit-research.md` → Consolidated into `RESEARCH-bridge-kit.md`
-- `12-bridge-kit-integration-summary.md` → Consolidated into `RESEARCH-bridge-kit.md`
-- `17-bridge-kit-documentation-research.md` → Consolidated into `RESEARCH-bridge-kit.md`
-- `18-bridge-kit-verified-findings.md` → Consolidated into `RESEARCH-bridge-kit.md`
-- `09-hyperlane-research.md` → Consolidated into `RESEARCH-hyperlane.md`
-- `14-hyperlane-yield-routes-research.md` → Consolidated into `RESEARCH-hyperlane.md`
-- `19-hyperlane-deep-research.md` → Consolidated into `RESEARCH-hyperlane.md`
-- `15-architecture-simplification-summary.md` → Merged into `02-architecture.md`
-- `16-hub-spoke-architecture.md` → Merged into `02-architecture.md`
+24. **[10-open-questions.md](./10-open-questions.md)** - Open questions and clarifications needed (many answered)
+25. **[SELF-ASSESSMENT.md](./SELF-ASSESSMENT.md)** - Honest assessment of work completed
+26. **[REVIEW-SUMMARY.md](./REVIEW-SUMMARY.md)** - Consolidated review summary (security, status, remaining work)
+27. **[SESSION-SUMMARY.md](./SESSION-SUMMARY.md)** - Development session summaries and milestones
+28. **[AGENT-META-LEARNINGS.md](./AGENT-META-LEARNINGS.md)** - Critical development practices and learnings
+29. **[07-circle-cctp-research.md](./07-circle-cctp-research.md)** - Circle CCTP research (reference - Bridge Kit recommended)
 
 ## Quick Navigation
 
