@@ -34,7 +34,7 @@ export default function WalletButton() {
     if (typeof window === "undefined" || !window.ethereum) return;
     
     try {
-      const provider = new ethers.BrowserProvider(window.ethereum);
+      const provider = new ethers.providers.Web3Provider(window.ethereum as any);
       const accounts = await provider.listAccounts();
       if (accounts.length > 0) {
         const walletState = await connectWallet();
@@ -68,6 +68,10 @@ export default function WalletButton() {
     try {
       const walletState = await connectWallet();
       setWallet(walletState);
+      // Notify parent component
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new Event("walletConnected"));
+      }
     } catch (error: any) {
       alert(`Failed to connect: ${error.message}`);
     } finally {

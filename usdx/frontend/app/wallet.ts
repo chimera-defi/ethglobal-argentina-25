@@ -2,9 +2,21 @@
 
 import { ethers } from "ethers";
 
+// Extend Window interface for TypeScript
+declare global {
+  interface Window {
+    ethereum?: {
+      request: (args: { method: string; params?: any[] }) => Promise<any>;
+      on: (event: string, handler: (...args: any[]) => void) => void;
+      removeListener: (event: string, handler: (...args: any[]) => void) => void;
+      isMetaMask?: boolean;
+    };
+  }
+}
+
 export interface WalletState {
-  provider: ethers.BrowserProvider | null;
-  signer: ethers.JsonRpcSigner | null;
+  provider: ethers.providers.Web3Provider | null;
+  signer: ethers.Signer | null;
   address: string | null;
   chainId: number | null;
   isConnected: boolean;
@@ -15,9 +27,10 @@ export async function connectWallet(): Promise<WalletState> {
     throw new Error("MetaMask not installed");
   }
 
-  const provider = new ethers.BrowserProvider(window.ethereum);
+  // Use Web3Provider for ethers v5
+  const provider = new ethers.providers.Web3Provider(window.ethereum as any);
   await provider.send("eth_requestAccounts", []);
-  const signer = await provider.getSigner();
+  const signer = provider.getSigner();
   const address = await signer.getAddress();
   const network = await provider.getNetwork();
   
@@ -25,7 +38,7 @@ export async function connectWallet(): Promise<WalletState> {
     provider,
     signer,
     address,
-    chainId: Number(network.chainId),
+    chainId: network.chainId,
     isConnected: true,
   };
 }

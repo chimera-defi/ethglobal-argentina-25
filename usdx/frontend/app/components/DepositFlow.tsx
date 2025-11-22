@@ -1,56 +1,54 @@
 "use client";
 
 import { useState } from "react";
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
-import { parseUnits, formatUnits } from "viem";
+import { ethers } from "ethers";
+import { WalletState } from "../wallet";
 
 // Mock addresses - replace with actual deployed addresses
 const VAULT_ADDRESS = "0x0000000000000000000000000000000000000000";
 const USDC_ADDRESS = "0x0000000000000000000000000000000000000000";
 
-export default function DepositFlow() {
-  const { address } = useAccount();
-  const [amount, setAmount] = useState("");
+// ERC20 ABI
+const ERC20_ABI = [
+  "function approve(address spender, uint256 amount) returns (bool)",
+  "function balanceOf(address owner) view returns (uint256)",
+];
 
-  const { writeContract, data: hash, isPending } = useWriteContract();
-  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
-    hash,
-  });
+export default function DepositFlow() {
+  const [wallet, setWallet] = useState<WalletState | null>(null);
+  const [amount, setAmount] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
 
   const handleDeposit = async () => {
-    if (!amount || !address) return;
+    if (!amount || !wallet?.signer) {
+      alert("Please connect your wallet first");
+      return;
+    }
+
+    setLoading(true);
+    setStatus("pending");
 
     try {
-      const amountWei = parseUnits(amount, 6); // USDC has 6 decimals
+      const amountWei = ethers.utils.parseUnits(amount, 6); // USDC has 6 decimals
 
       // Approve USDC
-      await writeContract({
-        address: USDC_ADDRESS as `0x${string}`,
-        abi: [
-          {
-            name: "approve",
-            type: "function",
-            stateMutability: "nonpayable",
-            inputs: [
-              { name: "spender", type: "address" },
-              { name: "amount", type: "uint256" },
-            ],
-            outputs: [{ name: "", type: "bool" }],
-          },
-        ],
-        functionName: "approve",
-        args: [VAULT_ADDRESS as `0x${string}`, amountWei],
-      });
+      const usdcContract = new ethers.Contract(USDC_ADDRESS, ERC20_ABI, wallet.signer);
+      const approveTx = await usdcContract.approve(VAULT_ADDRESS, amountWei);
+      await approveTx.wait();
 
-      // Deposit (this would be called after approval)
-      // await writeContract({
-      //   address: VAULT_ADDRESS,
-      //   abi: vaultABI,
-      //   functionName: "depositUSDC",
-      //   args: [amountWei],
-      // });
-    } catch (error) {
+      // TODO: Call vault deposit function once ABI is available
+      // const vaultContract = new ethers.Contract(VAULT_ADDRESS, VAULT_ABI, wallet.signer);
+      // const depositTx = await vaultContract.depositUSDC(amountWei);
+      // await depositTx.wait();
+
+      setStatus("success");
+    } catch (error: any) {
       console.error("Deposit error:", error);
+      setStatus("error");
+      alert(`Deposit failed: ${error.message}`);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -67,17 +65,20 @@ export default function DepositFlow() {
         />
         <button
           onClick={handleDeposit}
-          disabled={isPending || isConfirming || !amount}
+          disabled={loading || !amount || !wallet?.isConnected}
           className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 disabled:opacity-50"
         >
-          {isPending || isConfirming
+          {loading
             ? "Processing..."
-            : isSuccess
+            : status === "success"
             ? "Deposited!"
             : "Deposit"}
         </button>
-        {isSuccess && (
+        {status === "success" && (
           <p className="text-green-600 text-sm">Deposit successful!</p>
+        )}
+        {status === "error" && (
+          <p className="text-red-600 text-sm">Deposit failed. Please try again.</p>
         )}
       </div>
     </div>

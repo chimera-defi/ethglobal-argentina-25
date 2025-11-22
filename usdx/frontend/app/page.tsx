@@ -6,7 +6,7 @@ import DepositFlow from "./components/DepositFlow";
 import MintFlow from "./components/MintFlow";
 import TransferFlow from "./components/TransferFlow";
 import BalanceDisplay from "./components/BalanceDisplay";
-import { WalletState } from "./wallet";
+import { WalletState, connectWallet } from "./wallet";
 
 export default function Home() {
   const [wallet, setWallet] = useState<WalletState>({
@@ -16,6 +16,39 @@ export default function Home() {
     chainId: null,
     isConnected: false,
   });
+
+  useEffect(() => {
+    // Check if wallet is already connected
+    if (typeof window !== "undefined" && window.ethereum) {
+      window.ethereum.on("accountsChanged", handleAccountsChanged);
+      window.ethereum.on("chainChanged", handleChainChanged);
+      checkConnection();
+    }
+
+    return () => {
+      if (typeof window !== "undefined" && window.ethereum) {
+        window.ethereum.removeListener("accountsChanged", handleAccountsChanged);
+        window.ethereum.removeListener("chainChanged", handleChainChanged);
+      }
+    };
+  }, []);
+
+  const checkConnection = async () => {
+    try {
+      const walletState = await connectWallet();
+      setWallet(walletState);
+    } catch (error) {
+      // Not connected, that's fine
+    }
+  };
+
+  const handleAccountsChanged = () => {
+    checkConnection();
+  };
+
+  const handleChainChanged = () => {
+    checkConnection();
+  };
 
   return (
     <main className="min-h-screen p-8">
