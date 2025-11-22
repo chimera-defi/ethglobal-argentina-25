@@ -1,33 +1,112 @@
 # USDX Flow Diagrams
 
-## 1. Initial Deposit and Mint Flow
+## 1. Hub-and-Spoke Deposit Flow
+
+### Spoke Chain → Hub Chain (USDC Deposit)
 
 ```
+┌─────────────────┐
+│  Spoke Chain    │
+│  (e.g., Polygon)│
+└────┬────────────┘
+     │
+     │ User has USDC
+     │
+     ▼
 ┌─────────┐
 │  User   │
 └────┬────┘
      │
-     │ 1. approve(USDC, USDXVault)
+     │ 1. Bridge Kit SDK
+     │    transfer(USDC → Hub)
      │
      ▼
 ┌─────────────────┐
-│  USDC Token     │
-└─────────────────┘
-     │
-     │ 2. depositUSDC(amount)
-     │
-     ▼
-┌─────────────────┐
-│  USDXVault      │
-│  - Receives USDC│
-│  - Tracks balance│
+│  Bridge Kit SDK │
+│  - Bridges USDC │
+│    to Hub Chain │
 └────┬────────────┘
      │
-     │ 3. mintUSDX(amount, user)
+     │ 2. USDC bridged via CCTP
+     │
+     └──────────────────────────────┐
+                                    │
+                                    │ 3. USDC arrives on Hub
+                                    │
+                                    ▼
+                           ┌─────────────────┐
+                           │  Hub Chain      │
+                           │  (Ethereum)     │
+                           └────┬────────────┘
+                                │
+                                │ 4. depositUSDC(amount)
+                                │
+                                ▼
+                           ┌─────────────────┐
+                           │  USDXVault      │
+                           │  (Hub Only)     │
+                           │  - Receives USDC│
+                           └────┬────────────┘
+                                │
+                                │ 5. Deposit into OVault/Yield Routes
+                                │
+                                ▼
+                           ┌─────────────────┐
+                           │  OVault /       │
+                           │  Yield Routes   │
+                           │  (Hub Only)     │
+                           └────┬────────────┘
+                                │
+                                │ 6. Deposit into Yearn
+                                │
+                                ▼
+                           ┌─────────────────┐
+                           │  Yearn USDC     │
+                           │  Vault          │
+                           │  - Yield accrues│
+                           │    automatically│
+                           └─────────────────┘
+```
+
+### Hub Chain → Spoke Chain (USDX Mint)
+
+```
+┌─────────────────┐
+│  Hub Chain      │
+│  (Ethereum)     │
+└────┬────────────┘
+     │
+     │ User has OVault/Yield Routes position
+     │
+     ▼
+┌─────────┐
+│  User   │
+└────┬────┘
+     │
+     │ 1. User wants USDX on Spoke Chain
+     │
+     ▼
+┌─────────────────┐
+│  Spoke Chain    │
+│  (e.g., Polygon)│
+└────┬────────────┘
+     │
+     │ 2. mintUSDXFromOVault(shares, hubChainId)
+     │
+     ▼
+┌─────────────────┐
+│USDXSpokeMinter  │
+│  - Verifies     │
+│    position on  │
+│    Hub Chain    │
+└────┬────────────┘
+     │
+     │ 3. Position verified via OVault/Yield Routes
      │
      ▼
 ┌─────────────────┐
 │  USDXToken      │
+│  (Spoke Chain)  │
 │  - Mints USDX   │
 │  - Transfers to │
 │    user         │
@@ -40,18 +119,6 @@
 │  User   │
 │  (USDX) │
 └─────────┘
-
-     │
-     │ 5. depositToYieldStrategy(USDC)
-     │
-     ▼
-┌─────────────────┐
-│ YieldStrategy   │
-│  - Deposits USDC│
-│    to Aave/Comp │
-│  - Receives yield│
-│    tokens       │
-└─────────────────┘
 ```
 
 ## 2. Cross-Chain Transfer Flow (LayerZero)
@@ -311,65 +378,76 @@ Chain A (Source)                    Chain B (Destination)
                            └──────────────┘
 ```
 
-## 5. OVault/Yield Routes Flow (Simplified Yield Generation)
+## 5. Hub-and-Spoke Yield Flow
 
-### Deposit and Yield Accrual
+### Complete Flow: Spoke → Hub → Spoke
 
 ```
-┌─────────┐
-│  User   │
-└────┬────┘
+┌─────────────────┐
+│  Spoke Chain A  │
+│  (User starts) │
+└────┬────────────┘
      │
-     │ 1. User bridges USDC to source chain
+     │ 1. User bridges USDC to Hub
      │    (via Bridge Kit)
      │
-     ▼
-┌─────────────────┐
-│  USDXVault      │
-│  (Source Chain) │
-└────┬────────────┘
-     │
-     │ 2. depositUSDC(amount)
-     │
-     ▼
-┌─────────────────┐
-│  OVault /       │
-│  Yield Routes   │
-│  - Receives USDC│
-│  - Tracks position│
-└────┬────────────┘
-     │
-     │ 3. Deposits into Yearn
-     │
-     ▼
-┌─────────────────┐
-│  Yearn USDC     │
-│  Vault          │
-│  - Holds all USDC│
-│  - Yield accrues│
-│    automatically│
-└────┬────────────┘
-     │
-     │ 4. Yield accrues continuously
-     │
-     ▼
-┌─────────────────┐
-│  OVault /       │
-│  Yield Routes   │
-│  - Position value│
-│    increases    │
-│  - Cross-chain  │
-│    access ready │
-└────┬────────────┘
-     │
-     │ 5. USDX minted to user
-     │
-     ▼
-┌─────────────────┐
-│  USDXToken      │
-│  - Minted on    │
-│    any chain    │
-└─────────────────┘
+     └──────────────────────────────┐
+                                    │
+                                    │ 2. USDC arrives on Hub
+                                    │
+                                    ▼
+                           ┌─────────────────┐
+                           │  Hub Chain      │
+                           │  (Ethereum)     │
+                           └────┬────────────┘
+                                │
+                                │ 3. depositUSDC(amount)
+                                │
+                                ▼
+                           ┌─────────────────┐
+                           │  USDXVault      │
+                           │  (Hub Only)     │
+                           └────┬────────────┘
+                                │
+                                │ 4. Deposit into OVault/Yield Routes
+                                │
+                                ▼
+                           ┌─────────────────┐
+                           │  OVault /       │
+                           │  Yield Routes   │
+                           │  (Hub Only)     │
+                           └────┬────────────┘
+                                │
+                                │ 5. Deposit into Yearn
+                                │
+                                ▼
+                           ┌─────────────────┐
+                           │  Yearn USDC     │
+                           │  Vault          │
+                           │  - Yield accrues│
+                           │    continuously │
+                           └─────────────────┘
+                                │
+                                │ 6. User receives position
+                                │
+                                └──────────────────────────────┐
+                                                               │
+                                                               │ 7. User mints USDX on Spoke
+                                                               │
+                                                               ▼
+                                                      ┌─────────────────┐
+                                                      │  Spoke Chain B  │
+                                                      │  (User mints)   │
+                                                      └────┬────────────┘
+                                                           │
+                                                           │ 8. USDXSpokeMinter verifies hub position
+                                                           │
+                                                           ▼
+                                                      ┌─────────────────┐
+                                                      │  USDXToken      │
+                                                      │  (Spoke Chain)  │
+                                                      │  - Mints USDX   │
+                                                      └─────────────────┘
 ```
 
 ### Cross-Chain Mint Flow
@@ -423,42 +501,43 @@ Chain B (Source Chain - Ethereum)
 └─────────────────┘
 ```
 
-## 6. Complete User Journey (Updated with OVault/Yield Routes)
+## 6. Complete Hub-and-Spoke User Journey
 
 ```
-User Journey: Bridge USDC, Deposit into OVault/Yield Routes, Mint USDX on Any Chain
+User Journey: Spoke → Hub → Spoke (Deposit, Mint, Transfer, Redeem)
 
-Step 1: Bridge USDC
-  User → Bridge Kit SDK → USDC bridged (Chain A → Chain B)
-  USDC arrives on Chain B (source chain, e.g., Ethereum)
+Step 1: Bridge USDC (Spoke → Hub)
+  User on Spoke Chain A → Bridge Kit SDK → USDC bridged to Hub Chain (Ethereum)
+  USDC arrives on Hub Chain via CCTP
 
-Step 2: Deposit into OVault/Yield Routes
-  User → depositUSDC(amount) → USDXVault (Chain B)
+Step 2: Deposit into Vault (Hub Chain)
+  User → depositUSDC(amount) → USDXVault (Hub Chain only)
   USDXVault → OVault/Yield Routes → Yearn USDC Vault
-  User receives OVault/Yield Routes position
+  User receives OVault/Yield Routes position on Hub Chain
   Yield starts accruing automatically in Yearn vault
 
-Step 3: Mint USDX on Any Chain
-  User → mintUSDXFromOVault(shares, Chain C) → USDXVault (Chain C)
-  OVault/Yield Routes → verifies position → mints representative token
-  USDXVault → mints USDX → transfers to user
-  User now has USDX on Chain C
+Step 3: Mint USDX on Spoke Chain
+  User → mintUSDXFromOVault(shares, hubChainId) → USDXSpokeMinter (Spoke Chain B)
+  USDXSpokeMinter → verifies position on Hub Chain via OVault/Yield Routes
+  USDXToken → mints USDX on Spoke Chain B
+  User now has USDX on Spoke Chain B
 
-Step 4: Use USDX on Chain C
-  User can use USDX on Chain C
-  USDC collateral remains in Yearn vault on Chain B (earning yield)
+Step 4: Use USDX on Spoke Chain
+  User can use USDX on Spoke Chain B
+  USDC collateral remains in Yearn vault on Hub Chain (earning yield)
 
-Step 5: Cross-Chain USDX Transfer (Optional)
-  User → transferCrossChain(amount, Chain D)
-  USDXToken → burn USDX (Chain C)
+Step 5: Cross-Chain USDX Transfer (Spoke → Spoke)
+  User → transferCrossChain(amount, Spoke Chain C)
+  USDXToken → burn USDX (Spoke Chain B)
   CrossChainBridge → send message via LayerZero/Hyperlane
-  USDXToken → mint USDX (Chain D)
+  USDXToken → mint USDX (Spoke Chain C)
 
-Step 6: Redeem (Optional)
-  User → burn USDX (Chain D)
-  User → withdrawUSDCFromOVault(amount) → USDXVault (Chain B)
+Step 6: Redeem (Spoke → Hub)
+  User → burn USDX (Spoke Chain C)
+  User → withdrawUSDCFromOVault(amount) → USDXVault (Hub Chain)
   OVault/Yield Routes → withdraws from Yearn → returns USDC
-  User receives USDC (with accrued yield)
+  User → Bridge Kit SDK → USDC bridged back to Spoke Chain A
+  User receives USDC (with accrued yield) on Spoke Chain A
 ```
 
 ## 7. Dual Bridge Strategy (LayerZero + Hyperlane)
