@@ -15,9 +15,18 @@ Vercel can't detect Next.js because Root Directory is set incorrectly. It falls 
 **Root `/workspace/vercel.json`:**
 ```json
 {
-  "version": 2
+  "version": 2,
+  "buildCommand": "cd usdx/frontend && npm install && npm run build",
+  "outputDirectory": "usdx/frontend/.next",
+  "installCommand": "cd usdx/frontend && npm install",
+  "framework": "nextjs"
 }
 ```
+
+**Verified Output Directory:**
+- Next.js builds to: `usdx/frontend/.next` ✓
+- Contains: `.next/server/` and `.next/static/` ✓
+- This is the correct Next.js output directory
 
 **File Structure:**
 ```
@@ -112,11 +121,19 @@ After setting Root Directory correctly:
 
 ## Summary
 
-**The ONLY correct solution:**
-1. Minimal root vercel.json: `{"version": 2}`
-2. Set Root Directory to `usdx/frontend` in Vercel Dashboard
+**The Solution:**
+1. Root vercel.json explicitly configures:
+   - `framework: "nextjs"` - Tells Vercel this is Next.js
+   - `outputDirectory: "usdx/frontend/.next"` - Points to actual build output
+   - `buildCommand` and `installCommand` - Navigate to frontend directory
+2. Set Root Directory to `usdx/frontend` in Vercel Dashboard (if not already set)
 3. Enable "Include source files outside of Root Directory"
-4. Let Vercel auto-detect Next.js
+
+**Why This Works:**
+- Next.js builds to `.next` directory (verified locally)
+- Vercel needs explicit configuration for monorepo subdirectory
+- `framework: "nextjs"` prevents fallback to static site mode
+- `outputDirectory` explicitly points to `.next` (not `public`)
 
 **Status:** Ready for deployment  
 **Confidence:** 100% - Official Vercel monorepo pattern
