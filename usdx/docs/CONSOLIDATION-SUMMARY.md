@@ -78,8 +78,7 @@ This document summarizes the consolidation work done on USDX protocol documentat
 ### Research & Integration Guides
 9. **`RESEARCH-bridge-kit.md`** - Complete Bridge Kit guide
 10. **`RESEARCH-hyperlane.md`** - Complete Hyperlane guide
-11. **`08-layerzero-research.md`** - LayerZero research
-12. **`13-layerzero-ovault-research.md`** - OVault research
+11. **`layerzero/`** - All LayerZero documentation consolidated (see [layerzero/README.md](./layerzero/README.md))
 
 ### Reference & Assessment
 13. **`10-open-questions.md`** - Open questions (many answered)

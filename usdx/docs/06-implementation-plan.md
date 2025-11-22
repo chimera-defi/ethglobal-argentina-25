@@ -38,7 +38,7 @@
   - Multi-sig integration
 
 ### Week 3: Integration Contracts
-- [ ] OVault Integration
+- [ ] OVault Integration (see [layerzero/README.md](./layerzero/README.md))
   - Research OVault contracts and interfaces
   - Integrate OVault into USDXVault
   - Test OVault deposit/withdrawal flows
