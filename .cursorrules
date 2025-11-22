@@ -35,6 +35,13 @@
 - Rebase on main/master before creating PRs
 - Keep commit messages clear and descriptive
 
+### TypeScript & Build Requirements
+- **Always test builds locally** before pushing changes
+- Fix all TypeScript type errors - never ignore type errors
+- Ensure return types match function signatures
+- Use explicit return types when type inference is unclear
+- Test `npm run build` or `npm run type-check` before committing
+
 ### Self-Assessment Checklist
 Before committing, ask:
 1. Is all the code I added actually being used?
@@ -43,3 +50,5 @@ Before committing, ask:
 4. Are there any unused imports or exports?
 5. Have I moved all generated docs to the docs folder?
 6. Is the code readable and maintainable?
+7. **Does `npm run build` pass without errors?**
+8. **Are all TypeScript types correct?**

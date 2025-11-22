@@ -45,7 +45,7 @@ const balanceItems = [
 export function BalanceCard({ address }: BalanceCardProps) {
   const { usdcBalance, hubUsdxBalance, spokeUsdxBalance, isLoading } = useBalances(address);
 
-  const getBalance = (key: string) => {
+  const getBalance = (key: string): bigint => {
     switch (key) {
       case 'usdc':
         return usdcBalance;
@@ -54,7 +54,7 @@ export function BalanceCard({ address }: BalanceCardProps) {
       case 'spokeUsdx':
         return spokeUsdxBalance;
       default:
-        return '0';
+        return BigInt(0);
     }
   };
 
