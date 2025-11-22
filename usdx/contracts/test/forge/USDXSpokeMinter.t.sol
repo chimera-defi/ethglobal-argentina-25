@@ -199,7 +199,7 @@ contract USDXSpokeMinterTest is Test {
     function testBurnRevertsIfInsufficientBalance() public {
         vm.startPrank(user1);
         usdx.approve(address(minter), 1000 * 10**6);
-        vm.expectRevert(USDXSpokeMinter.InsufficientPosition.selector);
+        vm.expectRevert(USDXSpokeMinter.InsufficientShares.selector);
         minter.burn(1000 * 10**6);
         vm.stopPrank();
     }

@@ -103,6 +103,10 @@ contract USDXShareOFTAdapterTest is Test {
     function testLockSharesFrom() public {
         uint256 shares = vault.balanceOf(user);
         
+        // Approve adapter to transfer shares
+        vm.prank(user);
+        IERC20(address(vault)).approve(address(adapter), shares);
+        
         // Transfer shares to adapter first
         vm.prank(user);
         IERC20(address(vault)).transfer(address(adapter), shares);

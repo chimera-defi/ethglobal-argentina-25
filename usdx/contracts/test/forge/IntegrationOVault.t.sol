@@ -137,8 +137,10 @@ contract IntegrationOVaultTest is Test {
         
         // Setup user
         usdc.mint(user, INITIAL_BALANCE);
-        vm.prank(user);
+        vm.startPrank(user);
         usdc.approve(address(vault), type(uint256).max);
+        usdc.approve(address(composer), type(uint256).max);
+        vm.stopPrank();
     }
     
     function testFullFlow_DepositViaOVault() public {
@@ -167,10 +169,11 @@ contract IntegrationOVaultTest is Test {
         // Step 2: Get shares from vault wrapper
         uint256 shares = vaultWrapper.balanceOf(user);
         
-        // Step 3: Lock shares in adapter
-        vm.prank(user);
+        // Step 3: Lock shares in adapter (user needs to approve adapter first)
+        vm.startPrank(user);
         IERC20(address(vaultWrapper)).approve(address(shareOFTAdapter), shares);
         shareOFTAdapter.lockShares(shares);
+        vm.stopPrank();
         
         // Step 4: Send shares cross-chain (simulate)
         bytes memory options = "";
@@ -193,9 +196,11 @@ contract IntegrationOVaultTest is Test {
             ""
         );
         
-        // Step 6: Mint USDX on spoke using shares
-        vm.prank(user);
+        // Step 6: Approve and mint USDX on spoke using shares
+        vm.startPrank(user);
+        shareOFTSpoke.approve(address(spokeMinter), shares);
         spokeMinter.mintUSDXFromOVault(shares);
+        vm.stopPrank();
         
         // Verify
         assertEq(usdxSpoke.balanceOf(user), shares);

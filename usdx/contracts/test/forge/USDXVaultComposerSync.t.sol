@@ -73,8 +73,10 @@ contract USDXVaultComposerSyncTest is Test {
         
         // Setup user
         usdc.mint(user, INITIAL_BALANCE);
-        vm.prank(user);
+        vm.startPrank(user);
         usdc.approve(address(composer), type(uint256).max);
+        IERC20(address(vault)).approve(address(shareOFTAdapter), type(uint256).max);
+        vm.stopPrank();
         
         // Set trusted remotes
         bytes32 remote = bytes32(uint256(uint160(address(shareOFT))));
