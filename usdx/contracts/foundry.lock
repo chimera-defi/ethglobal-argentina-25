@@ -1,4 +1,10 @@
 {
+  "lib/hyperlane-monorepo": {
+    "tag": {
+      "name": "v1.5.8",
+      "rev": "dc89ee1558f437b5937f9f4694e04048330a990f"
+    }
+  },
   "lib/openzeppelin-contracts": {
     "tag": {
       "name": "v5.5.0",

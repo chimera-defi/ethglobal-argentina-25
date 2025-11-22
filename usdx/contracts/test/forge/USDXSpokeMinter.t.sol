@@ -23,7 +23,8 @@ contract USDXSpokeMinterTest is Test {
         relayer = address(0x2);
         user = address(0x3);
         
-        // Deploy hub chain contracts (deployer is test contract, admin gets role in constructor)
+        // Deploy hub chain contracts
+        // Note: USDXToken constructor grants DEFAULT_ADMIN_ROLE to admin address
         MockUSDC usdc = new MockUSDC();
         usdxToken = new USDXToken(admin);
         MockYieldVault yieldVault = new MockYieldVault(address(usdc));
@@ -33,24 +34,27 @@ contract USDXSpokeMinterTest is Test {
             address(yieldVault)
         );
         
-        // Deploy spoke minter
+        // Deploy spoke minter (constructor grants DEFAULT_ADMIN_ROLE to deployer, which is test contract)
         spokeMinter = new USDXSpokeMinter(
             address(usdxToken),
             address(hubVault),
             HUB_CHAIN_ID
         );
         
-        // Grant roles (impersonate admin)
+        // Grant roles
+        // USDXToken admin is set in constructor, so we impersonate admin
         vm.startPrank(admin);
         usdxToken.grantRole(usdxToken.VAULT_ROLE(), address(hubVault));
         usdxToken.grantRole(usdxToken.VAULT_ROLE(), address(spokeMinter));
-        spokeMinter.grantRole(spokeMinter.RELAYER_ROLE(), relayer);
         vm.stopPrank();
+        
+        // SpokeMinter admin is deployer (test contract), so we can grant directly
+        spokeMinter.grantRole(spokeMinter.RELAYER_ROLE(), relayer);
     }
 
     function testMintFromHubPosition() public {
-        uint256 amount = 1000e18;
-        uint256 hubPosition = 2000e6; // User has 2000 USDC on hub
+        uint256 amount = 1000e18; // 1000 USDX (18 decimals)
+        uint256 hubPosition = 2000e18; // User has 2000 USDC worth of collateral (converted to 18 decimals for comparison)
         bytes32 mintId = keccak256("test-mint-1");
         
         vm.prank(relayer);
@@ -62,7 +66,7 @@ contract USDXSpokeMinterTest is Test {
 
     function testMintRevertsIfInsufficientPosition() public {
         uint256 amount = 1000e18;
-        uint256 hubPosition = 500e6; // Less than amount
+        uint256 hubPosition = 500e18; // Less than amount (converted to 18 decimals)
         bytes32 mintId = keccak256("test-mint-2");
         
         vm.prank(relayer);
@@ -72,7 +76,7 @@ contract USDXSpokeMinterTest is Test {
 
     function testMintRevertsIfReplay() public {
         uint256 amount = 1000e18;
-        uint256 hubPosition = 2000e6;
+        uint256 hubPosition = 2000e18; // Converted to 18 decimals
         bytes32 mintId = keccak256("test-mint-3");
         
         vm.prank(relayer);

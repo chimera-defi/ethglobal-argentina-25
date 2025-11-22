@@ -25,13 +25,16 @@ contract CrossChainBridgeTest is Test {
         bridge = new CrossChainBridge(address(usdxToken), CHAIN_ID);
         
         // Grant roles
+        // USDXToken admin is set in constructor, so impersonate admin
         vm.startPrank(admin);
         usdxToken.grantRole(usdxToken.VAULT_ROLE(), address(bridge));
         usdxToken.grantRole(usdxToken.VAULT_ROLE(), admin);
-        bridge.grantRole(bridge.RELAYER_ROLE(), relayer);
-        bridge.setSupportedChain(DEST_CHAIN_ID, true);
         usdxToken.mint(user, 10000e18);
         vm.stopPrank();
+        
+        // Bridge admin is deployer (test contract), so we can grant directly
+        bridge.grantRole(bridge.RELAYER_ROLE(), relayer);
+        bridge.setSupportedChain(DEST_CHAIN_ID, true);
     }
 
     function testTransferCrossChain() public {
@@ -39,6 +42,8 @@ contract CrossChainBridgeTest is Test {
         address destinationAddress = address(0x4);
         
         vm.startPrank(user);
+        // Approve bridge to burn tokens
+        usdxToken.approve(address(bridge), amount);
         bytes32 transferId = bridge.transferCrossChain(amount, DEST_CHAIN_ID, destinationAddress);
         vm.stopPrank();
         
@@ -61,6 +66,8 @@ contract CrossChainBridgeTest is Test {
         
         // Initiate transfer
         vm.startPrank(user);
+        // Approve bridge to burn tokens
+        usdxToken.approve(address(bridge), amount);
         bytes32 transferId = bridge.transferCrossChain(amount, DEST_CHAIN_ID, destinationAddress);
         vm.stopPrank();
         
@@ -87,6 +94,8 @@ contract CrossChainBridgeTest is Test {
         
         // Initiate transfer
         vm.startPrank(user);
+        // Approve bridge to burn tokens
+        usdxToken.approve(address(bridge), amount);
         bytes32 transferId = bridge.transferCrossChain(amount, DEST_CHAIN_ID, destinationAddress);
         vm.stopPrank();
         
