@@ -2,6 +2,5 @@
   "version": 2,
   "buildCommand": "cd usdx/frontend && npm run build",
   "outputDirectory": "usdx/frontend/.next",
-  "installCommand": "cd usdx/frontend && npm ci",
-  "framework": null
+  "installCommand": "cd usdx/frontend && npm install"
 }
