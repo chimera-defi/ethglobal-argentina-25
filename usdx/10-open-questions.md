@@ -1,31 +1,63 @@
 # USDX Open Questions and Clarifications Needed
 
-## Circle CCTP Questions
+## Circle Bridge Kit Questions
+
+1. **API Key and Authentication**
+   - Do we need a Circle API key for Bridge Kit?
+   - How to obtain and manage API keys?
+   - Are there rate limits on Bridge Kit API?
+
+2. **SDK Integration**
+   - What is the exact npm package name?
+   - Are there TypeScript types available?
+   - What are the minimum Node.js/React versions required?
+
+3. **UI Components**
+   - How customizable are the Bridge Kit React components?
+   - Can we style them to match our design system?
+   - Are there accessibility considerations?
+
+4. **Webhooks**
+   - How to set up webhook endpoints?
+   - What is the webhook payload format?
+   - How to secure webhook endpoints?
+   - What is the retry policy for failed webhooks?
+
+5. **Error Handling**
+   - What are all possible error types?
+   - How does Bridge Kit handle failed transfers?
+   - Can transfers be retried?
+   - What happens if attestation times out?
+
+6. **Fees**
+   - Are there any fees beyond gas costs?
+   - Who pays for Bridge Kit service (if any)?
+   - Are there volume-based fee structures?
+
+7. **Status Tracking**
+   - How accurate is status tracking?
+   - Can we query transfer status programmatically?
+   - What is the typical transfer completion time?
+
+## Circle CCTP Questions (Reference - Bridge Kit handles most of these)
+
+*Note: Bridge Kit abstracts away most CCTP complexity. These questions are for reference/advanced use cases.*
 
 1. **Contract Addresses**
-   - Need to verify mainnet contract addresses for all supported chains
-   - Are there any differences between testnet and mainnet addresses?
+   - Need to verify mainnet contract addresses (Bridge Kit should handle this)
    - Are contracts upgradeable? What are the implications?
 
 2. **Attestation API**
-   - Are there rate limits on the attestation API?
-   - What is the typical attestation time?
-   - What happens if attestation is delayed or fails?
-   - Is there a maximum time to wait for attestation?
+   - Bridge Kit handles attestation polling automatically
+   - What happens if attestation is delayed or fails? (Bridge Kit should handle)
 
 3. **Fees**
    - Are there any fees beyond gas costs for CCTP transfers?
    - Who pays for the attestation service?
-   - Are there volume-based fee structures?
 
 4. **Error Handling**
-   - What are all possible error conditions?
-   - How to handle failed CCTP transfers?
-   - Can transfers be cancelled or refunded?
-
-5. **Address Format**
-   - Confirmation needed on bytes32 address conversion
-   - Are there any edge cases with address conversion?
+   - What are all possible error conditions? (Bridge Kit should provide clear errors)
+   - How to handle failed CCTP transfers? (Bridge Kit should handle)
 
 ## LayerZero Questions
 

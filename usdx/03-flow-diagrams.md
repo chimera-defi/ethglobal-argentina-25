@@ -177,31 +177,34 @@ Chain A (Source)                    Chain B (Destination)
                            └──────────────┘
 ```
 
-## 4. CCTP Integration Flow (USDC Cross-Chain)
+## 4. Bridge Kit Integration Flow (USDC Cross-Chain)
+
+### Option A: Frontend Integration (User-Initiated)
 
 ```
 ┌─────────┐
 │  User   │
 └────┬────┘
      │
-     │ 1. User wants to deposit USDC
-     │    from Chain A to Chain B vault
+     │ 1. User initiates deposit from Chain A
+     │    to Chain B vault via UI
      │
      ▼
 ┌─────────────────┐
-│  USDXVault      │
-│  (Chain A)      │
+│  Frontend UI    │
+│  (Bridge Kit    │
+│   Components)   │
 └────┬────────────┘
      │
-     │ 2. initiateCCTPTransfer(amount, chainB)
+     │ 2. Bridge Kit SDK transfer()
      │
      ▼
 ┌─────────────────┐
-│  CCTPAdapter    │
-│  - Calls CCTP    │
-│    TokenMessenger│
-│  - Burns USDC    │
-│    on Chain A    │
+│  Bridge Kit SDK │
+│  - Burns USDC   │
+│    on Chain A   │
+│  - Polls for    │
+│    attestation  │
 └────┬────────────┘
      │
      │ 3. CCTP Attestation
@@ -210,24 +213,102 @@ Chain A (Source)                    Chain B (Destination)
      └──────────────────────────────┐
                                     │
                                     │ 4. Attestation received
-                                    │
-                                    ▼
-                           ┌─────────────────┐
-                           │  CCTPAdapter    │
-                           │  (Chain B)      │
-                           │  - Receives msg │
-                           │  - Mints USDC   │
-                           └────────┬────────┘
-                                    │
-                                    │ 5. USDC deposited to vault
+                                    │    USDC minted on Chain B
                                     │
                                     ▼
                            ┌─────────────────┐
                            │  USDXVault      │
                            │  (Chain B)      │
+                           │  - Receives USDC│
                            │  - Credits user │
-                           │  - Ready to mint│
-                           └─────────────────┘
+                           └────────┬────────┘
+                                    │
+                                    │ 5. Bridge Kit callback
+                                    │    or webhook triggers
+                                    │
+                                    ▼
+                           ┌─────────────────┐
+                           │  Frontend/Backend│
+                           │  - Calls vault   │
+                           │    mintUSDX()   │
+                           └────────┬────────┘
+                                    │
+                                    │ 6. USDX minted to user
+                                    │
+                                    ▼
+                           ┌──────────────┐
+                           │    User      │
+                           │   (USDX)     │
+                           └──────────────┘
+```
+
+### Option B: Backend Service Integration (Automated)
+
+```
+┌─────────┐
+│  User   │
+└────┬────┘
+     │
+     │ 1. User requests cross-chain deposit
+     │
+     ▼
+┌─────────────────┐
+│  Frontend UI    │
+│  - User selects │
+│    chains/amount│
+└────┬────────────┘
+     │
+     │ 2. API call to backend
+     │
+     ▼
+┌─────────────────┐
+│  Backend Service│
+│  (Bridge Kit SDK│
+│   Integration)  │
+└────┬────────────┘
+     │
+     │ 3. Bridge Kit SDK transfer()
+     │
+     ▼
+┌─────────────────┐
+│  Bridge Kit SDK │
+│  - Burns USDC   │
+│    on Chain A   │
+│  - Polls for    │
+│    attestation  │
+└────┬────────────┘
+     │
+     │ 4. CCTP Attestation
+     │
+     └──────────────────────────────┐
+                                    │
+                                    │ 5. Webhook received
+                                    │    Transfer completed
+                                    │
+                                    ▼
+                           ┌─────────────────┐
+                           │  Backend Service│
+                           │  - Processes     │
+                           │    webhook       │
+                           └────────┬────────┘
+                                    │
+                                    │ 6. Calls vault contract
+                                    │
+                                    ▼
+                           ┌─────────────────┐
+                           │  USDXVault      │
+                           │  (Chain B)      │
+                           │  - Receives USDC│
+                           │  - Mints USDX   │
+                           └────────┬────────┘
+                                    │
+                                    │ 7. USDX transferred to user
+                                    │
+                                    ▼
+                           ┌──────────────┐
+                           │    User      │
+                           │   (USDX)     │
+                           └──────────────┘
 ```
 
 ## 5. Yield Generation Flow

@@ -2,7 +2,7 @@
 
 ## Overview
 
-USDX is a cross-chain stablecoin protocol that enables users to mint USDX tokens by depositing USDC collateral into vaults on any supported chain. The protocol leverages Circle's Cross-Chain Transfer Protocol (CCTP) for secure USDC transfers, and LayerZero/Hyperlane for cross-chain messaging to maintain USDX balance consistency across chains.
+USDX is a cross-chain stablecoin protocol that enables users to mint USDX tokens by depositing USDC collateral into vaults on any supported chain. The protocol leverages Circle's Bridge Kit (built on CCTP) for secure USDC cross-chain transfers, and LayerZero/Hyperlane for cross-chain messaging to maintain USDX balance consistency across chains.
 
 ## Documentation Structure
 
@@ -12,10 +12,12 @@ USDX is a cross-chain stablecoin protocol that enables users to mint USDX tokens
 4. **[04-concept-exploration.md](./04-concept-exploration.md)** - Design decisions and concept exploration
 5. **[05-technical-specification.md](./05-technical-specification.md)** - Detailed technical specifications
 6. **[06-implementation-plan.md](./06-implementation-plan.md)** - Implementation roadmap and phases
-7. **[07-circle-cctp-research.md](./07-circle-cctp-research.md)** - Circle CCTP integration research
+7. **[07-circle-cctp-research.md](./07-circle-cctp-research.md)** - Circle CCTP integration research (reference)
 8. **[08-layerzero-research.md](./08-layerzero-research.md)** - LayerZero integration research
 9. **[09-hyperlane-research.md](./09-hyperlane-research.md)** - Hyperlane integration research
 10. **[10-open-questions.md](./10-open-questions.md)** - Open questions and clarifications needed
+11. **[11-circle-bridge-kit-research.md](./11-circle-bridge-kit-research.md)** - Circle Bridge Kit integration research (recommended)
+12. **[12-bridge-kit-integration-summary.md](./12-bridge-kit-integration-summary.md)** - Bridge Kit integration summary and decision rationale
 
 ## Key Features
 
@@ -23,7 +25,7 @@ USDX is a cross-chain stablecoin protocol that enables users to mint USDX tokens
 - **USDC Collateral**: 1:1 backing with USDC
 - **Yield Generation**: USDC collateral earns yield while locked
 - **Fast Transfers**: Leverage LayerZero and Hyperlane for near-instant cross-chain transfers
-- **Secure**: Built on battle-tested protocols (CCTP, LayerZero, Hyperlane)
+- **Secure**: Built on battle-tested protocols (Bridge Kit/CCTP, LayerZero, Hyperlane)
 
 ## Architecture Highlights
 
@@ -31,13 +33,13 @@ USDX is a cross-chain stablecoin protocol that enables users to mint USDX tokens
 - **USDXVault**: Manages USDC deposits and USDX minting
 - **USDXToken**: ERC20 token with cross-chain capabilities
 - **CrossChainBridge**: Handles cross-chain USDX transfers
-- **CCTPAdapter**: Integrates with Circle CCTP for USDC transfers
+- **Bridge Kit Service**: Backend service using Bridge Kit SDK for USDC transfers
 - **YieldStrategy**: Manages yield generation on idle USDC
 
 ### Cross-Chain Infrastructure
-- **LayerZero**: Primary cross-chain messaging protocol
-- **Hyperlane**: Secondary cross-chain messaging protocol (redundancy)
-- **Circle CCTP**: USDC cross-chain transfers
+- **LayerZero**: Primary cross-chain messaging protocol for USDX transfers
+- **Hyperlane**: Secondary cross-chain messaging protocol for USDX transfers (redundancy)
+- **Circle Bridge Kit**: SDK and UI components for USDC cross-chain transfers (built on CCTP)
 
 ## User Flow
 
@@ -78,7 +80,8 @@ USDX is a cross-chain stablecoin protocol that enables users to mint USDX tokens
 
 ## Resources
 
-- [Circle CCTP Documentation](https://developers.circle.com/stablecoin/docs/cctp-overview)
+- [Circle Bridge Kit Documentation](https://developers.circle.com/bridge-kit) (Recommended)
+- [Circle CCTP Documentation](https://developers.circle.com/stablecoin/docs/cctp-overview) (Reference)
 - [LayerZero Documentation](https://layerzero.gitbook.io/docs/)
 - [Hyperlane Documentation](https://docs.hyperlane.xyz/)
 

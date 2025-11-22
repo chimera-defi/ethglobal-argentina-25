@@ -38,14 +38,15 @@
   - Multi-sig integration
 
 ### Week 3: Integration Contracts
-- [ ] CCTPAdapter.sol
-  - Circle CCTP integration
-  - Attestation handling
-  - Cross-chain USDC transfers
 - [ ] YieldStrategy.sol
   - Aave integration
   - Deposit/withdrawal logic
   - Yield tracking
+- [ ] Bridge Kit Integration Planning
+  - Research Bridge Kit SDK
+  - Design backend service architecture
+  - Plan webhook integration
+  - Note: Bridge Kit is frontend/backend SDK, not a smart contract
 
 ### Week 4: Cross-Chain Bridge
 - [ ] LayerZeroAdapter.sol
@@ -89,10 +90,14 @@
 - [ ] Withdrawal interface
 
 ### Week 2: Cross-Chain Features
+- [ ] Bridge Kit SDK integration
+  - Install and configure Bridge Kit SDK
+  - Integrate Bridge Kit React components
+  - Implement transfer flow
 - [ ] Cross-chain transfer UI
 - [ ] Transaction status tracking
 - [ ] Pending transfers display
-- [ ] CCTP status display
+- [ ] Bridge Kit status display
 
 ### Week 3: Advanced Features
 - [ ] Transaction history
@@ -164,8 +169,11 @@
 - **State Management**: Zustand or Redux
 - **Chain Management**: RainbowKit
 - **UI Components**: shadcn/ui or similar
+- **Bridge Kit**: @circle-fin/bridge-kit (for USDC cross-chain transfers)
 
 ### Infrastructure
+- **Bridge Kit Service**: Node.js service using Bridge Kit SDK
+- **Webhook Handler**: Express endpoint for Bridge Kit webhooks
 - **Indexer**: The Graph or custom indexer
 - **API**: Node.js + Express or Next.js API routes
 - **Database**: PostgreSQL for indexing
@@ -175,10 +183,11 @@
 ## Key Dependencies
 
 ### External Protocols
-1. **Circle CCTP**
-   - TokenMessenger contract
-   - MessageTransmitter contract
-   - Attestation API
+1. **Circle Bridge Kit**
+   - Bridge Kit SDK (@circle-fin/bridge-kit)
+   - Bridge Kit React components
+   - Bridge Kit API (optional)
+   - Webhook support
 
 2. **LayerZero**
    - Endpoint contract
