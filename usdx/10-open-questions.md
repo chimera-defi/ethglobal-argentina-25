@@ -1,5 +1,11 @@
 # USDX Open Questions and Clarifications Needed
 
+**Status**: Many questions answered ✅ | Critical decisions still needed ⚠️
+
+**Last Updated**: After consolidation review
+
+**Note**: See **[SELF-ASSESSMENT.md](./SELF-ASSESSMENT.md)** for gaps analysis and **[HANDOFF-GUIDE.md](./HANDOFF-GUIDE.md)** for implementation priorities.
+
 ## Circle Bridge Kit Questions
 
 ### ✅ Answered from Documentation Review
@@ -147,35 +153,49 @@
 
 ## Protocol Design Questions
 
-1. **Yield Distribution**
-   - Final decision on yield distribution model?
-   - Protocol treasury vs rebasing vs buyback?
-   - Can we support multiple models?
+### ⚠️ HIGH PRIORITY - Decisions Needed Before Implementation
 
-2. **Minting Model**
-   - Confirm 1:1 minting ratio?
-   - Should we add over-collateralization buffer?
-   - What happens if USDC depegs?
+1. **Yield Distribution** ⚠️ **CRITICAL**
+   - **Status**: Decision needed
+   - **Options**:
+     - Option A: Protocol treasury (recommended in architecture)
+     - Option B: Shared with users (rebasing)
+     - Option C: Buyback and burn (deflationary)
+   - **Recommendation**: Option A for simplicity
+   - **Action**: Finalize decision before Phase 2 implementation
 
-3. **Cross-Chain Transfer Fees**
-   - Finalize fee structure?
-   - Who pays fees (user vs protocol)?
-   - How to handle fee refunds?
+2. **Fee Structure** ⚠️ **CRITICAL**
+   - **Status**: Not defined
+   - **Questions**:
+     - Who pays cross-chain transfer fees? (User vs Protocol)
+     - Protocol fee percentage?
+     - Fee structure for deposits/withdrawals?
+   - **Action**: Define fee model before implementation
 
-4. **Redemption Model**
-   - Confirm cross-chain redemption support?
-   - How to handle CCTP delays during redemption?
-   - What if user redeems on different chain than deposit?
+3. **Minting Model** ✅ **ANSWERED**
+   - **1:1 Ratio**: ✅ Confirmed in architecture
+   - **Over-collateralization**: Not planned (1:1 ratio)
+   - **USDC Depeg**: Needs risk management plan (not yet defined)
 
-5. **Bridge Selection**
-   - How to choose between LayerZero and Hyperlane?
-   - Should users choose or protocol decides?
-   - Can we use both simultaneously for redundancy?
+4. **Bridge Selection** ✅ **ANSWERED**
+   - **Decision**: Use both LayerZero and Hyperlane simultaneously
+   - **Primary**: LayerZero (OVault)
+   - **Secondary**: Hyperlane (Yield Routes)
+   - **Rationale**: Redundancy and risk mitigation
 
-6. **Yield Strategy**
-   - Confirm Aave as primary strategy?
-   - When to add multi-strategy support?
-   - How to handle strategy failures?
+5. **Yield Strategy** ✅ **ANSWERED**
+   - **Decision**: Yearn USDC vault (not Aave)
+   - **Single Source**: All yield from one Yearn vault
+   - **Access**: Via OVault (LayerZero) and Yield Routes (Hyperlane)
+   - **Multi-strategy**: Not planned initially
+
+### Medium Priority
+
+6. **Redemption Model** ⚠️ **NEEDS CLARIFICATION**
+   - **Cross-chain redemption**: ✅ Supported (user can redeem on any chain)
+   - **Bridge Kit delays**: Needs handling strategy
+   - **Different chain redemption**: Needs clarification
+   - **Action**: Define redemption flow details
 
 ## Technical Questions
 
