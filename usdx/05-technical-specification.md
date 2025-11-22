@@ -51,11 +51,22 @@ interface IUSDXToken {
 
 ```solidity
 interface IUSDXVault {
-    // Deposit functions
+    // Deposit functions (on source chain)
     function depositUSDC(uint256 amount) external returns (uint256 usdxAmount);
     function depositUSDCFor(address user, uint256 amount) external returns (uint256 usdxAmount);
     
-    // Withdrawal functions
+    // Cross-chain mint functions (on any chain)
+    function mintUSDXFromOVault(
+        uint256 ovaultShares,
+        uint16 sourceChainId
+    ) external returns (uint256 usdxAmount);
+    
+    function mintUSDXFromYieldRoutes(
+        uint256 yieldRoutesShares,
+        uint32 sourceDomain
+    ) external returns (uint256 usdxAmount);
+    
+    // Withdrawal functions (on source chain)
     function withdrawUSDC(uint256 usdxAmount) external returns (uint256 usdcAmount);
     function withdrawUSDCTo(address to, uint256 usdxAmount) external returns (uint256 usdcAmount);
     
@@ -68,16 +79,17 @@ interface IUSDXVault {
     ) external; // Only authorized bridge service
     
     // View functions
-    function getUserCollateral(address user) external view returns (uint256);
+    function getUserOVaultShares(address user) external view returns (uint256);
+    function getUserYieldRoutesShares(address user) external view returns (uint256);
     function getTotalCollateral() external view returns (uint256);
     function getTotalUSDXMinted() external view returns (uint256);
     function getCollateralRatio() external view returns (uint256); // Should be 1:1
     function isTransferProcessed(bytes32 transferId) external view returns (bool);
     
-    // Yield functions
-    function depositToYieldStrategy(uint256 amount) external; // Only yield manager
-    function withdrawFromYieldStrategy(uint256 amount) external; // Only yield manager
-    function getYieldAccrued() external view returns (uint256);
+    // OVault/Yield Routes integration
+    function getOVaultAddress() external view returns (address);
+    function getYieldRoutesAddress() external view returns (address);
+    function getYearnVaultAddress() external view returns (address);
 }
 ```
 
@@ -256,30 +268,57 @@ interface IHyperlaneAdapter {
 }
 ```
 
-### YieldStrategy.sol
+### OVault Integration
 
 ```solidity
-interface IYieldStrategy {
-    // Deposit to yield protocol
-    function deposit(uint256 amount) external returns (uint256 shares);
+import {IOVault} from "@layerzero/oapp-vault/contracts/interfaces/IOVault.sol";
+
+interface IOVaultIntegration {
+    // OVault interface (simplified)
+    function deposit(uint256 amount, address receiver) external returns (uint256 shares);
+    function withdraw(uint256 shares, address receiver) external returns (uint256 amount);
+    function sharesToAssets(uint256 shares) external view returns (uint256);
+    function assetsToShares(uint256 assets) external view returns (uint256);
+    function isValidPosition(uint16 chainId, uint256 shares) external view returns (bool);
     
-    // Withdraw from yield protocol
-    function withdraw(uint256 shares) external returns (uint256 amount);
+    // Cross-chain position access
+    function getCrossChainPosition(
+        address user,
+        uint16 chainId
+    ) external view returns (uint256 shares);
+}
+```
+
+### Yield Routes Integration
+
+```solidity
+import {IYieldRoutes} from "@hyperlane-xyz/yield-routes/contracts/interfaces/IYieldRoutes.sol";
+
+interface IYieldRoutesIntegration {
+    // Yield Routes interface (simplified)
+    function deposit(uint256 amount, address receiver) external returns (uint256 shares);
+    function withdraw(uint256 shares, address receiver) external returns (uint256 amount);
+    function sharesToAssets(uint256 shares) external view returns (uint256);
+    function assetsToShares(uint256 assets) external view returns (uint256);
+    function isValidPosition(uint32 domain, uint256 shares) external view returns (bool);
     
-    // Emergency withdraw
-    function emergencyWithdraw() external;
-    
-    // View functions
-    function getTotalDeposited() external view returns (uint256);
-    function getTotalYieldAccrued() external view returns (uint256);
-    function getYieldRate() external view returns (uint256); // APY
-    function getSharesForAmount(uint256 amount) external view returns (uint256);
-    function getAmountForShares(uint256 shares) external view returns (uint256);
-    
-    // Strategy management
-    function setStrategy(address strategy) external; // Only admin
-    function pauseStrategy() external; // Only admin
-    function unpauseStrategy() external; // Only admin
+    // Cross-chain position access
+    function getCrossChainPosition(
+        address user,
+        uint32 domain
+    ) external view returns (uint256 shares);
+}
+```
+
+### Yearn Vault Integration
+
+```solidity
+interface IYearnVault {
+    function deposit(uint256 amount) external returns (uint256);
+    function withdraw(uint256 shares) external returns (uint256);
+    function pricePerShare() external view returns (uint256);
+    function balanceOf(address account) external view returns (uint256);
+    function totalAssets() external view returns (uint256);
 }
 ```
 

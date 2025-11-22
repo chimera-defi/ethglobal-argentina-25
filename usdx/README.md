@@ -18,6 +18,9 @@ USDX is a cross-chain stablecoin protocol that enables users to mint USDX tokens
 10. **[10-open-questions.md](./10-open-questions.md)** - Open questions and clarifications needed
 11. **[11-circle-bridge-kit-research.md](./11-circle-bridge-kit-research.md)** - Circle Bridge Kit integration research (recommended)
 12. **[12-bridge-kit-integration-summary.md](./12-bridge-kit-integration-summary.md)** - Bridge Kit integration summary and decision rationale
+13. **[13-layerzero-ovault-research.md](./13-layerzero-ovault-research.md)** - LayerZero OVault research
+14. **[14-hyperlane-yield-routes-research.md](./14-hyperlane-yield-routes-research.md)** - Hyperlane Yield Routes research
+15. **[15-architecture-simplification-summary.md](./15-architecture-simplification-summary.md)** - Architecture simplification summary with OVault/Yield Routes
 
 ## Key Features
 
@@ -30,26 +33,29 @@ USDX is a cross-chain stablecoin protocol that enables users to mint USDX tokens
 ## Architecture Highlights
 
 ### Core Components
-- **USDXVault**: Manages USDC deposits and USDX minting
+- **USDXVault**: Manages USDC deposits via OVault/Yield Routes and USDX minting
 - **USDXToken**: ERC20 token with cross-chain capabilities
 - **CrossChainBridge**: Handles cross-chain USDX transfers
 - **Bridge Kit Service**: Backend service using Bridge Kit SDK for USDC transfers
-- **YieldStrategy**: Manages yield generation on idle USDC
+- **OVault/Yield Routes**: Cross-chain yield vaults wrapping Yearn USDC vault
+- **Yearn USDC Vault**: Single source of yield for all USDC collateral
 
 ### Cross-Chain Infrastructure
-- **LayerZero**: Primary cross-chain messaging protocol for USDX transfers
-- **Hyperlane**: Secondary cross-chain messaging protocol for USDX transfers (redundancy)
+- **LayerZero**: Primary cross-chain messaging protocol for USDX transfers + OVault for yield
+- **Hyperlane**: Secondary cross-chain messaging protocol for USDX transfers + Yield Routes for yield (redundancy)
 - **Circle Bridge Kit**: SDK and UI components for USDC cross-chain transfers (built on CCTP)
+- **Yearn Finance**: Yearn USDC vault as single source of yield (accessed via OVault/Yield Routes)
 
 ## User Flow
 
-1. User deposits USDC into vault on Chain A
-2. Vault mints USDX on Chain A (1:1 ratio)
-3. User requests cross-chain transfer to Chain B
-4. USDX is burned on Chain A
-5. Message sent via LayerZero/Hyperlane to Chain B
-6. USDX is minted on Chain B
-7. USDC collateral remains on Chain A (earning yield)
+1. User bridges USDC to source chain (Ethereum) via Bridge Kit
+2. User deposits USDC into USDXVault on source chain
+3. USDXVault deposits into OVault/Yield Routes (wraps Yearn USDC vault)
+4. User receives OVault/Yield Routes position
+5. User can mint USDX on any chain using OVault/Yield Routes position
+6. Yield accrues automatically in Yearn USDC vault on source chain
+7. User can transfer USDX cross-chain via LayerZero/Hyperlane
+8. USDC collateral remains in Yearn vault (earning yield automatically)
 
 ## Supported Chains (Planned)
 

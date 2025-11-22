@@ -26,6 +26,15 @@ Hyperlane is a permissionless interoperability protocol that enables secure cros
 - **Type**: Permissionless validator network
 - **Security**: Economic security (staked validators)
 
+### 4. Yield Routes
+- **Function**: Cross-chain yield vault that enables cross-chain access to yield positions
+- **Benefits**: Simplified yield management, cross-chain access to yield positions
+- **Components**:
+  - Yield Routes contract (wraps underlying vault, e.g., Yearn)
+  - Cross-chain position tracking via Hyperlane
+  - Representative token minting on destination chains
+- **Use Case**: USDX uses Yield Routes as secondary option to wrap Yearn USDC vault for cross-chain yield access
+
 ## Supported Chains
 
 - Ethereum

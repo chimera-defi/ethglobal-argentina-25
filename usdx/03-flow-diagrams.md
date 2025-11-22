@@ -311,88 +311,154 @@ Chain A (Source)                    Chain B (Destination)
                            └──────────────┘
 ```
 
-## 5. Yield Generation Flow
+## 5. OVault/Yield Routes Flow (Simplified Yield Generation)
+
+### Deposit and Yield Accrual
 
 ```
-┌─────────────────┐
-│  USDXVault      │
-│  - Holds USDC   │
-└────┬────────────┘
+┌─────────┐
+│  User   │
+└────┬────┘
      │
-     │ 1. Idle USDC detected
-     │
-     ▼
-┌─────────────────┐
-│ YieldStrategy   │
-│  Manager        │
-└────┬────────────┘
-     │
-     │ 2. Select optimal strategy
-     │    (Aave, Compound, etc.)
-     │
-     ▼
-┌─────────────────┐
-│  Aave/Compound  │
-│  - Deposit USDC │
-│  - Receive aUSDC│
-│    / cUSDC      │
-└────┬────────────┘
-     │
-     │ 3. Yield accrues over time
-     │
-     ▼
-┌─────────────────┐
-│ YieldStrategy   │
-│  - Tracks yield │
-│  - Compounds    │
-└────┬────────────┘
-     │
-     │ 4. User withdraws
-     │
-     ▼
-┌─────────────────┐
-│ YieldStrategy   │
-│  - Redeems      │
-│  - Returns USDC │
-│    + yield      │
-└────┬────────────┘
-     │
-     │ 5. USDC returned to vault
+     │ 1. User bridges USDC to source chain
+     │    (via Bridge Kit)
      │
      ▼
 ┌─────────────────┐
 │  USDXVault      │
-│  - Processes    │
-│    withdrawal   │
+│  (Source Chain) │
+└────┬────────────┘
+     │
+     │ 2. depositUSDC(amount)
+     │
+     ▼
+┌─────────────────┐
+│  OVault /       │
+│  Yield Routes   │
+│  - Receives USDC│
+│  - Tracks position│
+└────┬────────────┘
+     │
+     │ 3. Deposits into Yearn
+     │
+     ▼
+┌─────────────────┐
+│  Yearn USDC     │
+│  Vault          │
+│  - Holds all USDC│
+│  - Yield accrues│
+│    automatically│
+└────┬────────────┘
+     │
+     │ 4. Yield accrues continuously
+     │
+     ▼
+┌─────────────────┐
+│  OVault /       │
+│  Yield Routes   │
+│  - Position value│
+│    increases    │
+│  - Cross-chain  │
+│    access ready │
+└────┬────────────┘
+     │
+     │ 5. USDX minted to user
+     │
+     ▼
+┌─────────────────┐
+│  USDXToken      │
+│  - Minted on    │
+│    any chain    │
 └─────────────────┘
 ```
 
-## 6. Complete User Journey
+### Cross-Chain Mint Flow
 
 ```
-User Journey: Deposit USDC on Chain A, Mint USDX, Transfer to Chain B
+Chain A (User wants USDX)
+┌─────────┐
+│  User   │
+└────┬────┘
+     │
+     │ 1. User has OVault/Yield Routes position
+     │    on source chain (Chain B)
+     │
+     ▼
+┌─────────────────┐
+│  USDXVault      │
+│  (Chain A)      │
+└────┬────────────┘
+     │
+     │ 2. mintUSDXFromOVault(shares, sourceChain)
+     │
+     ▼
+┌─────────────────┐
+│  OVault /       │
+│  Yield Routes   │
+│  - Verifies     │
+│    position on  │
+│    source chain │
+│  - Mints        │
+│    representative│
+│    token        │
+└────┬────────────┘
+     │
+     │ 3. Position verified
+     │
+     ▼
+┌─────────────────┐
+│  USDXToken      │
+│  - Mints USDX   │
+│  - Transfers to │
+│    user         │
+└─────────────────┘
 
-Step 1: Deposit
-  User → approve USDC → USDXVault (Chain A)
-  USDXVault → receive USDC → mint USDX → transfer to user
+Chain B (Source Chain - Ethereum)
+┌─────────────────┐
+│  Yearn USDC     │
+│  Vault          │
+│  - Yield        │
+│    continues to │
+│    accrue       │
+└─────────────────┘
+```
 
-Step 2: Cross-Chain Transfer
-  User → transferCrossChain(amount, Chain B)
-  USDXToken → burn USDX (Chain A)
+## 6. Complete User Journey (Updated with OVault/Yield Routes)
+
+```
+User Journey: Bridge USDC, Deposit into OVault/Yield Routes, Mint USDX on Any Chain
+
+Step 1: Bridge USDC
+  User → Bridge Kit SDK → USDC bridged (Chain A → Chain B)
+  USDC arrives on Chain B (source chain, e.g., Ethereum)
+
+Step 2: Deposit into OVault/Yield Routes
+  User → depositUSDC(amount) → USDXVault (Chain B)
+  USDXVault → OVault/Yield Routes → Yearn USDC Vault
+  User receives OVault/Yield Routes position
+  Yield starts accruing automatically in Yearn vault
+
+Step 3: Mint USDX on Any Chain
+  User → mintUSDXFromOVault(shares, Chain C) → USDXVault (Chain C)
+  OVault/Yield Routes → verifies position → mints representative token
+  USDXVault → mints USDX → transfers to user
+  User now has USDX on Chain C
+
+Step 4: Use USDX on Chain C
+  User can use USDX on Chain C
+  USDC collateral remains in Yearn vault on Chain B (earning yield)
+
+Step 5: Cross-Chain USDX Transfer (Optional)
+  User → transferCrossChain(amount, Chain D)
+  USDXToken → burn USDX (Chain C)
   CrossChainBridge → send message via LayerZero/Hyperlane
+  USDXToken → mint USDX (Chain D)
 
-Step 3: Receive on Destination
-  Message arrives on Chain B
-  CrossChainBridge → verify → mint USDX → transfer to user
-
-Step 4: Use USDX on Chain B
-  User can now use USDX on Chain B
-  USDC collateral remains on Chain A (earning yield)
-
-Step 5: Redeem (Optional)
-  User → burn USDX (Chain B)
-  CrossChainBridge → send message to Chain A
-  USDXVault → release USDC collateral → transfer to user
+Step 6: Redeem (Optional)
+  User → burn USDX (Chain D)
+  User → withdrawUSDCFromOVault(amount) → USDXVault (Chain B)
+  OVault/Yield Routes → withdraws from Yearn → returns USDC
+  User receives USDC (with accrued yield)
 ```
 
 ## 7. Dual Bridge Strategy (LayerZero + Hyperlane)
