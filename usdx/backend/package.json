@@ -1,0 +1,35 @@
+{
+  "name": "usdx-backend",
+  "version": "0.1.0",
+  "description": "USDX Backend Services (Optional)",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "indexer": "tsx src/indexer/index.ts",
+    "migrate": "tsx src/database/migrate.ts",
+    "test": "vitest",
+    "lint": "eslint .",
+    "format": "prettier --write \"**/*.{ts,js,json,md}\""
+  },
+  "dependencies": {
+    "express": "^4.18.0",
+    "@circle-fin/bridge-kit": "^1.0.0",
+    "@circle-fin/adapter-viem-v2": "^1.0.0",
+    "viem": "^2.0.0",
+    "pg": "^8.11.0",
+    "dotenv": "^16.0.0",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/express": "^4.17.0",
+    "@types/pg": "^8.10.0",
+    "@types/cors": "^2.8.0",
+    "typescript": "^5.0.0",
+    "tsx": "^4.0.0",
+    "vitest": "^1.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0"
+  }
+}
