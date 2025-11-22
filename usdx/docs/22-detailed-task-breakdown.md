@@ -300,7 +300,116 @@ This document provides a comprehensive, step-by-step breakdown of all tasks requ
 - 90%+ test coverage
 - Gas optimized
 
-### 2.7 Testing & Security (Week 6-7)
+### 2.7 MIM Lessons Implementation - Peg Stability & Security (Week 6)
+
+**Duration**: 5 days
+
+> **Context**: Based on MIM's failures, USDX implements comprehensive peg stability mechanisms, enhanced security, and bridge redundancy. See [00-why-and-previous-projects.md](./00-why-and-previous-projects.md) for details.
+
+**Tasks**:
+
+#### Peg Stability Manager
+- [ ] Create PegStabilityManager.sol contract
+  - [ ] Peg price monitoring (get USDX price from DEXs)
+  - [ ] Peg deviation calculation
+  - [ ] Circuit breaker logic
+  - [ ] Reserve fund management
+  - [ ] Liquidity pool tracking
+  - [ ] Integration with USDXVault
+- [ ] Write unit tests (Foundry)
+  - [ ] Test peg deviation calculation
+  - [ ] Test circuit breaker activation
+  - [ ] Test reserve fund operations
+  - [ ] Test liquidity pool checks
+  - [ ] Fuzz tests
+- [ ] Write integration tests (Hardhat)
+  - [ ] Test with real DEX price feeds
+  - [ ] Test circuit breaker integration
+- [ ] Gas optimization
+- [ ] Code review
+
+**Dependencies**: 2.1, 2.2
+
+**Acceptance Criteria**:
+- Peg deviation calculated correctly
+- Circuit breakers activate at thresholds
+- Reserve fund managed securely
+- 90%+ test coverage
+
+#### Bridge Failover Manager
+- [ ] Create BridgeFailoverManager.sol contract
+  - [ ] Bridge health tracking (LayerZero, Hyperlane)
+  - [ ] Success rate calculation
+  - [ ] Automatic bridge selection
+  - [ ] Failover logic
+  - [ ] Integration with CrossChainBridge
+- [ ] Write unit tests (Foundry)
+  - [ ] Test bridge health tracking
+  - [ ] Test bridge selection logic
+  - [ ] Test failover mechanisms
+  - [ ] Fuzz tests
+- [ ] Write integration tests (Hardhat)
+  - [ ] Test with real bridge failures (simulated)
+- [ ] Gas optimization
+- [ ] Code review
+
+**Dependencies**: 2.6
+
+**Acceptance Criteria**:
+- Bridge health tracked accurately
+- Automatic failover works correctly
+- 90%+ test coverage
+
+#### Enhanced Security Features
+- [ ] Add enhanced rate limiting to USDXVault
+  - [ ] Cooldown periods
+  - [ ] Daily limits per user
+  - [ ] Circuit breakers for unusual activity
+- [ ] Add comprehensive input validation
+  - [ ] Amount validation (bounds checking)
+  - [ ] Address validation
+  - [ ] Chain ID validation
+- [ ] Add enhanced reentrancy protection
+  - [ ] Cross-chain callback locks
+  - [ ] Separate locks for different operations
+- [ ] Add time-locked upgrades
+  - [ ] Timelock contract integration
+  - [ ] Community notification system
+- [ ] Write tests for all security features
+- [ ] Code review
+
+**Dependencies**: 2.1, 2.2, 2.6
+
+**Acceptance Criteria**:
+- All security features implemented
+- Rate limiting works correctly
+- Input validation prevents invalid inputs
+- Reentrancy protection comprehensive
+- 90%+ test coverage
+
+#### Liquidity Management System
+- [ ] Create LiquidityManager.sol contract
+  - [ ] Liquidity pool registration
+  - [ ] Liquidity threshold monitoring
+  - [ ] Protocol-owned liquidity management
+  - [ ] LP incentive distribution (if needed)
+- [ ] Write unit tests (Foundry)
+  - [ ] Test pool registration
+  - [ ] Test threshold checks
+  - [ ] Test liquidity operations
+- [ ] Write integration tests (Hardhat)
+  - [ ] Test with real DEX pools
+- [ ] Gas optimization
+- [ ] Code review
+
+**Dependencies**: 2.1, 2.2
+
+**Acceptance Criteria**:
+- Liquidity pools tracked correctly
+- Threshold monitoring works
+- 90%+ test coverage
+
+### 2.8 Testing & Security (Week 6-7)
 
 **Duration**: 8 days
 
@@ -321,6 +430,9 @@ This document provides a comprehensive, step-by-step breakdown of all tasks requ
 - [ ] Write invariant tests
   - [ ] Total collateral = total USDX minted
   - [ ] User balances consistency
+  - [ ] Peg stability (deviation < threshold)
+  - [ ] Bridge health (at least one bridge healthy)
+  - [ ] Liquidity thresholds maintained
 - [ ] Fuzz testing
   - [ ] Fuzz all public functions
   - [ ] Fix issues found
@@ -331,14 +443,17 @@ This document provides a comprehensive, step-by-step breakdown of all tasks requ
 - [ ] Security review preparation
   - [ ] Run Slither
   - [ ] Run Mythril
+  - [ ] Run Echidna (property-based testing)
+  - [ ] Test MIM-specific attack vectors
   - [ ] Fix issues found
   - [ ] Prepare audit materials
+  - [ ] Document MIM lessons and mitigations
 - [ ] Code review
   - [ ] Review all contracts
   - [ ] Fix issues found
   - [ ] Update documentation
 
-**Dependencies**: 2.1-2.6
+**Dependencies**: 2.1-2.7
 
 **Acceptance Criteria**:
 - 90%+ test coverage

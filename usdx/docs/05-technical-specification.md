@@ -429,7 +429,87 @@ event CrossChainTransferCompleted(
 event MessageReceived(uint16 sourceChainId, bytes32 messageHash);
 ```
 
+## Peg Stability Mechanisms
+
+> **MIM Lesson**: MIM lacked robust peg stability mechanisms. USDX implements comprehensive peg protection.
+
+### PegStabilityManager.sol
+
+```solidity
+interface IPegStabilityManager {
+    // Peg monitoring
+    function getPegDeviation() external view returns (int256 deviationBps); // in basis points
+    function getPegPrice() external view returns (uint256 price); // USDX price in USDC (1e6 = $1.00)
+    function isPegStable() external view returns (bool);
+    
+    // Circuit breakers
+    function checkPegBeforeMint(uint256 amount) external view;
+    function checkPegBeforeBurn(uint256 amount) external view;
+    function pauseMintingIfNeeded() external;
+    
+    // Reserve fund management
+    function getReserveFundBalance() external view returns (uint256);
+    function addToReserveFund(uint256 amount) external;
+    function useReserveForPegSupport(uint256 amount) external; // Only peg manager
+    
+    // Liquidity pool management
+    function registerLiquidityPool(address pool, address dex) external; // Only admin
+    function getLiquidityPoolAddresses() external view returns (address[] memory);
+    function checkLiquidityThresholds() external view returns (bool);
+    
+    // Configuration
+    function setPegDeviationThreshold(uint256 thresholdBps) external; // Only admin
+    function setReserveFundPercentage(uint256 percentageBps) external; // Only admin
+    function setLiquidityThreshold(uint256 threshold) external; // Only admin
+}
+```
+
+### Enhanced USDXVault Interface (Peg Stability)
+
+```solidity
+interface IUSDXVault {
+    // ... existing functions ...
+    
+    // Peg stability functions
+    function redeemUSDC(uint256 usdxAmount) external returns (uint256 usdcAmount);
+    function getCollateralRatio() external view returns (uint256); // Should be >= 1e6 (1.0)
+    function getAvailableCollateral() external view returns (uint256);
+    
+    // Reserve fund
+    function getReserveFundBalance() external view returns (uint256);
+    function contributeToReserveFund(uint256 amount) external; // From yield
+}
+```
+
+### Bridge Failover Manager
+
+```solidity
+interface IBridgeFailoverManager {
+    // Bridge health tracking
+    struct BridgeHealth {
+        bool isHealthy;
+        uint256 successRate; // in basis points (10000 = 100%)
+        uint256 lastFailureTime;
+        uint256 consecutiveFailures;
+    }
+    
+    // Bridge selection
+    function selectBridge(uint16 destinationChainId) external view returns (uint8 bridgeType); // 0=LayerZero, 1=Hyperlane
+    function getBridgeHealth(uint8 bridgeType) external view returns (BridgeHealth memory);
+    
+    // Failover
+    function reportBridgeFailure(uint8 bridgeType, uint16 chainId) external;
+    function enableBridge(uint8 bridgeType, bool enabled) external; // Only admin
+    
+    // Configuration
+    function setFailureThreshold(uint256 threshold) external; // Only admin
+    function setHealthCheckInterval(uint256 interval) external; // Only admin
+}
+```
+
 ## Security Considerations
+
+> **MIM Lessons**: Enhanced security based on MIM's vulnerabilities.
 
 ### Access Control
 
@@ -439,13 +519,108 @@ bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 bytes32 public constant VAULT_ROLE = keccak256("VAULT_ROLE");
 bytes32 public constant YIELD_MANAGER_ROLE = keccak256("YIELD_MANAGER_ROLE");
 bytes32 public constant BRIDGE_ROLE = keccak256("BRIDGE_ROLE");
+bytes32 public constant PEG_MANAGER_ROLE = keccak256("PEG_MANAGER_ROLE"); // New
+bytes32 public constant EMERGENCY_PAUSER_ROLE = keccak256("EMERGENCY_PAUSER_ROLE"); // New
+```
+
+### Enhanced Rate Limiting
+
+```solidity
+// Rate limiting with cooldowns
+struct RateLimit {
+    uint256 lastOperationTime;
+    uint256 operationCount;
+    uint256 dailyLimit;
+    uint256 cooldownPeriod;
+}
+
+mapping(address => RateLimit) public userRateLimits;
+uint256 public constant DEFAULT_COOLDOWN = 1 hours;
+uint256 public constant DEFAULT_DAILY_LIMIT = 1000000e6; // 1M USDC
+
+function checkRateLimit(address user, uint256 amount) internal {
+    RateLimit storage limit = userRateLimits[user];
+    require(
+        block.timestamp >= limit.lastOperationTime + limit.cooldownPeriod,
+        "Rate limit: cooldown active"
+    );
+    require(
+        limit.operationCount + amount <= limit.dailyLimit,
+        "Rate limit: daily limit exceeded"
+    );
+    // Update limits
+    limit.lastOperationTime = block.timestamp;
+    limit.operationCount += amount;
+}
+```
+
+### Circuit Breakers
+
+```solidity
+// Circuit breaker for peg protection
+struct CircuitBreaker {
+    bool mintingPaused;
+    bool burningPaused;
+    uint256 pegDeviationThreshold; // in basis points
+    uint256 lastCheckTime;
+}
+
+CircuitBreaker public circuitBreaker;
+
+function checkCircuitBreaker() internal {
+    int256 deviation = pegStabilityManager.getPegDeviation();
+    uint256 absDeviation = deviation < 0 ? uint256(-deviation) : uint256(deviation);
+    
+    if (absDeviation > circuitBreaker.pegDeviationThreshold) {
+        circuitBreaker.mintingPaused = true;
+        emit CircuitBreakerActivated("Minting paused due to peg deviation");
+    }
+}
 ```
 
 ### Reentrancy Protection
 
-- Use OpenZeppelin's ReentrancyGuard
-- Checks-effects-interactions pattern
+- Use OpenZeppelin's ReentrancyGuard on all state-changing functions
+- Checks-effects-interactions pattern enforced
 - Lock mechanism for cross-chain callbacks
+- Separate locks for different operations (mint, burn, deposit, withdraw)
+
+```solidity
+// Enhanced reentrancy protection
+mapping(bytes32 => bool) private _crossChainLocks;
+
+function _setCrossChainLock(bytes32 lockId) internal {
+    require(!_crossChainLocks[lockId], "Cross-chain operation in progress");
+    _crossChainLocks[lockId] = true;
+}
+
+function _releaseCrossChainLock(bytes32 lockId) internal {
+    _crossChainLocks[lockId] = false;
+}
+```
+
+### Input Validation
+
+```solidity
+// Comprehensive input validation
+modifier validAmount(uint256 amount) {
+    require(amount > 0, "Amount must be greater than zero");
+    require(amount <= type(uint128).max, "Amount too large");
+    _;
+}
+
+modifier validAddress(address addr) {
+    require(addr != address(0), "Invalid address: zero address");
+    require(addr != address(this), "Invalid address: self");
+    _;
+}
+
+modifier validChainId(uint16 chainId) {
+    require(chainId > 0, "Invalid chain ID");
+    require(supportedChains[chainId], "Chain not supported");
+    _;
+}
+```
 
 ### Rate Limiting
 

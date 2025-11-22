@@ -170,6 +170,8 @@ USDX provides:
 
 ## Comparison with Similar Protocols
 
+> **Note**: For detailed analysis of MIM (Magic Internet Money) and why USDX is being developed as its replacement, see **[00-why-and-previous-projects.md](./00-why-and-previous-projects.md)**.
+
 ### vs. Katana Vault Bridge
 **Similarities:**
 - Yield generation on collateral
@@ -202,32 +204,148 @@ USDX provides:
 - USDX: Yield generation, CCTP: No yield
 - USDX: LayerZero/Hyperlane for USDX, CCTP: Only for USDC
 
+### vs. MIM (Magic Internet Money) - Detailed Comparison
+
+> **See [00-why-and-previous-projects.md](./00-why-and-previous-projects.md) for comprehensive MIM analysis.**
+
+**What MIM Got Right:**
+- Yield-bearing collateral concept
+- Cross-chain vision
+- DeFi composability
+- Multi-chain deployment
+
+**What MIM Got Wrong (USDX Improvements):**
+
+1. **Collateral Complexity**
+   - MIM: Multiple collateral types (yvUSDC, xSUSHI, etc.)
+   - USDX: Single collateral (USDC) - simpler, safer
+
+2. **Collateralization Ratio**
+   - MIM: 80-90% (leveraged, risky)
+   - USDX: 100%+ (1:1, can adjust) - safer
+
+3. **Peg Stability**
+   - MIM: Limited mechanisms, frequent depegging
+   - USDX: Multiple layers (direct backing, reserve fund, circuit breakers)
+
+4. **Bridge Dependencies**
+   - MIM: Over-reliance on Multichain (single point of failure)
+   - USDX: Multiple bridges with failover (Circle + LayerZero + Hyperlane)
+
+5. **Architecture**
+   - MIM: Distributed collateral across chains
+   - USDX: Hub-and-spoke (centralized collateral, simpler)
+
+6. **Security**
+   - MIM: Complex multi-protocol interactions
+   - USDX: Simplified architecture, fewer attack vectors
+
+7. **Yield Strategy**
+   - MIM: Multiple yield protocols
+   - USDX: Single Yearn vault (simpler, safer)
+
+8. **Liquidity**
+   - MIM: Struggled to maintain liquidity
+   - USDX: Proactive liquidity management
+
+**Key USDX Advantages Over MIM:**
+- ✅ Simpler architecture (easier to audit and secure)
+- ✅ Stronger peg stability mechanisms
+- ✅ Multiple bridge redundancy
+- ✅ Direct USDC backing (no collateral depegging risk)
+- ✅ Protocol reserve fund for peg support
+- ✅ Better liquidity management
+- ✅ Regulatory-friendly design
+
 ## Risk Analysis
 
+> **MIM Context**: This risk analysis incorporates lessons learned from MIM's failures. Each risk category includes specific MIM-related mitigations.
+
 ### Smart Contract Risks
-- **Mitigation**: Comprehensive audits, bug bounties, gradual rollout
+- **MIM Experience**: MIM suffered multiple exploits due to complex protocol interactions
+- **USDX Mitigation**: 
+  - Simplified architecture (single collateral, single yield strategy)
+  - Comprehensive audits from multiple firms
+  - Bug bounty program ($100k+)
+  - Gradual rollout with TVL limits
+  - Formal verification for critical functions
 - **Severity**: High
-- **Likelihood**: Medium
+- **Likelihood**: Medium (reduced by simplification)
 
 ### Bridge Risks
-- **Mitigation**: Use multiple bridges, monitor bridge health
+- **MIM Experience**: Over-reliance on Multichain bridge led to protocol failure when bridge collapsed
+- **USDX Mitigation**: 
+  - Multiple bridges (Circle Bridge Kit + LayerZero + Hyperlane)
+  - Automatic failover mechanisms
+  - Bridge health monitoring
+  - Per-bridge TVL limits
+  - No single point of failure
 - **Severity**: High
-- **Likelihood**: Low-Medium
+- **Likelihood**: Low-Medium (significantly reduced by redundancy)
+
+### Peg Stability Risks
+- **MIM Experience**: Multiple depegging events, insufficient peg maintenance mechanisms
+- **USDX Mitigation**:
+  - Direct 1:1 USDC backing
+  - Protocol reserve fund
+  - Circuit breakers
+  - Real-time peg monitoring
+  - Strong arbitrage incentives
+  - Liquidity pool management
+- **Severity**: High
+- **Likelihood**: Low (stronger mechanisms than MIM)
 
 ### Yield Strategy Risks
-- **Mitigation**: Diversify strategies, use well-audited protocols
+- **MIM Experience**: Multiple yield protocols increased complexity and risk
+- **USDX Mitigation**: 
+  - Single yield strategy (Yearn USDC vault)
+  - Well-audited protocol (Yearn)
+  - OVault/Yield Routes provide abstraction layer
+  - Can diversify later if needed
 - **Severity**: Medium
-- **Likelihood**: Low
-
-### Regulatory Risks
-- **Mitigation**: Legal review, compliance considerations
-- **Severity**: High
-- **Likelihood**: Unknown
+- **Likelihood**: Low (simplified approach)
 
 ### Liquidity Risks
-- **Mitigation**: Maintain reserves, limit large withdrawals
+- **MIM Experience**: Struggled to maintain liquidity, leading to peg instability
+- **USDX Mitigation**: 
+  - Proactive liquidity management
+  - Protocol-owned liquidity
+  - Liquidity pool monitoring
+  - Minimum liquidity thresholds
+  - LP incentives if needed
 - **Severity**: Medium
-- **Likelihood**: Low
+- **Likelihood**: Low (proactive management)
+
+### Regulatory Risks
+- **MIM Experience**: Algorithmic/leveraged model faced regulatory scrutiny
+- **USDX Mitigation**: 
+  - Fully collateralized (1:1 USDC)
+  - No algorithmic mechanisms
+  - Transparent and auditable
+  - Legal review before launch
+  - Compliance-friendly design
+- **Severity**: High
+- **Likelihood**: Unknown (but lower than MIM due to simpler model)
+
+### Collateral Risks
+- **MIM Experience**: Multiple collateral types with varying risk profiles
+- **USDX Mitigation**:
+  - Single collateral (USDC - most liquid stablecoin)
+  - No leverage (1:1 ratio)
+  - Direct redemption path
+  - No collateral depegging risk
+- **Severity**: Low
+- **Likelihood**: Very Low
+
+### Cross-Chain Message Risks
+- **MIM Experience**: Message ordering and verification issues
+- **USDX Mitigation**:
+  - Nonce management
+  - Message replay protection
+  - Double verification for critical operations
+  - Timeout mechanisms
+- **Severity**: Medium
+- **Likelihood**: Low-Medium
 
 ## Future Enhancements
 
