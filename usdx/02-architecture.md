@@ -92,10 +92,10 @@ USDX uses a **hub-and-spoke architecture** where:
 - Transaction history
 
 #### Bridge Kit Integration
-- **Bridge Kit SDK**: For cross-chain USDC transfers
-- **Bridge Kit UI Components**: Pre-built React components for bridge functionality
-- **Bridge Kit API**: Backend API for transfer status tracking (optional)
-- **Webhook Support**: For transfer completion notifications
+- **Bridge Kit SDK**: For cross-chain USDC transfers (SDK only, no UI components)
+- **Custom UI Required**: We build our own UI using Bridge Kit SDK
+- **No API Key**: Bridge Kit works directly with smart contracts
+- **Adapter**: Uses `@circle-fin/adapter-viem-v2` for viem integration
 
 ### Layer 4: Infrastructure Services
 
@@ -108,10 +108,11 @@ USDX uses a **hub-and-spoke architecture** where:
 - Analytics: Protocol metrics dashboard
 
 #### Bridge Kit Architecture
-- **Frontend**: Uses Bridge Kit React components and SDK
-- **Backend Service**: Uses Bridge Kit SDK for automated transfers
-- **Webhooks**: Bridge Kit sends webhooks on transfer status changes
-- **Smart Contracts**: Called by backend service after Bridge Kit transfers complete
+- **Frontend**: Custom UI built using Bridge Kit SDK
+- **Backend Service**: Optional - can use Bridge Kit SDK for automated transfers
+- **No Webhooks**: Bridge Kit is SDK-only, no webhook support
+- **Status Tracking**: Built into SDK via callbacks/events
+- **Smart Contracts**: Called directly by SDK (no backend required)
 
 ## Contract Interaction Flow
 

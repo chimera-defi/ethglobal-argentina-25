@@ -97,13 +97,17 @@
 
 ### Week 2: Cross-Chain Features
 - [ ] Bridge Kit SDK integration
-  - Install and configure Bridge Kit SDK
-  - Integrate Bridge Kit React components
+  - Install `@circle-fin/bridge-kit` and `@circle-fin/adapter-viem-v2`
+  - Configure Bridge Kit with viem adapters
   - Implement transfer flow
-- [ ] Cross-chain transfer UI
+- [ ] Custom Bridge UI (no pre-built components)
+  - Build chain selector component
+  - Build amount input component
+  - Build transfer status display
+  - Build transaction history
 - [ ] Transaction status tracking
 - [ ] Pending transfers display
-- [ ] Bridge Kit status display
+- [ ] Error handling and retry logic
 
 ### Week 3: Advanced Features
 - [ ] Transaction history
@@ -175,16 +179,18 @@
 - **State Management**: Zustand or Redux
 - **Chain Management**: RainbowKit
 - **UI Components**: shadcn/ui or similar
-- **Bridge Kit**: @circle-fin/bridge-kit (for USDC cross-chain transfers)
+- **Bridge Kit**: @circle-fin/bridge-kit + @circle-fin/adapter-viem-v2 (for USDC cross-chain transfers)
+- **Note**: Bridge Kit is SDK-only, custom UI required
 
 ### Infrastructure
-- **Bridge Kit Service**: Node.js service using Bridge Kit SDK
-- **Webhook Handler**: Express endpoint for Bridge Kit webhooks
+- **Bridge Kit Integration**: SDK used directly in frontend (no backend service needed)
+- **Optional Backend Service**: Node.js service using Bridge Kit SDK (for automated operations)
 - **Indexer**: The Graph or custom indexer
-- **API**: Node.js + Express or Next.js API routes
+- **API**: Node.js + Express or Next.js API routes (for our own API)
 - **Database**: PostgreSQL for indexing
 - **Monitoring**: Tenderly, OpenZeppelin Defender
 - **Analytics**: Custom dashboard
+- **Note**: Bridge Kit doesn't provide webhooks - status tracking via SDK callbacks
 
 ## Key Dependencies
 

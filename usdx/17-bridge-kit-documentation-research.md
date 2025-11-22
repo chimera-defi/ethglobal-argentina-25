@@ -15,49 +15,67 @@ Based on the Circle Bridge Kit documentation site, the following sections are av
 
 ### ✅ Confirmed Information
 
-1. **Installation and Setup**
-   - Bridge Kit is an SDK/library installable via npm
+1. **Installation and Setup** ✅
+   - **Package**: `@circle-fin/bridge-kit`
+   - **Adapter**: `@circle-fin/adapter-viem-v2` (for viem integration)
+   - **Installation**: `npm install @circle-fin/bridge-kit @circle-fin/adapter-viem-v2 viem typescript tsx dotenv`
    - Supports both TypeScript and JavaScript
    - Works in browser and Node.js environments
-   - Installation guide available at: https://developers.circle.com/bridge-kit/tutorials/installation
+   - Installation guide: https://developers.circle.com/bridge-kit/tutorials/installation
 
-2. **Transfer Flow**
+2. **API Key** ✅
+   - **No API Key Required**: Verified - BridgeKit constructor doesn't require API key
+   - **Usage**: `new BridgeKit()` - works directly with smart contracts
+   - No authentication needed
+
+3. **UI Components** ✅
+   - **No UI Components**: Verified - Bridge Kit is SDK-only
+   - **Custom UI Required**: We need to build our own UI
+   - No React components provided
+
+4. **Transfer Flow** ✅
    - Bridge Kit handles the complete CCTP flow
    - Abstracts away attestation polling
    - Provides status callbacks
    - Handles errors automatically
    - Quickstart guides show complete integration examples
 
-3. **Integration Points**
+5. **Integration Points** ✅
    - SDK functions for initiating transfers
-   - Status tracking capabilities
+   - Status tracking via callbacks
    - Error handling
-   - Callback mechanisms for status updates
+   - Direct blockchain interaction (no backend API)
+
+### ✅ Verified Information
+
+1. **API Key Requirements** ✅
+   - ✅ **No API key required** - Verified from quickstart code
+   - Bridge Kit works directly with smart contracts
+   - No authentication needed
+
+2. **SDK Package Details** ✅
+   - ✅ **Package**: `@circle-fin/bridge-kit`
+   - ✅ **Adapter**: `@circle-fin/adapter-viem-v2`
+   - ✅ **TypeScript**: Full TypeScript support
+   - ✅ **Usage**: `import { BridgeKit } from "@circle-fin/bridge-kit";`
+
+3. **UI Components** ✅
+   - ✅ **No UI components** - Bridge Kit is SDK-only
+   - Custom UI must be built using the SDK
+   - No React components provided
+
+4. **Webhook Support** ✅
+   - ✅ **No webhooks** - Bridge Kit is SDK-only, no backend API
+   - Status tracking via SDK callbacks/events
+   - No webhook infrastructure needed
 
 ### ⏳ Information Needing Direct Documentation Review
 
 **Note**: The documentation site uses dynamic loading (React/Next.js), so content needs to be reviewed directly in a browser. The following information should be verified:
 
-1. **API Key Requirements**
-   - ⏳ Is an API key required?
-   - ⏳ How to obtain API keys?
-   - ⏳ Rate limits?
-
-2. **SDK Package Details**
-   - ⏳ Exact npm package name
-   - ⏳ TypeScript type definitions availability
-   - ⏳ Minimum Node.js/React versions
-
-3. **UI Components**
-   - ⏳ Are React UI components included?
-   - ⏳ Customization options
-   - ⏳ Styling capabilities
-
-4. **Webhook Support**
-   - ⏳ Webhook availability
-   - ⏳ Webhook payload format
-   - ⏳ Security requirements
-   - ⏳ Retry policies
+1. **Rate Limits**
+   - ⏳ Are there any rate limits on Bridge Kit operations?
+   - ⏳ Any throttling mechanisms?
 
 5. **Error Handling**
    - ⏳ Complete error type list
@@ -119,8 +137,10 @@ Based on the Circle Bridge Kit documentation site, the following sections are av
 ## Next Steps
 
 1. ✅ Document structure identified
-2. ⏳ Review installation documentation directly
-3. ⏳ Review quickstart guides directly
-4. ⏳ Review API reference for Bridge Kit endpoints
-5. ⏳ Update open questions with findings
-6. ⏳ Update Bridge Kit research document with verified information
+2. ✅ Package names verified (`@circle-fin/bridge-kit`, `@circle-fin/adapter-viem-v2`)
+3. ✅ API key requirement verified (not required)
+4. ✅ UI components verified (none provided)
+5. ✅ Quickstart code reviewed
+6. ⏳ Review SDK reference for error types and status tracking
+7. ⏳ Review error handling documentation
+8. ⏳ Test Bridge Kit SDK on testnets
