@@ -12,12 +12,19 @@
 
 ### Step 2: Configure (1 minute)
 
-Vercel will auto-detect Next.js! Just verify:
+**IMPORTANT**: After importing, you MUST set the root directory:
+
+1. Click **Settings** → **General**
+2. Scroll to **Root Directory**
+3. Click **Edit** → Enter: `frontend`
+4. Click **Save**
+
+Vercel will auto-detect Next.js! Verify:
 
 - **Framework Preset**: Next.js ✅
-- **Root Directory**: `frontend` ✅
-- **Build Command**: `npm install --legacy-peer-deps && npm run build` ✅
-- **Output Directory**: `.next` ✅
+- **Root Directory**: `frontend` ✅ (Set this in Settings!)
+- **Build Command**: Auto-detected from `frontend/vercel.json` ✅
+- **Output Directory**: Auto-detected as `.next` ✅
 
 ### Step 3: Deploy (2 minutes)
 
