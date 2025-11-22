@@ -25,8 +25,7 @@ All USDX protocol documentation is organized here.
 
 11. **[RESEARCH-bridge-kit.md](./RESEARCH-bridge-kit.md)** - **Complete Bridge Kit guide** - Consolidated research, verified findings, integration patterns
 12. **[RESEARCH-hyperlane.md](./RESEARCH-hyperlane.md)** - **Complete Hyperlane guide** - Consolidated research, ISM selection, Yield Routes integration
-13. **[08-layerzero-research.md](./08-layerzero-research.md)** - LayerZero integration research
-14. **[13-layerzero-ovault-research.md](./13-layerzero-ovault-research.md)** - LayerZero OVault specific research
+13. **[layerzero/README.md](./layerzero/README.md)** - **📚 LayerZero Documentation** - All LayerZero and OVault documentation consolidated
 
 ### Implementation Guides
 
@@ -88,7 +87,7 @@ All USDX protocol documentation is organized here.
 **Smart Contracts**: `21-smart-contract-development-setup.md`
 **Bridge Kit**: `RESEARCH-bridge-kit.md`
 **Hyperlane**: `RESEARCH-hyperlane.md`
-**LayerZero**: `08-layerzero-research.md`, `13-layerzero-ovault-research.md`
+**LayerZero**: [layerzero/README.md](./layerzero/README.md) - All LayerZero documentation consolidated
 
 ## Status
 
