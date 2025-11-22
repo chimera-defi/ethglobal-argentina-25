@@ -3,9 +3,10 @@
 ## Quick Start
 
 **New to the project?** 
-1. Read **[AGENT-INSTRUCTIONS.md](./AGENT-INSTRUCTIONS.md)** - Agent-specific instructions
-2. Read **[SETUP.md](./SETUP.md)** - Development environment setup
-3. Read **[docs/HANDOFF-GUIDE.md](./docs/HANDOFF-GUIDE.md)** - Complete handoff guide
+1. **📄 Read [USDX-PROSPECTUS.md](./docs/USDX-PROSPECTUS.md)** - **Executive prospectus for VCs and engineers** (start here!)
+2. Read **[AGENT-INSTRUCTIONS.md](./AGENT-INSTRUCTIONS.md)** - Agent-specific instructions
+3. Read **[SETUP.md](./SETUP.md)** - Development environment setup
+4. Read **[docs/HANDOFF-GUIDE.md](./docs/HANDOFF-GUIDE.md)** - Complete handoff guide
 
 ## Project Structure
 
