@@ -1,13 +1,5 @@
 {
   "name": "usdx-monorepo",
   "version": "1.0.0",
-  "description": "USDX Cross-Chain Stablecoin Protocol",
-  "private": true,
-  "scripts": {
-    "vercel-build": "cd usdx/frontend && npm ci && npm run build"
-  },
-  "engines": {
-    "node": ">=18.0.0",
-    "npm": ">=9.0.0"
-  }
+  "private": true
 }
