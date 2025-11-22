@@ -366,6 +366,15 @@ cd infrastructure
 - **Ask early**: Don't wait on blockers
 - **Document decisions**: Update relevant docs
 
+### Code Quality & Review Standards
+- **Always do thorough multi-pass review** before committing
+- **Remove all unused code** - ensure everything added is actually being used
+- **Minimize code additions** - prefer refactoring over adding new code
+- **Maximally reuse Tailwind CSS utilities** instead of custom CSS
+- **Move generated docs to docs folder** - all documentation files go in `usdx/docs/`
+- **Optimize for human readability** - code should be clean and maintainable
+- **Remove unused imports/exports** before committing
+
 ---
 
 ## 🚀 Quick Start Checklist

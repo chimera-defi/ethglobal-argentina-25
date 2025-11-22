@@ -29,26 +29,15 @@ export function useToast() {
     return addToast(message, 'error', duration);
   }, [addToast]);
 
-  const warning = useCallback((message: string, duration?: number) => {
-    return addToast(message, 'warning', duration);
-  }, [addToast]);
-
-  const info = useCallback((message: string, duration?: number) => {
-    return addToast(message, 'info', duration);
-  }, [addToast]);
-
   const loading = useCallback((message: string) => {
     return addToast(message, 'loading', 0);
   }, [addToast]);
 
   return {
     toasts,
-    addToast,
     removeToast,
     success,
     error,
-    warning,
-    info,
     loading,
   };
 }
