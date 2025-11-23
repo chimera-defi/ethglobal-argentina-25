@@ -5,6 +5,7 @@ import { WalletConnect } from '@/components/WalletConnect';
 import { BalanceCard } from '@/components/BalanceCard';
 import { DepositFlow } from '@/components/DepositFlow';
 import { WithdrawFlow } from '@/components/WithdrawFlow';
+import { BridgeKitFlow } from '@/components/BridgeKitFlow';
 import { ToastContainer } from '@/components/Toast';
 import { useToast } from '@/hooks/useToast';
 import { useState, useEffect } from 'react';
@@ -28,7 +29,7 @@ import {
 } from 'lucide-react';
 
 export default function Home() {
-  const { address, signer, isConnected } = useWallet();
+  const { address, signer, isConnected, chainId } = useWallet();
   const [refreshKey, setRefreshKey] = useState(0);
   const [darkMode, setDarkMode] = useState(false);
   const { toasts, removeToast } = useToast();
@@ -525,23 +526,46 @@ export default function Home() {
               Connect your wallet and interact with the protocol
             </p>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
-          >
-            <BalanceCard key={refreshKey} address={address} />
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6 }}
-            className="space-y-6"
-          >
-            <DepositFlow signer={signer} onSuccess={handleSuccess} />
-            <WithdrawFlow signer={signer} onSuccess={handleSuccess} />
-          </motion.div>
+          <div className="space-y-8">
+            {/* Balance Card - Full Width */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+            >
+              <BalanceCard key={refreshKey} address={address} />
+            </motion.div>
+
+            {/* Bridge Kit Flow - Full Width */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+            >
+              <BridgeKitFlow 
+                userAddress={address} 
+                currentChainId={chainId}
+                onSuccess={handleSuccess}
+              />
+            </motion.div>
+
+            {/* Deposit and Withdraw - Side by Side */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.7 }}
+              >
+                <DepositFlow signer={signer} onSuccess={handleSuccess} />
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.8 }}
+              >
+                <WithdrawFlow signer={signer} onSuccess={handleSuccess} />
+              </motion.div>
+            </div>
           </div>
         </motion.div>
 
