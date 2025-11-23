@@ -200,7 +200,7 @@ Success Rate: 100%
 ✅ USDXShareOFT.t.sol (7/7 tests passing)
 ✅ USDXShareOFTAdapter.t.sol (11/11 tests passing)
 ✅ USDXSpokeMinter.t.sol (16/16 tests passing)
-✅ USDXVaultComposerSync.t.sol (9/9 tests passing)
+✅ USDXVaultComposerSync.t.sol (6/6 tests passing)
 ✅ USDXYearnVaultWrapper.t.sol (9/9 tests passing)
 ```
 
