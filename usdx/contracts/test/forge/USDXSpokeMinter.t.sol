@@ -346,3 +346,122 @@ contract USDXSpokeMinterTest is Test {
         assertEq(minter.getAvailableMintAmount(user1), shares - mintAmount);
     }
 }
+
+/**
+ * @title USDXSpokeMinterArcTest
+ * @notice Tests for Arc chain functionality (without LayerZero)
+ */
+contract USDXSpokeMinterArcTest is Test {
+    USDXSpokeMinter public minter;
+    USDXToken public usdx;
+    
+    address public admin = address(0x1);
+    address public user1 = address(0x3);
+    address public oracle = address(0x5);
+    
+    uint32 constant HUB_CHAIN_ID = 30101; // Ethereum
+    
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
+    bytes32 public constant POSITION_UPDATER_ROLE = keccak256("POSITION_UPDATER_ROLE");
+    
+    function setUp() public {
+        // Deploy contracts for Arc chain (no LayerZero)
+        usdx = new USDXToken(admin);
+        
+        // Deploy minter without shareOFT and lzEndpoint (Arc chain)
+        minter = new USDXSpokeMinter(
+            address(usdx),
+            address(0), // No shareOFT on Arc
+            address(0), // No LayerZero on Arc
+            HUB_CHAIN_ID,
+            admin
+        );
+        
+        // Grant minter the ability to mint/burn USDX
+        vm.startPrank(admin);
+        usdx.grantRole(MINTER_ROLE, address(minter));
+        usdx.grantRole(BURNER_ROLE, address(minter));
+        minter.grantRole(POSITION_UPDATER_ROLE, oracle); // Grant oracle role
+        vm.stopPrank();
+    }
+    
+    function testArcDeployment() public view {
+        assertEq(address(minter.usdxToken()), address(usdx));
+        assertEq(address(minter.shareOFT()), address(0), "shareOFT should be address(0) for Arc");
+        assertEq(minter.totalMinted(), 0);
+    }
+    
+    function testArcMintWithVerifiedPosition() public {
+        uint256 verifiedPosition = 1000 * 10**6;
+        uint256 mintAmount = 500 * 10**6;
+        
+        // Oracle updates verified hub position
+        vm.prank(oracle);
+        minter.updateHubPosition(user1, verifiedPosition);
+        
+        // User can mint USDX using verified position
+        vm.prank(user1);
+        minter.mint(mintAmount);
+        
+        // Verify
+        assertEq(usdx.balanceOf(user1), mintAmount, "User should have USDX");
+        assertEq(minter.getMintedAmount(user1), mintAmount, "Minted amount should be tracked");
+        assertEq(minter.totalMinted(), mintAmount, "Total minted should increase");
+        assertEq(minter.getVerifiedHubPosition(user1), verifiedPosition - mintAmount, "Position should decrease");
+    }
+    
+    function testArcMintRevertsIfInsufficientPosition() public {
+        uint256 verifiedPosition = 100 * 10**6;
+        uint256 mintAmount = 200 * 10**6;
+        
+        // Oracle updates verified hub position
+        vm.prank(oracle);
+        minter.updateHubPosition(user1, verifiedPosition);
+        
+        // Try to mint more than position
+        vm.prank(user1);
+        vm.expectRevert(USDXSpokeMinter.InsufficientHubPosition.selector);
+        minter.mint(mintAmount);
+    }
+    
+    function testArcGetAvailableMintAmount() public {
+        uint256 verifiedPosition = 1000 * 10**6;
+        
+        // Initially zero
+        assertEq(minter.getAvailableMintAmount(user1), 0);
+        
+        // After oracle updates position
+        vm.prank(oracle);
+        minter.updateHubPosition(user1, verifiedPosition);
+        assertEq(minter.getAvailableMintAmount(user1), verifiedPosition);
+        
+        // After minting USDX
+        vm.prank(user1);
+        minter.mint(600 * 10**6);
+        assertEq(minter.getAvailableMintAmount(user1), 400 * 10**6);
+    }
+    
+    function testArcBatchUpdatePositions() public {
+        address[] memory users = new address[](2);
+        uint256[] memory positions = new uint256[](2);
+        
+        users[0] = user1;
+        users[1] = address(0x6);
+        positions[0] = 1000 * 10**6;
+        positions[1] = 2000 * 10**6;
+        
+        // Batch update positions
+        vm.prank(oracle);
+        minter.batchUpdateHubPositions(users, positions);
+        
+        // Verify
+        assertEq(minter.getVerifiedHubPosition(user1), 1000 * 10**6);
+        assertEq(minter.getVerifiedHubPosition(users[1]), 2000 * 10**6);
+    }
+    
+    function testArcGetUserOVaultSharesReturnsZero() public {
+        // On Arc chain, getUserOVaultShares should return 0
+        assertEq(minter.getUserOVaultShares(user1), 0);
+    }
+}
