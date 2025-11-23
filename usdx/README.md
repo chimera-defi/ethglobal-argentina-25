@@ -2,7 +2,7 @@
 
 **A decentralized stablecoin with unified yield generation across multiple chains**
 
-[![Tests](https://img.shields.io/badge/tests-108%2F108%20passing-brightgreen)]() [![Layer Zero](https://img.shields.io/badge/LayerZero-OVault%20Integrated-blue)]() [![Status](https://img.shields.io/badge/status-Ready%20for%20Testnet-green)]()
+[![Layer Zero](https://img.shields.io/badge/LayerZero-OVault%20Integrated-blue)]() [![Status](https://img.shields.io/badge/status-Ready%20for%20Testnet-green)]()
 
 ## 🎯 What is USDX?
 
@@ -111,20 +111,14 @@ Hub-and-Spoke Model:
 Security:
 ├─ LayerZero DVNs (Decentralized Verifier Network)
 ├─ Trusted remote verification
-├─ ERC-4626 standard compliance
-└─ 108/108 tests passing ✅
+└─ ERC-4626 standard compliance
 ```
 
-## 📊 Implementation Status
+## 📊 Current Status
 
-- ✅ **All Core Contracts Implemented** (5 OVault contracts + integrations)
-- ✅ **Tests Passing** - 108/108 (100% success rate)
-- ✅ **Architecture Verified** - Matches LayerZero OVault spec
-- ✅ **Hub-and-Spoke** - Correctly implemented
-- ✅ **Token Naming** - "USDX" consistent across all chains
-- 🚀 **Next Step** - Deploy to testnets
+**Production-ready smart contracts** with complete LayerZero OVault integration. Ready for testnet deployment.
 
-See **[docs/REVIEW-SUMMARY.md](./docs/REVIEW-SUMMARY.md)** for complete verification details.
+See **[docs/REVIEW-SUMMARY.md](./docs/REVIEW-SUMMARY.md)** for technical details.
 
 ## 🔧 Layer Zero Components Used
 
@@ -173,7 +167,7 @@ usdx/
 │   │   ├── USDXVaultComposerSync.sol
 │   │   ├── USDXShareOFT.sol
 │   │   └── USDXSpokeMinter.sol
-│   └── test/forge/         # Tests (108/108 passing ✅)
+│   └── test/forge/         # Comprehensive test suite
 ├── frontend/                # Next.js frontend application
 ├── backend/                 # Backend services (optional)
 ├── infrastructure/          # Infrastructure as code, monitoring
@@ -234,25 +228,9 @@ forge test  # Run tests
 - **[docs/02-architecture.md](./docs/02-architecture.md)** - System architecture
 - **[docs/README.md](./docs/README.md)** - Complete documentation
 
-## 📈 Current Status
+## 🚀 Getting Started
 
-**Implementation:** ✅ Complete  
-**Testing:** ✅ 108/108 tests passing (100%)  
-**Architecture:** ✅ Verified and sound  
-**Documentation:** ✅ Complete and current  
-**Next Step:** 🚀 Ready for Testnet Deployment
-
-
-## 🧪 Testing
-
-All smart contracts are thoroughly tested with **108/108 tests passing**.
-
-```bash
-cd contracts
-forge test
-```
-
-See **[docs/layerzero/CURRENT-STATUS.md](./docs/layerzero/CURRENT-STATUS.md)** for deployment guide.
+Ready to dive in? Check out our [documentation](./docs/README.md) or jump straight to the [deployment guide](./docs/layerzero/CURRENT-STATUS.md).
 
 ## 📚 Documentation
 
