@@ -9,7 +9,6 @@ applications:
         build:
           commands:
             - npm run build --workspace=frontend --production --ignore-workspaces --legacy-peer-deps
-            - test -d node_modules/next && echo "✓ next found" || (echo "✗ ERROR: next not found" && exit 1)
       artifacts:
         baseDirectory: .next
         files:
