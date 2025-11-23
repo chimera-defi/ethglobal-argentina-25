@@ -95,39 +95,39 @@ export default function Home() {
 
   const features = [
     {
-      icon: Shield,
-      title: '1:1 USDC Backing',
-      description: 'Every USDX is fully backed by USDC deposited into audited smart contracts.',
-      gradient: 'from-blue-500 to-cyan-500',
+      icon: Network,
+      title: 'LayerZero OVAULT',
+      description: 'Built on LayerZero\'s Omnichain Vault technology - deposit from any chain, earn yield, and access your shares anywhere.',
+      gradient: 'from-purple-500 to-pink-500',
     },
     {
       icon: TrendingUp,
-      title: 'Automatic Yield',
-      description: 'Earn yield automatically through Yearn Finance\'s battle-tested vaults.',
+      title: 'Yield from Yearn',
+      description: 'Your USDC earns yield through Yearn Finance vaults on the hub chain, with shares automatically updated across all chains.',
       gradient: 'from-emerald-500 to-green-500',
     },
     {
-      icon: Network,
-      title: 'Cross-Chain',
-      description: 'Use USDX across multiple chains with LayerZero OFT technology.',
-      gradient: 'from-purple-500 to-pink-500',
+      icon: Shield,
+      title: '100% USDC Backed',
+      description: 'All deposits are secured in audited smart contracts and held as USDC in battle-tested Yearn vaults.',
+      gradient: 'from-blue-500 to-cyan-500',
     },
     {
       icon: Lock,
       title: 'Non-Custodial',
-      description: 'You maintain full control of your assets through smart contracts.',
+      description: 'You maintain full control - your vault shares are always redeemable for the underlying USDC plus earned yield.',
       gradient: 'from-orange-500 to-amber-500',
     },
     {
       icon: Zap,
-      title: 'Instant Minting',
-      description: 'Mint and redeem USDX instantly with no delays or waiting periods.',
+      title: 'Single Transaction',
+      description: 'Deposit on one chain, receive vault shares on another - all in a single transaction with no manual bridging.',
       gradient: 'from-rose-500 to-red-500',
     },
     {
       icon: Sparkles,
-      title: 'Transparent',
-      description: 'All transactions and yields are fully transparent and auditable on-chain.',
+      title: 'Transparent & Auditable',
+      description: 'All vault operations, yields, and cross-chain transfers are fully transparent and verifiable on-chain.',
       gradient: 'from-indigo-500 to-blue-500',
     },
   ];
@@ -136,25 +136,25 @@ export default function Home() {
     {
       number: 1,
       title: 'Connect Wallet',
-      description: 'Connect MetaMask or any Web3 wallet to get started',
-      icon: Coins,
+      description: 'Connect your wallet on any supported chain',
+      icon: Wallet,
     },
     {
       number: 2,
       title: 'Deposit USDC',
-      description: 'Deposit USDC to mint USDX 1:1 on the hub chain',
-      icon: ArrowRight,
+      description: 'Deposit USDC - it\'s bridged to the hub chain via Circle CCTP',
+      icon: Coins,
     },
     {
       number: 3,
       title: 'Earn Yield',
-      description: 'Your USDC earns yield through Yearn automatically',
+      description: 'Your USDC enters Yearn vaults and starts earning yield',
       icon: TrendingUp,
     },
     {
       number: 4,
-      title: 'Use Cross-Chain',
-      description: 'Mint USDX on spoke chains and use anywhere',
+      title: 'Use Anywhere',
+      description: 'Access your yield-bearing shares on any chain via OVAULT',
       icon: Network,
     },
   ];
@@ -188,7 +188,7 @@ export default function Home() {
                 USDX Protocol
               </h1>
               <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">
-                Cross-Chain Yield-Bearing Stablecoin
+                Omnichain Vault-Backed Stablecoin
               </p>
             </div>
           </motion.div>
@@ -241,12 +241,12 @@ export default function Home() {
               </div>
             </motion.div>
             <h2 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight">
-              Deposit USDC, Earn Yield
+              Earn Yield Across Any Chain
             </h2>
             <div className="h-2 w-32 mx-auto mb-8 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full" />
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed">
-              Mint USDX 1:1 backed by USDC and earn yield automatically through Yearn Finance.
-              Use your USDX seamlessly across multiple chains.
+              USDX uses LayerZero OVAULT technology to make yield-bearing vault shares accessible from any chain. 
+              Deposit USDC on any chain, earn yield automatically, and use your shares anywhere.
             </p>
             <motion.div
               initial={{ opacity: 0 }}
@@ -261,13 +261,13 @@ export default function Home() {
                 <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Powered by</span>
               </div>
               <div className="flex items-center gap-2">
-                <Shield className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                <span className="text-sm font-bold text-gray-900 dark:text-white">Yearn Finance</span>
+                <Network className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                <span className="text-sm font-bold text-gray-900 dark:text-white">LayerZero OVAULT</span>
               </div>
               <span className="text-gray-400">•</span>
               <div className="flex items-center gap-2">
-                <Network className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-                <span className="text-sm font-bold text-gray-900 dark:text-white">Circle Bridge Kit</span>
+                <Layers className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                <span className="text-sm font-bold text-gray-900 dark:text-white">Circle CCTP</span>
               </div>
             </motion.div>
           </div>
@@ -345,13 +345,13 @@ export default function Home() {
           <div className="absolute inset-0 -mx-4 bg-gradient-to-br from-blue-50/50 via-transparent to-purple-50/50 dark:from-blue-950/20 dark:via-transparent dark:to-purple-950/20 rounded-3xl" />
           
           <div className="relative text-center mb-12 pt-8">
-            <motion.h2
+              <motion.h2
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
               className="text-4xl font-black mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
             >
-              How USDX Works
+              How OVAULT Technology Works
             </motion.h2>
             <motion.p
               initial={{ opacity: 0 }}
@@ -359,7 +359,7 @@ export default function Home() {
               transition={{ delay: 0.6 }}
               className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
             >
-              A visual guide to the USDX protocol flow
+              LayerZero OVAULT makes yield-bearing vault shares accessible across any blockchain
             </motion.p>
           </div>
 
@@ -380,9 +380,9 @@ export default function Home() {
                     <div className="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-2">
                       <span className="text-xs font-bold text-blue-700 dark:text-blue-300">STEP 1</span>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Deposit USDC</h3>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Bridge USDC</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Users deposit USDC into the USDX Vault contract
+                      USDC is bridged to the hub chain using Circle CCTP
                     </p>
                   </div>
                 </div>
@@ -407,9 +407,9 @@ export default function Home() {
                     <div className="inline-block px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 rounded-full mb-2">
                       <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300">STEP 2</span>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Earn Yield</h3>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Vault Deposit</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Vault deposits USDC into Yearn Finance to generate yield
+                      OVAULT Composer deposits USDC into Yearn vault on hub chain
                     </p>
                   </div>
                 </div>
@@ -434,9 +434,9 @@ export default function Home() {
                     <div className="inline-block px-3 py-1 bg-purple-100 dark:bg-purple-900/30 rounded-full mb-2">
                       <span className="text-xs font-bold text-purple-700 dark:text-purple-300">STEP 3</span>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Mint USDX</h3>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Receive Shares</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Receive USDX tokens 1:1 with your deposited USDC
+                      ERC-4626 vault mints yield-bearing shares representing your deposit
                     </p>
                   </div>
                 </div>
@@ -461,9 +461,9 @@ export default function Home() {
                     <div className="inline-block px-3 py-1 bg-orange-100 dark:bg-orange-900/30 rounded-full mb-2">
                       <span className="text-xs font-bold text-orange-700 dark:text-orange-300">STEP 4</span>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Cross-Chain</h3>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Use Anywhere</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Bridge and use USDX across multiple blockchain networks
+                      OVAULT sends shares to any chain - omnichain fungible tokens
                     </p>
                   </div>
                 </div>
@@ -480,11 +480,11 @@ export default function Home() {
               <div className="flex items-start gap-3">
                 <Sparkles className="h-6 w-6 text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-bold text-gray-900 dark:text-white mb-2">The Complete Cycle</h4>
+                  <h4 className="font-bold text-gray-900 dark:text-white mb-2">Understanding OVAULT</h4>
                   <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                    Your USDC remains securely locked in Yearn vaults earning yield continuously. 
-                    USDX represents your share of the vault, which increases in value over time as yield accrues. 
-                    You can redeem USDX for USDC (plus earned yield) at any time, or use it across multiple chains via LayerZero OFT.
+                    LayerZero OVAULT makes vault shares omnichain fungible tokens. Your USDC earns yield in Yearn vaults on the hub chain, 
+                    while your shares can move freely across any supported blockchain. The share value increases over time as yield accrues. 
+                    You can redeem shares for USDC plus yield from any chain, or transfer shares between chains instantly.
                   </p>
                 </div>
               </div>
@@ -525,7 +525,7 @@ export default function Home() {
               Why Choose USDX?
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Built with security, transparency, and user experience in mind
+              The first stablecoin built on LayerZero OVAULT - truly omnichain yield-bearing shares
             </p>
           </div>
 
@@ -804,23 +804,23 @@ export default function Home() {
               </motion.div>
               
               <p className="text-base text-gray-600 dark:text-gray-300 mb-8 max-w-2xl leading-relaxed font-medium">
-                A next-generation stablecoin protocol that combines USDC backing with automatic yield generation 
-                and seamless cross-chain functionality.
+                Built on LayerZero OVAULT technology - making yield-bearing vault shares accessible from any blockchain. 
+                Earn yield on your USDC across all chains simultaneously.
               </p>
 
               {/* Technology badges */}
               <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
-                <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl shadow-lg">
-                  <Shield className="h-5 w-5 text-white" />
-                  <span className="text-sm font-bold text-white">Yearn Finance</span>
-                </motion.div>
                 <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl shadow-lg">
                   <Network className="h-5 w-5 text-white" />
-                  <span className="text-sm font-bold text-white">LayerZero OFT</span>
+                  <span className="text-sm font-bold text-white">LayerZero OVAULT</span>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl shadow-lg">
+                  <Shield className="h-5 w-5 text-white" />
+                  <span className="text-sm font-bold text-white">Yearn Vaults</span>
                 </motion.div>
                 <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-emerald-500 to-green-500 rounded-xl shadow-lg">
                   <Layers className="h-5 w-5 text-white" />
-                  <span className="text-sm font-bold text-white">Circle Bridge Kit</span>
+                  <span className="text-sm font-bold text-white">Circle CCTP</span>
                 </motion.div>
               </div>
 
@@ -840,7 +840,7 @@ export default function Home() {
               {/* Tech stack */}
               <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-850 rounded-xl border-2 border-gray-200 dark:border-gray-700">
                 <p className="text-sm text-gray-600 dark:text-gray-400 font-semibold">
-                  Built with <span className="text-blue-600 dark:text-blue-400 font-bold">Next.js</span>, <span className="text-purple-600 dark:text-purple-400 font-bold">ethers.js</span>, and <span className="text-cyan-600 dark:text-cyan-400 font-bold">Tailwind CSS</span>
+                  Built with <span className="text-purple-600 dark:text-purple-400 font-bold">LayerZero OVAULT</span>, <span className="text-blue-600 dark:text-blue-400 font-bold">Yearn Finance</span>, and <span className="text-emerald-600 dark:text-emerald-400 font-bold">Circle CCTP</span>
                 </p>
               </div>
             </div>

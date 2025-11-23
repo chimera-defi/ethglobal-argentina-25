@@ -182,15 +182,15 @@ export function DepositFlow({ signer, onSuccess }: DepositFlowProps) {
             </li>
             <li className="flex items-start gap-2">
               <span className="font-bold text-blue-600 dark:text-blue-400">2.</span>
-              <span>Vault deposits USDC into Yearn Finance</span>
+              <span>OVAULT deposits USDC into Yearn vault on hub chain</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="font-bold text-blue-600 dark:text-blue-400">3.</span>
-              <span>You receive USDX tokens 1:1</span>
+              <span>You receive yield-bearing vault shares (USDX)</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="font-bold text-blue-600 dark:text-blue-400">4.</span>
-              <span>Earn yield automatically on your deposit</span>
+              <span>Your shares earn yield and are usable on any chain</span>
             </li>
           </ol>
         </motion.div>
