@@ -147,6 +147,108 @@ See **[docs/REVIEW-SUMMARY.md](./docs/REVIEW-SUMMARY.md)** for technical details
 ✅ Yearn Finance - Yield generation
 ```
 
+## 🌉 Bridge Kit Integration
+
+USDX uses **Circle Bridge Kit** (built on CCTP) for secure USDC cross-chain transfers between spoke chains and the hub chain. Bridge Kit enables users to bridge USDC before depositing into the vault.
+
+### Bridge Kit Integration Flow
+
+#### Frontend Integration (User-Initiated)
+
+```
+┌─────────┐
+│  User   │
+└────┬────┘
+     │
+     │ 1. User initiates deposit from Spoke Chain
+     │    to Hub Chain vault via UI
+     │
+     ▼
+┌─────────────────┐
+│  Frontend UI    │
+│  (Bridge Kit    │
+│   Components)   │
+└────┬────────────┘
+     │
+     │ 2. Bridge Kit SDK transfer()
+     │
+     ▼
+┌─────────────────┐
+│  Bridge Kit SDK │
+│  - Burns USDC   │
+│    on Spoke     │
+│  - Polls for    │
+│    attestation  │
+└────┬────────────┘
+     │
+     │ 3. CCTP Attestation
+     │    (Circle's network)
+     │
+     └──────────────────────────────┐
+                                    │
+                                    │ 4. Attestation received
+                                    │    USDC minted on Hub
+                                    │
+                                    ▼
+                           ┌─────────────────┐
+                           │  Hub Chain      │
+                           │  (Ethereum)     │
+                           └────┬────────────┘
+                                │
+                                │ 5. USDC arrives on Hub
+                                │
+                                ▼
+                           ┌─────────────────┐
+                           │  USDXVault      │
+                           │  - Receives USDC│
+                           │  - User deposits│
+                           └─────────────────┘
+```
+
+### Complete User Journey: Spoke → Hub → Spoke
+
+```
+Step 1: Bridge USDC (Spoke → Hub)
+  User on Spoke Chain → Bridge Kit SDK → USDC bridged to Hub Chain (Ethereum)
+  USDC arrives on Hub Chain via CCTP
+
+Step 2: Deposit into Vault (Hub Chain)
+  User → depositUSDC(amount) → USDXVault (Hub Chain only)
+  USDXVault → OVault → Yearn USDC Vault
+  User receives OVault position on Hub Chain
+  Yield starts accruing automatically in Yearn vault
+
+Step 3: Mint USDX on Spoke Chain
+  User → mintUSDXFromOVault(shares, hubChainId) → USDXSpokeMinter (Spoke Chain)
+  USDXSpokeMinter → verifies position on Hub Chain via OVault
+  USDXToken → mints USDX on Spoke Chain
+  User now has USDX on Spoke Chain
+
+Step 4: Use USDX on Spoke Chain
+  User can use USDX on Spoke Chain
+  USDC collateral remains in Yearn vault on Hub Chain (earning yield)
+
+Step 5: Redeem (Spoke → Hub)
+  User → burn USDX (Spoke Chain)
+  User → withdrawUSDCFromOVault(amount) → USDXVault (Hub Chain)
+  OVault → withdraws from Yearn → returns USDC
+  User → Bridge Kit SDK → USDC bridged back to Spoke Chain
+  User receives USDC (with accrued yield) on Spoke Chain
+```
+
+### Bridge Kit Implementation
+
+**Files:**
+- `/frontend/src/lib/bridgeKit.ts` - Core utilities and helper functions
+- `/frontend/src/hooks/useBridgeKit.ts` - React hook for Bridge Kit
+- `/frontend/src/components/BridgeKitFlow.tsx` - UI component for bridging
+
+**Supported Chains:**
+- **Testnets:** Ethereum Sepolia, Base Sepolia, Arbitrum Sepolia, Optimism Sepolia
+- **Mainnets:** Ethereum, Base, Arbitrum, Optimism
+
+See **[docs/BRIDGE-KIT-GUIDE.md](./docs/BRIDGE-KIT-GUIDE.md)** for complete Bridge Kit integration guide.
+
 ## 📂 Project Structure
 
 ```
