@@ -18,6 +18,29 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 CONTRACTS_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 DEPLOYMENT_FILE="$CONTRACTS_DIR/deployments/sepolia-base-sepolia.json"
 
+# Build RPC URLs from Alchemy key or use defaults
+build_rpc_urls() {
+    # Default public RPC URLs (no API key required)
+    DEFAULT_SEPOLIA_RPC="https://rpc.sepolia.org"
+    DEFAULT_BASE_SEPOLIA_RPC="https://sepolia.base.org"
+    
+    # If Alchemy key is provided, use Alchemy endpoints
+    if [ -n "$ALCHEMY_API_KEY" ]; then
+        SEPOLIA_RPC_URL="https://eth-sepolia.g.alchemy.com/v2/$ALCHEMY_API_KEY"
+        BASE_SEPOLIA_RPC_URL="https://base-sepolia.g.alchemy.com/v2/$ALCHEMY_API_KEY"
+        echo -e "${BLUE}Using Alchemy RPC endpoints${NC}"
+    else
+        # Use default public RPC URLs
+        SEPOLIA_RPC_URL="$DEFAULT_SEPOLIA_RPC"
+        BASE_SEPOLIA_RPC_URL="$DEFAULT_BASE_SEPOLIA_RPC"
+        echo -e "${YELLOW}Using default public RPC endpoints (no API key)${NC}"
+        echo -e "${YELLOW}Note: For better reliability, set ALCHEMY_API_KEY environment variable${NC}"
+    fi
+    
+    export SEPOLIA_RPC_URL
+    export BASE_SEPOLIA_RPC_URL
+}
+
 # Check for required environment variables
 check_env() {
     if [ -z "$PRIVATE_KEY" ]; then
@@ -25,15 +48,8 @@ check_env() {
         exit 1
     fi
     
-    if [ -z "$SEPOLIA_RPC_URL" ]; then
-        echo -e "${RED}Error: SEPOLIA_RPC_URL environment variable not set${NC}"
-        exit 1
-    fi
-    
-    if [ -z "$BASE_SEPOLIA_RPC_URL" ]; then
-        echo -e "${RED}Error: BASE_SEPOLIA_RPC_URL environment variable not set${NC}"
-        exit 1
-    fi
+    # Build RPC URLs (from Alchemy key or defaults)
+    build_rpc_urls
 }
 
 # Load deployment addresses from file

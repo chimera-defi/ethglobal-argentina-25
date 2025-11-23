@@ -88,9 +88,8 @@ This document summarizes the deployment scripts created for deploying USDX Proto
 ## Environment Variables Required
 
 ```bash
-# RPC URLs
-SEPOLIA_RPC_URL=https://...
-BASE_SEPOLIA_RPC_URL=https://...
+# Alchemy API Key (optional - will use public RPC if not set)
+ALCHEMY_API_KEY=your_alchemy_api_key
 
 # Private Key
 PRIVATE_KEY=0x...
@@ -112,10 +111,17 @@ SPOKE_MINTER=0x...
 
 ## Quick Start Commands
 
+**Note:** The shell script (`scripts/deploy-and-demo.sh`) automatically builds RPC URLs from `ALCHEMY_API_KEY` or uses defaults. For manual commands, use the defaults below or set `ALCHEMY_API_KEY` and build URLs yourself.
+
 ### Deploy Hub Chain
 ```bash
+# Option 1: Use shell script (recommended - handles RPC URLs automatically)
+./scripts/deploy-and-demo.sh
+
+# Option 2: Manual deployment
+export ALCHEMY_API_KEY=your_key  # Optional
 forge script script/DeployAndDemo.s.sol:DeployAndDemo \
-  --rpc-url $SEPOLIA_RPC_URL \
+  --rpc-url ${SEPOLIA_RPC_URL:-https://rpc.sepolia.org} \
   --broadcast \
   --sig "runHub()" \
   -vvv
@@ -123,8 +129,13 @@ forge script script/DeployAndDemo.s.sol:DeployAndDemo \
 
 ### Deploy Spoke Chain
 ```bash
+# Option 1: Use shell script (recommended)
+./scripts/deploy-and-demo.sh
+
+# Option 2: Manual deployment
+export ALCHEMY_API_KEY=your_key  # Optional
 forge script script/DeployAndDemo.s.sol:DeployAndDemo \
-  --rpc-url $BASE_SEPOLIA_RPC_URL \
+  --rpc-url ${BASE_SEPOLIA_RPC_URL:-https://sepolia.base.org} \
   --broadcast \
   --sig "runSpoke(address,address,address)" \
   $HUB_USDX $HUB_SHARE_ADAPTER $HUB_COMPOSER \
@@ -133,8 +144,13 @@ forge script script/DeployAndDemo.s.sol:DeployAndDemo \
 
 ### Configure Cross-Chain
 ```bash
+# Option 1: Use shell script (recommended)
+./scripts/deploy-and-demo.sh
+
+# Option 2: Manual configuration
+export ALCHEMY_API_KEY=your_key  # Optional
 forge script script/DeployAndDemo.s.sol:DeployAndDemo \
-  --rpc-url $SEPOLIA_RPC_URL \
+  --rpc-url ${SEPOLIA_RPC_URL:-https://rpc.sepolia.org} \
   --broadcast \
   --sig "configureCrossChain()" \
   -vvv
@@ -142,8 +158,13 @@ forge script script/DeployAndDemo.s.sol:DeployAndDemo \
 
 ### Run Hub Demo
 ```bash
+# Option 1: Use shell script (recommended)
+./scripts/deploy-and-demo.sh
+
+# Option 2: Manual demo
+export ALCHEMY_API_KEY=your_key  # Optional
 forge script script/DemoCrossChain.s.sol:DemoCrossChain \
-  --rpc-url $SEPOLIA_RPC_URL \
+  --rpc-url ${SEPOLIA_RPC_URL:-https://rpc.sepolia.org} \
   --broadcast \
   --sig "runHubDemo()" \
   -vvv
@@ -151,8 +172,13 @@ forge script script/DemoCrossChain.s.sol:DemoCrossChain \
 
 ### Run Spoke Demo
 ```bash
+# Option 1: Use shell script (recommended)
+./scripts/deploy-and-demo.sh
+
+# Option 2: Manual demo
+export ALCHEMY_API_KEY=your_key  # Optional
 forge script script/DemoCrossChain.s.sol:DemoCrossChain \
-  --rpc-url $BASE_SEPOLIA_RPC_URL \
+  --rpc-url ${BASE_SEPOLIA_RPC_URL:-https://sepolia.base.org} \
   --broadcast \
   --sig "runSpokeDemo()" \
   -vvv

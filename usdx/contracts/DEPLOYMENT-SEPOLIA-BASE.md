@@ -9,9 +9,9 @@ Complete guide for deploying USDX Protocol contracts on Ethereum Sepolia (Hub) a
 Create a `.env` file in the `contracts/` directory:
 
 ```bash
-# RPC URLs
-SEPOLIA_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/YOUR_API_KEY
-BASE_SEPOLIA_RPC_URL=https://base-sepolia.g.alchemy.com/v2/YOUR_API_KEY
+# Alchemy API Key (optional - will use public RPC endpoints if not set)
+# Get your free API key at: https://www.alchemy.com/
+ALCHEMY_API_KEY=your_alchemy_api_key_here
 
 # Deployment wallet private key (NEVER commit this!)
 PRIVATE_KEY=0x0000000000000000000000000000000000000000000000000000000000000000
@@ -25,6 +25,12 @@ SPOKE_USDX=0x...
 SPOKE_SHARE_OFT=0x...
 SPOKE_MINTER=0x...
 ```
+
+**Note:** If `ALCHEMY_API_KEY` is not set, the scripts will use default public RPC endpoints:
+- Ethereum Sepolia: `https://rpc.sepolia.org`
+- Base Sepolia: `https://sepolia.base.org`
+
+These public endpoints work but may have rate limits. For production deployments, use an Alchemy API key.
 
 ### 2. Get Testnet Funds
 
@@ -142,8 +148,11 @@ forge script script/DeployAndDemo.s.sol:DeployAndDemo \
 **Hub Chain Demo (Deposit & Bridge):**
 
 ```bash
+# Set Alchemy API key (optional)
+export ALCHEMY_API_KEY=your_alchemy_api_key
+
 forge script script/DemoCrossChain.s.sol:DemoCrossChain \
-  --rpc-url $SEPOLIA_RPC_URL \
+  --rpc-url ${SEPOLIA_RPC_URL:-https://rpc.sepolia.org} \
   --broadcast \
   --sig "runHubDemo()" \
   -vvv
@@ -152,8 +161,11 @@ forge script script/DemoCrossChain.s.sol:DemoCrossChain \
 **Spoke Chain Demo (Mint & Use USDX):**
 
 ```bash
+# Set Alchemy API key (optional)
+export ALCHEMY_API_KEY=your_alchemy_api_key
+
 forge script script/DemoCrossChain.s.sol:DemoCrossChain \
-  --rpc-url $BASE_SEPOLIA_RPC_URL \
+  --rpc-url ${BASE_SEPOLIA_RPC_URL:-https://sepolia.base.org} \
   --broadcast \
   --sig "runSpokeDemo()" \
   -vvv
@@ -202,58 +214,70 @@ forge verify-contract \
 ### Complete Flow Test
 
 1. **Deposit USDC on Hub Chain**
-   ```bash
-   cast send $HUB_VAULT "deposit(uint256)" "1000000000" \
-     --rpc-url $SEPOLIA_RPC_URL \
-     --private-key $PRIVATE_KEY
-   ```
+```bash
+# Set Alchemy API key or use default public RPC
+export ALCHEMY_API_KEY=your_alchemy_api_key  # Optional
+
+cast send $HUB_VAULT "deposit(uint256)" "1000000000" \
+  --rpc-url ${SEPOLIA_RPC_URL:-https://rpc.sepolia.org} \
+  --private-key $PRIVATE_KEY
+```
 
 2. **Lock Shares and Bridge to Base Sepolia**
-   ```bash
-   # Get wrapper shares balance
-   cast call $HUB_VAULT_WRAPPER "balanceOf(address)(uint256)" $YOUR_ADDRESS \
-     --rpc-url $SEPOLIA_RPC_URL
+```bash
+# Set Alchemy API key or use default public RPC
+export ALCHEMY_API_KEY=your_alchemy_api_key  # Optional
+
+# Get wrapper shares balance
+cast call $HUB_VAULT_WRAPPER "balanceOf(address)(uint256)" $YOUR_ADDRESS \
+  --rpc-url ${SEPOLIA_RPC_URL:-https://rpc.sepolia.org}
    
-   # Lock shares
-   cast send $HUB_SHARE_ADAPTER "lockShares(uint256)" "SHARES_AMOUNT" \
-     --rpc-url $SEPOLIA_RPC_URL \
-     --private-key $PRIVATE_KEY
+# Lock shares
+cast send $HUB_SHARE_ADAPTER "lockShares(uint256)" "SHARES_AMOUNT" \
+  --rpc-url ${SEPOLIA_RPC_URL:-https://rpc.sepolia.org} \
+  --private-key $PRIVATE_KEY
    
-   # Bridge to Base Sepolia
-   cast send $HUB_SHARE_ADAPTER "send(uint32,bytes32,uint256,bytes)" \
-     30110 \
-     $(cast --to-bytes32 $(cast --to-uint256 $YOUR_ADDRESS)) \
-     "BRIDGE_AMOUNT" \
-     "" \
-     --rpc-url $SEPOLIA_RPC_URL \
-     --private-key $PRIVATE_KEY \
-     --value 0.001ether
-   ```
+# Bridge to Base Sepolia
+cast send $HUB_SHARE_ADAPTER "send(uint32,bytes32,uint256,bytes)" \
+  30110 \
+  $(cast --to-bytes32 $(cast --to-uint256 $YOUR_ADDRESS)) \
+  "BRIDGE_AMOUNT" \
+  "" \
+  --rpc-url ${SEPOLIA_RPC_URL:-https://rpc.sepolia.org} \
+  --private-key $PRIVATE_KEY \
+  --value 0.001ether
+```
 
 3. **Mint USDX on Base Sepolia**
-   ```bash
-   # Approve shares
-   cast send $SPOKE_SHARE_OFT "approve(address,uint256)" $SPOKE_MINTER "AMOUNT" \
-     --rpc-url $BASE_SEPOLIA_RPC_URL \
-     --private-key $PRIVATE_KEY
+```bash
+# Set Alchemy API key or use default public RPC
+export ALCHEMY_API_KEY=your_alchemy_api_key  # Optional
+
+# Approve shares
+cast send $SPOKE_SHARE_OFT "approve(address,uint256)" $SPOKE_MINTER "AMOUNT" \
+  --rpc-url ${BASE_SEPOLIA_RPC_URL:-https://sepolia.base.org} \
+  --private-key $PRIVATE_KEY
    
-   # Mint USDX
-   cast send $SPOKE_MINTER "mintUSDXFromOVault(uint256)" "AMOUNT" \
-     --rpc-url $BASE_SEPOLIA_RPC_URL \
-     --private-key $PRIVATE_KEY
-   ```
+# Mint USDX
+cast send $SPOKE_MINTER "mintUSDXFromOVault(uint256)" "AMOUNT" \
+  --rpc-url ${BASE_SEPOLIA_RPC_URL:-https://sepolia.base.org} \
+  --private-key $PRIVATE_KEY
+```
 
 4. **Transfer USDX Cross-Chain**
-   ```bash
-   cast send $SPOKE_USDX "sendCrossChain(uint32,bytes32,uint256,bytes)" \
-     30101 \
-     $(cast --to-bytes32 $(cast --to-uint256 $YOUR_ADDRESS)) \
-     "AMOUNT" \
-     "" \
-     --rpc-url $BASE_SEPOLIA_RPC_URL \
-     --private-key $PRIVATE_KEY \
-     --value 0.001ether
-   ```
+```bash
+# Set Alchemy API key or use default public RPC
+export ALCHEMY_API_KEY=your_alchemy_api_key  # Optional
+
+cast send $SPOKE_USDX "sendCrossChain(uint32,bytes32,uint256,bytes)" \
+  30101 \
+  $(cast --to-bytes32 $(cast --to-uint256 $YOUR_ADDRESS)) \
+  "AMOUNT" \
+  "" \
+  --rpc-url ${BASE_SEPOLIA_RPC_URL:-https://sepolia.base.org} \
+  --private-key $PRIVATE_KEY \
+  --value 0.001ether
+```
 
 ---
 
