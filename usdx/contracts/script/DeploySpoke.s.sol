@@ -6,6 +6,7 @@ import {USDXToken} from "../contracts/USDXToken.sol";
 import {USDXSpokeMinter} from "../contracts/USDXSpokeMinter.sol";
 import {USDXShareOFT} from "../contracts/USDXShareOFT.sol";
 import {ILayerZeroEndpoint} from "../contracts/interfaces/ILayerZeroEndpoint.sol";
+import {LayerZeroConfig} from "./LayerZeroConfig.sol";
 
 /**
  * @title DeploySpoke
@@ -58,14 +59,32 @@ contract DeploySpoke is Script {
         USDXToken usdx = new USDXToken(deployer);
         console2.log("   USDXToken deployed at:", address(usdx));
         
-        // Configuration - Update these with actual addresses
-        address LZ_ENDPOINT = address(0); // TODO: Set LayerZero endpoint address
-        uint32 HUB_CHAIN_ID = 30101; // Ethereum endpoint ID
+        // Configuration
         uint256 chainId = block.chainid;
-        uint32 LOCAL_EID = chainId == 137 ? 30109 : 30110; // Polygon (30109) or Mumbai/Base Sepolia (30110)
         
         // Check if LayerZero is supported (Arc doesn't support LayerZero)
         bool isLayerZeroSupported = (chainId != 5042002);
+        
+        address LZ_ENDPOINT;
+        uint32 LOCAL_EID;
+        uint32 HUB_CHAIN_ID;
+        
+        if (isLayerZeroSupported) {
+            // Get LayerZero endpoint for current chain
+            LZ_ENDPOINT = LayerZeroConfig.getEndpoint(chainId);
+            LOCAL_EID = LayerZeroConfig.getEid(chainId);
+            // Assume hub is on Ethereum mainnet or Sepolia testnet
+            HUB_CHAIN_ID = (chainId == 11155111 || chainId == 80002 || chainId == 84532 || chainId == 421614) 
+                ? LayerZeroConfig.SEPOLIA_EID // Testnet hub
+                : LayerZeroConfig.ETHEREUM_EID; // Mainnet hub
+            console2.log("   LayerZero Endpoint:", LZ_ENDPOINT);
+            console2.log("   Local EID:", LOCAL_EID);
+            console2.log("   Hub EID:", HUB_CHAIN_ID);
+        } else {
+            LZ_ENDPOINT = address(0);
+            LOCAL_EID = 0;
+            HUB_CHAIN_ID = 0;
+        }
         
         // 2. Deploy USDXShareOFT (OVault shares on spoke chain) - Skip for Arc
         USDXShareOFT shareOFT;

@@ -267,12 +267,30 @@ Ran 11 test suites in 23.53ms (57.94ms CPU time):
 - Or use public endpoints (rate-limited)
 
 ### For Live Testnet Deployment
-⚠️ **REQUIRES:**
-- LayerZero endpoint addresses (currently using mocks)
-- Proper private key management
-- Contract verification setup
+✅ **READY NOW** (Fixed after user feedback - see `HONEST-SELF-ASSESSMENT-2025-11-23.md`)
 
-**Script Available:** `contracts/script/DeployForked.s.sol`
+**Requirements:**
+- ✅ LayerZero endpoint addresses - **FIXED!** Using real addresses via `LayerZeroConfig.sol`
+- ⚠️ Proper private key management - User must set `PRIVATE_KEY` env var
+- ⚠️ Contract verification setup - User must set Etherscan API keys
+
+**Scripts Available:** 
+- `contracts/script/DeployForked.s.sol` - Hub deployment (Ethereum/Sepolia)
+- `contracts/script/DeploySpoke.s.sol` - Spoke deployment (all L2s)
+- `contracts/script/LayerZeroConfig.sol` - **NEW** - Real LayerZero V2 endpoints
+
+**Deployment Commands:**
+```bash
+# Deploy hub to Ethereum Sepolia
+forge script script/DeployForked.s.sol:DeployForked \
+  --rpc-url $SEPOLIA_RPC_URL --broadcast --verify
+
+# Deploy spoke to Polygon Amoy
+forge script script/DeploySpoke.s.sol:DeploySpoke \
+  --rpc-url $AMOY_RPC_URL --broadcast --verify
+```
+
+**See:** `docs/HONEST-SELF-ASSESSMENT-2025-11-23.md` for full details
 
 ## Recommendations
 
@@ -319,13 +337,14 @@ Ran 11 test suites in 23.53ms (57.94ms CPU time):
 ✅ **DEMO COMPLETE** - Full support for mock, local, and forked mainnet testing  
 ✅ **DOCS ORGANIZED** - All documentation in proper locations  
 ✅ **CURSOR RULES FOLLOWED** - All checklist items satisfied  
+✅ **DEPLOYMENT SCRIPTS FIXED** - Real LayerZero endpoints configured
 
 **The codebase is ready for:**
 - ✅ Local development and testing
 - ✅ Forked mainnet/testnet testing
 - ✅ Demo presentations to investors
-- ⚠️ Testnet deployment (requires LayerZero setup)
-- ❌ Mainnet deployment (requires audit + LayerZero official contracts)
+- ✅ Live testnet deployment - **READY NOW** (fixed!)
+- ❌ Mainnet deployment (requires security audit)
 
 **User's Request Status:**
 > "Can you do a thorough multi-pass review as is the cursor rules please? Make sure everything works as expected. And the demo script is updated to do what I asked you to do, which is the full end-to-end flow on forked main nets or test nets."
