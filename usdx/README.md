@@ -4,6 +4,33 @@
 
 [![Layer Zero](https://img.shields.io/badge/LayerZero-OVault%20Integrated-blue)]() [![Status](https://img.shields.io/badge/status-Ready%20for%20Testnet-green)]()
 
+## 🎬 Live Demo (For Investors & Presentations)
+
+**One command for complete E2E demonstration:**
+
+```bash
+./run-demo.sh              # Full demo: chains + deploy + tests (~3 min)
+./run-demo.sh --quick      # Quick: just tests with mocks (~10 sec)
+./run-demo.sh --forked     # Forked mainnet/testnet testing
+```
+
+**Three test flows:**
+1. **Multi-Chain OVault Composer** ⭐ NEW - 1 Hub + 3 Spokes (Polygon, Base, Arbitrum)
+2. **Complete OVault Flow** - Deposit USDC → Bridge shares → Mint USDX
+3. **Cross-Chain USDX Transfer** - Mint on Ethereum → Send to Base
+
+**For Forked Mainnet Testing:**
+```bash
+export ETH_RPC_URL="https://eth-mainnet.g.alchemy.com/v2/YOUR_KEY"
+export POLYGON_RPC_URL="https://polygon-mainnet.g.alchemy.com/v2/YOUR_KEY"
+./run-demo.sh --forked     # Test with real forked networks
+```
+
+**Key Feature**: Mint USDX once, use it on any chain. No complex bridging!  
+**[Demo Guide →](./docs/e2e-demo-guide.md)**
+
+---
+
 ## 🎯 What is USDX?
 
 USDX is a yield-bearing stablecoin that uses **LayerZero OVault** for cross-chain yield vault integration with a **hub-and-spoke architecture**:

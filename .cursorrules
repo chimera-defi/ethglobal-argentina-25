@@ -26,6 +26,12 @@
 - Do not create documentation files in the root directory or other locations
 - Generated markdown files, research notes, and documentation should go in `usdx/docs/`
 - Keep the repository structure clean and organized
+- **CRITICAL: Consolidate documentation** - Create ONE comprehensive guide instead of multiple files
+  - Bad: DEMO-README.md, DEMO-QUICK-START.md, integration-test-demo.md (too many!)
+  - Good: e2e-demo-guide.md (one consolidated guide)
+- **CRITICAL: Consolidate scripts** - Create ONE script with options instead of multiple scripts
+  - Bad: run-demo.sh, run-complete-demo.sh, quick-demo.sh (too many!)
+  - Good: run-demo.sh with --quick flag (one script, multiple modes)
 
 ### Code Simplification
 - Remove unnecessary abstractions
@@ -141,11 +147,13 @@ Before committing, ask:
 5. **Have I verified all Tailwind classes are valid?** (border-3 doesn't exist!)
 6. Are there any unused imports or exports?
 7. Have I moved all generated docs to the docs folder?
-8. Is the code readable and maintainable?
-9. **Does `npm run build` pass without errors?** (for frontend changes)
-10. **Does `forge test` pass without errors?** (for contract changes)
-11. **Are all TypeScript types correct?**
-12. **Would a professional designer approve this?** (for UI changes)
-13. **Is there a consistent color palette (max 2-3 colors)?** (for UI changes)
-14. **Did I establish clear visual hierarchy?** (for UI changes)
-15. **Have I tested the EXACT deployment build flow locally?** (for amplify.yml/vercel.json changes)
+8. **Have I consolidated documentation into ONE file instead of many?** (e.g., one guide vs 5 separate files)
+9. **Have I consolidated scripts with flags instead of creating multiple scripts?** (e.g., --quick flag)
+10. Is the code readable and maintainable?
+11. **Does `npm run build` pass without errors?** (for frontend changes)
+12. **Does `forge test` pass without errors?** (for contract changes)
+13. **Are all TypeScript types correct?**
+14. **Would a professional designer approve this?** (for UI changes)
+15. **Is there a consistent color palette (max 2-3 colors)?** (for UI changes)
+16. **Did I establish clear visual hierarchy?** (for UI changes)
+17. **Have I tested the EXACT deployment build flow locally?** (for amplify.yml/vercel.json changes)

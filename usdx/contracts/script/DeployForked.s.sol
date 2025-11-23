@@ -6,8 +6,12 @@ import {USDXToken} from "../contracts/USDXToken.sol";
 import {USDXVault} from "../contracts/USDXVault.sol";
 import {USDXSpokeMinter} from "../contracts/USDXSpokeMinter.sol";
 import {USDXShareOFT} from "../contracts/USDXShareOFT.sol";
+import {USDXShareOFTAdapter} from "../contracts/USDXShareOFTAdapter.sol";
+import {USDXVaultComposerSync} from "../contracts/USDXVaultComposerSync.sol";
+import {USDXYearnVaultWrapper} from "../contracts/USDXYearnVaultWrapper.sol";
 import {MockUSDC} from "../contracts/mocks/MockUSDC.sol";
 import {MockYearnVault} from "../contracts/mocks/MockYearnVault.sol";
+import {LayerZeroConfig} from "./LayerZeroConfig.sol";
 
 /**
  * @title DeployForked
@@ -50,17 +54,52 @@ contract DeployForked is Script {
         // ============ Deploy Hub Chain Contracts ============
         console2.log("\n--- Deploying Hub Chain (Ethereum) ---");
         
+        // Get LayerZero endpoint for current chain
+        address lzEndpoint = LayerZeroConfig.getEndpoint(block.chainid);
+        uint32 hubEid = LayerZeroConfig.getEid(block.chainid);
+        console2.log("LayerZero Endpoint:", lzEndpoint);
+        console2.log("Hub EID:", hubEid);
+        
         USDXToken hubUSDX = new USDXToken(deployer);
         console2.log("HubUSDX:", address(hubUSDX));
+        
+        // Deploy vault wrapper
+        USDXYearnVaultWrapper vaultWrapper = new USDXYearnVaultWrapper(
+            address(usdc),
+            address(yearnVault),
+            "USDX Yearn Wrapper",
+            "USDX-YV"
+        );
+        console2.log("VaultWrapper:", address(vaultWrapper));
+        
+        // Deploy share OFT adapter
+        USDXShareOFTAdapter shareOFTAdapter = new USDXShareOFTAdapter(
+            address(vaultWrapper),
+            lzEndpoint,
+            hubEid,
+            deployer
+        );
+        console2.log("ShareOFTAdapter:", address(shareOFTAdapter));
+        
+        // Deploy vault composer
+        USDXVaultComposerSync composer = new USDXVaultComposerSync(
+            address(vaultWrapper),
+            address(shareOFTAdapter),
+            address(usdc),
+            lzEndpoint,
+            hubEid,
+            deployer
+        );
+        console2.log("VaultComposer:", address(composer));
         
         USDXVault vault = new USDXVault(
             address(usdc),
             address(hubUSDX),
             deployer, // Treasury = deployer for testing
             deployer, // Admin
-            address(0), // ovaultComposer (set later)
-            address(0), // shareOFTAdapter (set later)
-            address(0)  // vaultWrapper (set later)
+            address(composer),
+            address(shareOFTAdapter),
+            address(vaultWrapper)
         );
         console2.log("HubVault:", address(vault));
         
@@ -74,65 +113,48 @@ contract DeployForked is Script {
         console2.log("Set Yearn vault on HubVault");
         
         // ============ Deploy Spoke Chain Contracts ============
-        console2.log("\n--- Deploying Spoke Chain (Simulated) ---");
-        
-        USDXToken spokeUSDX = new USDXToken(deployer);
-        console2.log("SpokeUSDX:", address(spokeUSDX));
-        
-        // Deploy USDXShareOFT (for OVault integration)
-        address LZ_ENDPOINT = address(0); // TODO: Set LayerZero endpoint
-        USDXShareOFT shareOFT = new USDXShareOFT(
-            "USDX Vault Shares",
-            "USDX-SHARES",
-            LZ_ENDPOINT,
-            30109, // Polygon EID (update for your chain)
-            deployer
-        );
-        console2.log("USDXShareOFT:", address(shareOFT));
-        
-        USDXSpokeMinter spokeMinter = new USDXSpokeMinter(
-            address(spokeUSDX),
-            address(shareOFT),
-            LZ_ENDPOINT,
-            30101, // Hub chain ID (Ethereum)
-            deployer
-        );
-        console2.log("SpokeMinter:", address(spokeMinter));
-        
-        // Setup spoke permissions
-        spokeUSDX.grantRole(MINTER_ROLE, address(spokeMinter));
-        spokeUSDX.grantRole(BURNER_ROLE, address(spokeMinter));
-        shareOFT.setMinter(address(spokeMinter));
-        console2.log("Granted minter roles on SpokeUSDX");
+        console2.log("\n--- NOTE: Deploy spoke contracts on each L2 separately ---");
+        console2.log("This script deploys hub contracts only.");
+        console2.log("For spoke deployment, use DeploySpoke.s.sol on each L2 chain.");
+        console2.log("\nExample spoke deployment commands:");
+        console2.log("  forge script script/DeploySpoke.s.sol:DeploySpoke \\");
+        console2.log("    --rpc-url $POLYGON_RPC_URL --broadcast --verify");
+        console2.log("  forge script script/DeploySpoke.s.sol:DeploySpoke \\");
+        console2.log("    --rpc-url $BASE_RPC_URL --broadcast --verify");
+        console2.log("  forge script script/DeploySpoke.s.sol:DeploySpoke \\");
+        console2.log("    --rpc-url $ARBITRUM_RPC_URL --broadcast --verify");
         
         vm.stopBroadcast();
         
         // ============ Print Deployment Summary ============
         console2.log("\n========================================");
-        console2.log("  Deployment Complete!");
+        console2.log("  Hub Deployment Complete!");
         console2.log("========================================\n");
         
         console2.log("Mock Contracts:");
         console2.log("  USDC:", address(usdc));
         console2.log("  Yearn Vault:", address(yearnVault));
         
-        console2.log("\nHub Chain (Ethereum):");
+        console2.log("\nHub Chain Contracts:");
         console2.log("  USDX Token:", address(hubUSDX));
+        console2.log("  Vault Wrapper:", address(vaultWrapper));
+        console2.log("  Share OFT Adapter:", address(shareOFTAdapter));
+        console2.log("  Vault Composer:", address(composer));
         console2.log("  USDX Vault:", address(vault));
         
-        console2.log("\nSpoke Chain (Simulated):");
-        console2.log("  USDX Token:", address(spokeUSDX));
-        console2.log("  Spoke Minter:", address(spokeMinter));
+        console2.log("\nLayerZero Config:");
+        console2.log("  Endpoint:", lzEndpoint);
+        console2.log("  Hub EID:", hubEid);
         
-        console2.log("\nTest Accounts:");
+        console2.log("\nConfiguration:");
         console2.log("  Deployer/Admin:", deployer);
         console2.log("  Treasury:", deployer);
-        console2.log("  Position Oracle:", deployer);
         
         console2.log("\n========================================");
-        console2.log("  Ready for Frontend Development!");
+        console2.log("  Next Steps:");
+        console2.log("  1. Deploy spoke contracts on each L2");
+        console2.log("  2. Configure trusted remotes");
+        console2.log("  3. Fund vault with USDC for testing");
         console2.log("========================================\n");
-        
-        // Addresses saved - use console output above for frontend config
     }
 }

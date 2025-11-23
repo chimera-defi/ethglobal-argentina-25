@@ -193,6 +193,49 @@ contract USDXShareOFTAdapter is ERC20, ERC20Burnable, Ownable {
     }
     
     /**
+     * @notice Send shares cross-chain with custom receiver (for composer/contract use)
+     * @param from Address to burn OFT tokens from (must have approved this contract)
+     * @param dstEid Destination endpoint ID
+     * @param to Receiver address on destination chain (bytes32 format)
+     * @param shares Amount of shares to send
+     * @param options LayerZero options
+     */
+    function sendTo(
+        address from,
+        uint32 dstEid,
+        bytes32 to,
+        uint256 shares,
+        bytes calldata options
+    ) external payable {
+        if (shares == 0) revert ZeroAmount();
+        if (trustedRemotes[dstEid] == bytes32(0)) revert InvalidRemote();
+        
+        // Burn tokens from 'from' address
+        // Only require allowance if sender is not the owner
+        if (from != msg.sender) {
+            _spendAllowance(from, msg.sender, shares);
+        }
+        _burn(from, shares);
+        
+        // Build payload with custom receiver
+        address receiver = address(uint160(uint256(to)));
+        bytes memory payload = abi.encode(receiver, shares);
+        
+        // Send via LayerZero
+        ILayerZeroEndpoint.MessagingParams memory params = ILayerZeroEndpoint.MessagingParams({
+            dstEid: dstEid,
+            receiver: trustedRemotes[dstEid],
+            message: payload,
+            options: options,
+            payInLzToken: false
+        });
+        
+        lzEndpoint.send{value: msg.value}(params, msg.sender);
+        
+        emit CrossChainSent(dstEid, to, shares);
+    }
+    
+    /**
      * @notice Receive shares from cross-chain transfer
      * @dev Called by LayerZero endpoint
      * @dev This mints OFT tokens representing shares that are locked on hub chain

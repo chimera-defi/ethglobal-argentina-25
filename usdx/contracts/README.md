@@ -1,5 +1,22 @@
 # USDX Smart Contracts
 
+## 🎯 Quick Demo
+
+**Run E2E test with verbose logging:**
+
+```bash
+forge test --match-test testCompleteE2EFlow -vv
+```
+
+**Or use root demo script:**
+```bash
+cd .. && ./run-demo.sh --quick
+```
+
+**[Full Guide](../docs/e2e-demo-guide.md)**
+
+---
+
 ## For Smart Contracts Agent
 
 **📖 Start Here**: **[../docs/21-smart-contract-development-setup.md](../docs/21-smart-contract-development-setup.md)**
