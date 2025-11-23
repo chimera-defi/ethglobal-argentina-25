@@ -1,5 +1,11 @@
 # ethglobal-argentina-25
 
+## USDX Protocol
+
+**USDX** is a decentralized yield-bearing stablecoin with unified yield generation across multiple chains. USDX uses LayerZero OVault for cross-chain yield vault integration with a hub-and-spoke architecture, enabling users to mint USDX on any supported chain while maintaining a single collateral source and unified yield generation on Ethereum.
+
+For more information, see the **[USDX Prospectus](./usdx/docs/USDX-PROSPECTUS.md)**.
+
 ## Ledger Clear Signing Prize Submission
 
 We submitted an implementation for the **Ledger Clear Signing (ERC-7730)** prize at ETHGlobal Buenos Aires 2025.
