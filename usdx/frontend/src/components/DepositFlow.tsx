@@ -41,7 +41,12 @@ export function DepositFlow({ signer, onSuccess }: DepositFlowProps) {
       const approveToastId = showLoading('Approving USDC spending...');
       setLoadingToastId(approveToastId);
       
-      const usdc = getUSDCContract(signer);
+      // Get chainId to use correct USDC address
+      const provider = signer.provider;
+      const network = provider ? await provider.getNetwork() : null;
+      const chainId = network ? Number(network.chainId) : undefined;
+      
+      const usdc = getUSDCContract(signer, chainId);
       const approveTx = await usdc.approve(CONTRACTS.HUB_VAULT, parsedAmount);
       await waitForTransaction(approveTx);
       setIsApproving(false);
