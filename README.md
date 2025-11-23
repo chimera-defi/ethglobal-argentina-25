@@ -41,6 +41,11 @@ USDX implements a comprehensive cross-chain stablecoin protocol using **LayerZer
 
 We are targeting the **Circle USDC Bridge Kit and ARC** prize for cross-chain USDC experience at ETHGlobal Buenos Aires 2025.
 
+Succesful bridgekit transfer:    
+mainnet to polygon   
+https://etherscan.io/tx/0x6131f195dd555d28ec4deafee8b5cdd3d904ba24f186cc07d7654860ff72a2ae  
+https://polygonscan.com/tx/0xb0498851a42a6e5a5c9ab0508c66d0cc42264555b48ea86cef114cc1ca2374e8   
+
 **Prize Category:** 💵 Circle USDC Bridge Kit & ARC - Cross-Chain USDC Experience
 
 **What We Built:**
