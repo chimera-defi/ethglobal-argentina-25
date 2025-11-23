@@ -22,16 +22,25 @@ async function main() {
   // Start it with: npx hardhat node
   const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545");
   
-  // Verify connection
-  try {
-    const network = await provider.getNetwork();
-    console.log(`Connected to network: ${network.name} (chainId: ${network.chainId})\n`);
-  } catch (error: any) {
-    console.error("\n❌ Error: Could not connect to Hardhat node.");
-    console.error("Please start Hardhat node first:");
-    console.error("  npx hardhat node\n");
-    console.error("Then run this script again.\n");
-    throw new Error("Hardhat node not running. Start it with 'npx hardhat node'");
+  // Verify connection with retry logic
+  let connected = false;
+  for (let i = 0; i < 5; i++) {
+    try {
+      const network = await provider.getNetwork();
+      console.log(`Connected to network: ${network.name} (chainId: ${network.chainId})\n`);
+      connected = true;
+      break;
+    } catch (error: any) {
+      if (i < 4) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        continue;
+      }
+      console.error("\n❌ Error: Could not connect to Hardhat node.");
+      console.error("Please start Hardhat node first:");
+      console.error("  npx hardhat node\n");
+      console.error("Then run this script again.\n");
+      throw new Error("Hardhat node not running. Start it with 'npx hardhat node'");
+    }
   }
   
   // Hardhat default accounts
@@ -84,13 +93,8 @@ async function main() {
     // Advance chain to ensure state is updated
     await advanceChain();
     
-    // Get the nonce from the block AFTER the transaction was mined
-    // Use receipt.blockNumber + 1 to ensure we're querying after the transaction
-    const queryBlock = receipt.blockNumber + 1;
-    const chainNonce = await provider.getTransactionCount(deployer.address, queryBlock);
-    
-    // Update our tracked nonce to match chain state
-    currentNonce = chainNonce;
+    // Increment nonce manually - each successful transaction increments nonce by 1
+    currentNonce++;
     
     // Get contract address from receipt
     if (!receipt.contractAddress) {
@@ -108,9 +112,8 @@ async function main() {
     const txResponse = await deployer.sendTransaction(tx);
     const receipt = await txResponse.wait();
     await advanceChain();
-    // Update nonce from chain state
-    const queryBlock = receipt.blockNumber + 1;
-    currentNonce = await provider.getTransactionCount(deployer.address, queryBlock);
+    // Increment nonce manually - each successful transaction increments nonce by 1
+    currentNonce++;
     return receipt;
   };
   
