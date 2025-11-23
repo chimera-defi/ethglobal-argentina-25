@@ -166,13 +166,19 @@ contract USDXVaultComposerSyncTest is Test {
         uint256 shares = shareOFTAdapter.lockedShares(address(composer));
         assertGt(shares, 0, "Composer should have locked shares in adapter");
         
-        // Simulate cross-chain receipt: user receives adapter OFT tokens
+        // Verify composer has adapter OFT tokens (minted when shares were locked)
+        assertEq(shareOFTAdapter.balanceOf(address(composer)), shares, "Composer should have adapter OFT tokens");
+        
+        // Simulate cross-chain receipt: user receives adapter OFT tokens on spoke chain
         // In reality, this would happen via LayerZero - shares are locked in adapter
         // and adapter OFT tokens are minted to user on spoke chain
-        // For this test, we need to transfer adapter OFT tokens from composer to user
-        // (representing that user received them on the spoke chain)
+        // For this test, we transfer adapter OFT tokens from composer to user
+        // (simulating that user received them on the spoke chain)
         vm.prank(address(composer));
         IERC20(address(shareOFTAdapter)).transfer(user, shares);
+        
+        // Verify user now has adapter tokens
+        assertEq(shareOFTAdapter.balanceOf(user), shares, "User should have adapter OFT tokens");
         
         // Now redeem - user transfers adapter OFT tokens to composer, which unlocks shares
         // Use a different timestamp to avoid operation ID collision
@@ -193,10 +199,10 @@ contract USDXVaultComposerSyncTest is Test {
         vm.stopPrank();
         
         // Verify shares were unlocked from adapter (composer's locked shares decreased)
-        // Note: shares are sent cross-chain, so composer's locked shares should decrease
-        // But the actual redemption happens on the destination chain
-        // For this test, we verify the operation was initiated
-        assertGt(shares, 0, "Shares should exist");
+        // The redeem function unlocks shares and redeems from vault
+        // Shares should be unlocked, so locked shares should decrease
+        assertEq(shareOFTAdapter.lockedShares(address(composer)), 0, "Composer's locked shares should be unlocked");
+        assertEq(shareOFTAdapter.balanceOf(address(composer)), 0, "Composer should have no adapter OFT tokens");
     }
     
     function testSetTrustedRemote() public {
