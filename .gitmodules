@@ -7,3 +7,6 @@
 [submodule "usdx/contracts/lib/LayerZero-v2"]
 	path = usdx/contracts/lib/LayerZero-v2
 	url = https://github.com/LayerZero-Labs/layerzero-contracts
+[submodule "usdx/contracts/lib/forge-std"]
+	path = usdx/contracts/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
