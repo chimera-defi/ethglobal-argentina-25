@@ -4,6 +4,25 @@
 
 [![Layer Zero](https://img.shields.io/badge/LayerZero-OVault%20Integrated-blue)]() [![Status](https://img.shields.io/badge/status-Ready%20for%20Testnet-green)]()
 
+## 🎬 Live Demo (For Investors & Presentations)
+
+**Want to see the protocol in action? One command starts everything:**
+
+```bash
+./run-complete-demo.sh
+```
+
+**What it does**:
+1. 🌐 Starts local Ethereum + Base chains
+2. 📦 Deploys all smart contracts
+3. 💰 Funds test wallets
+4. 🔄 Runs complete E2E flow with verbose logging
+
+**Shows**: Deposit → Cross-Chain Bridge → Mint USDX → Transfer → Burn → Redeem  
+**Duration**: ~2 minutes | **[Full Demo Guide →](./DEMO-README.md)**
+
+---
+
 ## 🎯 What is USDX?
 
 USDX is a yield-bearing stablecoin that uses **LayerZero OVault** for cross-chain yield vault integration with a **hub-and-spoke architecture**:
