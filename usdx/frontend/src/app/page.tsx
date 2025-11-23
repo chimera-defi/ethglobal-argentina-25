@@ -337,7 +337,7 @@ export default function Home() {
             </motion.p>
           </div>
 
-          <div className="max-w-6xl mx-auto p-8 md:p-12 rounded-2xl border-3 border-blue-300 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm shadow-xl">
+          <div className="max-w-6xl mx-auto p-8 md:p-12 rounded-2xl border-4 border-blue-300 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm shadow-xl">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {/* Step 1: Deposit */}
               <motion.div
