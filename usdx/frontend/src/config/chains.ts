@@ -142,3 +142,34 @@ export function isHubChain(chainId: number): boolean {
 export function isSpokeChain(chainId: number): boolean {
   return SPOKE_CHAINS.some(spoke => spoke.id === chainId);
 }
+
+/**
+ * Check if a chain ID is a mainnet chain
+ * Mainnet chain IDs: 1 (Ethereum), 137 (Polygon), 8453 (Base), 42161 (Arbitrum), 10 (Optimism)
+ */
+export function isMainnetChain(chainId: number): boolean {
+  const mainnetChainIds = [
+    1,      // Ethereum Mainnet
+    137,    // Polygon Mainnet
+    8453,   // Base Mainnet
+    42161,  // Arbitrum Mainnet
+    10,     // Optimism Mainnet
+  ];
+  return mainnetChainIds.includes(chainId);
+}
+
+/**
+ * Check if a chain ID is a testnet chain
+ * Testnet chain IDs: 11155111 (Sepolia), 84532 (Base Sepolia), 421614 (Arbitrum Sepolia), 
+ * 11155420 (Optimism Sepolia), 5042002 (Arc Testnet)
+ */
+export function isTestnetChain(chainId: number): boolean {
+  const testnetChainIds = [
+    11155111,  // Ethereum Sepolia
+    84532,     // Base Sepolia
+    421614,    // Arbitrum Sepolia
+    11155420,  // Optimism Sepolia
+    5042002,   // Arc Testnet
+  ];
+  return testnetChainIds.includes(chainId);
+}
