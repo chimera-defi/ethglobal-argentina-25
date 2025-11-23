@@ -1,36 +1,25 @@
 version: 1
 applications:
-  - appRoot: usdx
+  - appRoot: usdx/frontend
     frontend:
       phases:
         preBuild:
           commands:
+            - echo "Installing dependencies from monorepo root..."
+            - cd ..
             - npm ci
+            - cd frontend
         build:
           commands:
+            - echo "Building frontend from monorepo root..."
+            - cd ..
             - npm run build:frontend
+            - cd frontend
       artifacts:
-        baseDirectory: frontend/.next
+        baseDirectory: .next
         files:
           - '**/*'
       cache:
         paths:
-          - node_modules/**/*
-          - frontend/.next/cache/**/*
-    - appRoot: usdx/frontend
-      frontend:
-        phases:
-          preBuild:
-            commands:
-              - npm --prefix .. ci # install from workspace root to honor root package-lock
-          build:
-            commands:
-              - npm --prefix .. run build:frontend
-        artifacts:
-          baseDirectory: .next
-          files:
-            - '**/*'
-        cache:
-          paths:
-            - ../node_modules/**/*
-            - .next/cache/**/*
+          - ../node_modules/**/*
+          - .next/cache/**/*
