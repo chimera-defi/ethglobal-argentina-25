@@ -6,20 +6,15 @@
 
 ## 🎬 Live Demo (For Investors & Presentations)
 
-**Want to see the protocol in action? One command starts everything:**
+**One command for complete E2E demonstration:**
 
 ```bash
-./run-complete-demo.sh
+./run-demo.sh              # Full demo: chains + deploy + test (~2 min)
+./run-demo.sh --quick      # Quick: just test with mocks (~10 sec)
 ```
 
-**What it does**:
-1. 🌐 Starts local Ethereum + Base chains
-2. 📦 Deploys all smart contracts
-3. 💰 Funds test wallets
-4. 🔄 Runs complete E2E flow with verbose logging
-
 **Shows**: Deposit → Cross-Chain Bridge → Mint USDX → Transfer → Burn → Redeem  
-**Duration**: ~2 minutes | **[Full Demo Guide →](./docs/DEMO-README.md)**
+**[Demo Guide →](./docs/e2e-demo-guide.md)**
 
 ---
 
