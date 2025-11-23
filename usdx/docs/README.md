@@ -23,9 +23,10 @@ All USDX protocol documentation is organized here.
 
 ### Research & Integration Guides
 
-11. **[RESEARCH-bridge-kit.md](./RESEARCH-bridge-kit.md)** - **Complete Bridge Kit guide** - Consolidated research, verified findings, integration patterns
-12. **[RESEARCH-hyperlane.md](./RESEARCH-hyperlane.md)** - **Complete Hyperlane guide** - Consolidated research, ISM selection, Yield Routes integration
-13. **[layerzero/README.md](./layerzero/README.md)** - **📚 LayerZero Documentation** - All LayerZero and OVault documentation consolidated
+11. **[BRIDGE-KIT-GUIDE.md](./BRIDGE-KIT-GUIDE.md)** - **✅ Circle Bridge Kit Integration** - Complete guide with working implementation (v1.1.2)
+12. **[RESEARCH-bridge-kit.md](./RESEARCH-bridge-kit.md)** - Bridge Kit research and background (archived/reference)
+13. **[RESEARCH-hyperlane.md](./RESEARCH-hyperlane.md)** - **Complete Hyperlane guide** - Consolidated research, ISM selection, Yield Routes integration
+14. **[layerzero/README.md](./layerzero/README.md)** - **📚 LayerZero Documentation** - All LayerZero and OVault documentation consolidated
 
 ### Implementation Guides
 
@@ -41,13 +42,21 @@ All USDX protocol documentation is organized here.
 21. **[SELF-ASSESSMENT.md](./SELF-ASSESSMENT.md)** - Honest assessment of work completed
 22. **[07-circle-cctp-research.md](./07-circle-cctp-research.md)** - Circle CCTP research (reference - Bridge Kit recommended)
 
+### Bridge Kit Documentation
+
+- **[BRIDGE-KIT-GUIDE.md](./BRIDGE-KIT-GUIDE.md)** - ✅ **Current implementation guide** (use this!)
+- **[BRIDGE-KIT-IMPLEMENTATION-FINAL.md](./BRIDGE-KIT-IMPLEMENTATION-FINAL.md)** - Technical implementation details
+- **[BRIDGE-KIT-FINAL-SUMMARY.md](./BRIDGE-KIT-FINAL-SUMMARY.md)** - Executive summary report
+- **[archive/](./archive/)** - Older BridgeKit docs (historical reference only)
+
 ### Legacy/Archive Documents
 
 *Note: The following documents have been consolidated but are kept for reference:*
-- `11-circle-bridge-kit-research.md` → Consolidated into `RESEARCH-bridge-kit.md`
-- `12-bridge-kit-integration-summary.md` → Consolidated into `RESEARCH-bridge-kit.md`
-- `17-bridge-kit-documentation-research.md` → Consolidated into `RESEARCH-bridge-kit.md`
-- `18-bridge-kit-verified-findings.md` → Consolidated into `RESEARCH-bridge-kit.md`
+- `11-circle-bridge-kit-research.md` → Consolidated into `BRIDGE-KIT-GUIDE.md`
+- `12-bridge-kit-integration-summary.md` → Consolidated into `BRIDGE-KIT-GUIDE.md`
+- `17-bridge-kit-documentation-research.md` → Consolidated into `BRIDGE-KIT-GUIDE.md`
+- `18-bridge-kit-verified-findings.md` → Consolidated into `BRIDGE-KIT-GUIDE.md`
+- `BRIDGE-KIT-REVIEW-*` (5 files) → Moved to `archive/` folder
 - `09-hyperlane-research.md` → Consolidated into `RESEARCH-hyperlane.md`
 - `14-hyperlane-yield-routes-research.md` → Consolidated into `RESEARCH-hyperlane.md`
 - `19-hyperlane-deep-research.md` → Consolidated into `RESEARCH-hyperlane.md`
@@ -71,7 +80,7 @@ All USDX protocol documentation is organized here.
 **Backend Developer**:
 - Start: `02-architecture.md` (Layer 4)
 - Tasks: `22-detailed-task-breakdown.md` (Backend)
-- Bridge Kit: `RESEARCH-bridge-kit.md`
+- Bridge Kit: `BRIDGE-KIT-GUIDE.md` (✅ working implementation)
 
 **Infrastructure Developer**:
 - Start: `02-architecture.md` (Infrastructure)
@@ -85,7 +94,7 @@ All USDX protocol documentation is organized here.
 **Implementation**: `22-detailed-task-breakdown.md`
 **Frontend**: `20-frontend-architecture.md`
 **Smart Contracts**: `21-smart-contract-development-setup.md`
-**Bridge Kit**: `RESEARCH-bridge-kit.md`
+**Bridge Kit**: `BRIDGE-KIT-GUIDE.md` ✅ (working implementation)
 **Hyperlane**: `RESEARCH-hyperlane.md`
 **LayerZero**: [layerzero/README.md](./layerzero/README.md) - All LayerZero documentation consolidated
 
