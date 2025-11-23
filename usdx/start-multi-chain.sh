@@ -85,6 +85,80 @@ START_ARC=${START_ARC:-true}  # Default: true (include Arc by default)
 # Create log directory
 mkdir -p logs
 
+# Track started processes for cleanup
+STARTED_PIDS=""
+
+# Cleanup function to kill all started processes
+cleanup() {
+    if [ -n "$STARTED_PIDS" ]; then
+        echo -e "\n${YELLOW}🧹 Cleaning up started processes...${NC}"
+        for PID in $STARTED_PIDS; do
+            if kill -0 $PID 2>/dev/null; then
+                kill $PID 2>/dev/null || true
+            fi
+        done
+    fi
+}
+
+# Set trap to cleanup on exit
+trap cleanup EXIT INT TERM
+
+# Function to kill processes on a port
+kill_port() {
+    local port=$1
+    local pids=""
+    
+    # Try different methods to find processes using the port
+    if command -v lsof &> /dev/null; then
+        pids=$(lsof -ti:$port 2>/dev/null || true)
+    elif command -v ss &> /dev/null; then
+        pids=$(ss -ltnp 2>/dev/null | grep ":$port " | grep -oP 'pid=\K[0-9]+' | sort -u || true)
+    elif command -v netstat &> /dev/null; then
+        pids=$(netstat -ltnp 2>/dev/null | grep ":$port " | grep -oP '[0-9]+/anvil' | cut -d'/' -f1 | sort -u || true)
+    fi
+    
+    if [ -n "$pids" ]; then
+        echo -e "${YELLOW}⚠️  Port $port is in use. Killing existing processes...${NC}"
+        for pid in $pids; do
+            kill $pid 2>/dev/null || true
+        done
+        sleep 1
+        # Force kill if still running
+        if command -v lsof &> /dev/null; then
+            pids=$(lsof -ti:$port 2>/dev/null || true)
+        elif command -v ss &> /dev/null; then
+            pids=$(ss -ltnp 2>/dev/null | grep ":$port " | grep -oP 'pid=\K[0-9]+' | sort -u || true)
+        fi
+        if [ -n "$pids" ]; then
+            for pid in $pids; do
+                kill -9 $pid 2>/dev/null || true
+            done
+            sleep 1
+        fi
+    fi
+}
+
+# Function to verify a chain is running
+verify_chain() {
+    local port=$1
+    local chain_name=$2
+    local max_attempts=10
+    local attempt=0
+    
+    while [ $attempt -lt $max_attempts ]; do
+        if curl -s -X POST -H "Content-Type: application/json" \
+            --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}' \
+            "http://localhost:$port" > /dev/null 2>&1; then
+            return 0
+        fi
+        attempt=$((attempt + 1))
+        sleep 1
+    done
+    
+    echo -e "${RED}❌ ${chain_name} failed to respond on port $port after ${max_attempts} attempts${NC}"
+    return 1
+}
+
 # Function to test RPC connection
 test_rpc() {
     local rpc_url=$1
@@ -111,7 +185,14 @@ fi
 
 echo ""
 
+# Clean up any existing processes on ports
+echo -e "${BLUE}🧹 Cleaning up any existing processes on ports...${NC}"
+kill_port 8545
+kill_port 8546
+kill_port 8547
+
 # Start Hub Chain (Ethereum Mainnet)
+echo ""
 echo -e "${GREEN}✓${NC} Starting Hub Chain (Ethereum Mainnet) on port 8545..."
 echo "   Chain ID: 1"
 echo "   RPC: $HUB_RPC_URL"
@@ -122,11 +203,27 @@ anvil \
   --block-time 2 \
   > logs/anvil-hub.log 2>&1 &
 HUB_PID=$!
+STARTED_PIDS="$STARTED_PIDS $HUB_PID"
 echo "   PID: $HUB_PID"
 
 sleep 3
 
+# Verify Hub chain started
+if ! kill -0 $HUB_PID 2>/dev/null; then
+    echo -e "${RED}❌ Hub chain process died immediately. Check logs/anvil-hub.log:${NC}"
+    tail -20 logs/anvil-hub.log 2>/dev/null || echo "   (log file not found)"
+    exit 1
+fi
+
+if ! verify_chain 8545 "Hub Chain"; then
+    echo -e "${RED}❌ Hub chain failed to start. Check logs/anvil-hub.log:${NC}"
+    tail -20 logs/anvil-hub.log 2>/dev/null || echo "   (log file not found)"
+    exit 1
+fi
+echo -e "${GREEN}✓${NC} Hub chain is running and responding"
+
 # Start Spoke Chain - Base Mainnet
+echo ""
 echo -e "${GREEN}✓${NC} Starting Spoke Chain (Base Mainnet) on port 8546..."
 echo "   Chain ID: 8453"
 echo "   RPC: $SPOKE_BASE_RPC_URL"
@@ -137,12 +234,28 @@ anvil \
   --block-time 2 \
   > logs/anvil-spoke.log 2>&1 &
 SPOKE_BASE_PID=$!
+STARTED_PIDS="$STARTED_PIDS $SPOKE_BASE_PID"
 echo "   PID: $SPOKE_BASE_PID"
 
 sleep 3
 
+# Verify Spoke Base chain started
+if ! kill -0 $SPOKE_BASE_PID 2>/dev/null; then
+    echo -e "${RED}❌ Spoke Base chain process died immediately. Check logs/anvil-spoke.log:${NC}"
+    tail -20 logs/anvil-spoke.log 2>/dev/null || echo "   (log file not found)"
+    exit 1
+fi
+
+if ! verify_chain 8546 "Spoke Base Chain"; then
+    echo -e "${RED}❌ Spoke Base chain failed to start. Check logs/anvil-spoke.log:${NC}"
+    tail -20 logs/anvil-spoke.log 2>/dev/null || echo "   (log file not found)"
+    exit 1
+fi
+echo -e "${GREEN}✓${NC} Spoke Base chain is running and responding"
+
 # Start Spoke Chain - Arc Testnet (enabled by default)
 if [ "$START_ARC" != "false" ]; then
+    echo ""
     echo -e "${GREEN}✓${NC} Starting Spoke Chain (Arc Testnet) on port 8547..."
     echo "   Chain ID: 5042002"
     echo "   RPC: $SPOKE_ARC_RPC_URL"
@@ -153,29 +266,26 @@ if [ "$START_ARC" != "false" ]; then
       --block-time 2 \
       > logs/anvil-arc.log 2>&1 &
     SPOKE_ARC_PID=$!
+    STARTED_PIDS="$STARTED_PIDS $SPOKE_ARC_PID"
     echo "   PID: $SPOKE_ARC_PID"
     sleep 3
+
+    # Verify Spoke Arc chain started
+    if ! kill -0 $SPOKE_ARC_PID 2>/dev/null; then
+        echo -e "${RED}❌ Spoke Arc chain process died immediately. Check logs/anvil-arc.log:${NC}"
+        tail -20 logs/anvil-arc.log 2>/dev/null || echo "   (log file not found)"
+        exit 1
+    fi
+
+    if ! verify_chain 8547 "Spoke Arc Chain"; then
+        echo -e "${RED}❌ Spoke Arc chain failed to start. Check logs/anvil-arc.log:${NC}"
+        tail -20 logs/anvil-arc.log 2>/dev/null || echo "   (log file not found)"
+        exit 1
+    fi
+    echo -e "${GREEN}✓${NC} Spoke Arc chain is running and responding"
 else
     echo -e "${YELLOW}⚠️  Arc chain disabled (START_ARC=false)${NC}"
     SPOKE_ARC_PID=""
-fi
-
-# Check if chains are running
-if ! kill -0 $HUB_PID 2>/dev/null; then
-    echo -e "${RED}❌ Hub chain failed to start. Check logs/anvil-hub.log${NC}"
-    exit 1
-fi
-
-if ! kill -0 $SPOKE_BASE_PID 2>/dev/null; then
-    echo -e "${RED}❌ Spoke Base chain failed to start. Check logs/anvil-spoke.log${NC}"
-    kill $HUB_PID 2>/dev/null || true
-    exit 1
-fi
-
-if [ -n "$SPOKE_ARC_PID" ] && ! kill -0 $SPOKE_ARC_PID 2>/dev/null; then
-    echo -e "${RED}❌ Spoke Arc chain failed to start. Check logs/anvil-arc.log${NC}"
-    kill $HUB_PID $SPOKE_BASE_PID 2>/dev/null || true
-    exit 1
 fi
 
 echo ""
@@ -303,6 +413,9 @@ echo ""
 
 # Save PIDs to file for easy cleanup (only non-empty PIDs)
 echo "$STOP_PIDS" > .usdx-pids
+
+# Disable cleanup trap on successful completion (we want processes to keep running)
+trap - EXIT INT TERM
 
 echo "💡 Run './stop-multi-chain.sh' to stop all services"
 echo ""
