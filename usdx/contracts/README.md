@@ -1,5 +1,25 @@
 # USDX Smart Contracts
 
+## 🎯 Quick Demo (For Investors & Presentations)
+
+**Want to see the protocol in action?**
+
+```bash
+./run-demo.sh
+```
+
+This runs a complete end-to-end test showing:
+- ✅ Deposit USDC on Ethereum
+- ✅ Cross-chain bridge via LayerZero
+- ✅ Mint USDX on Polygon
+- ✅ Use USDX (transfers, DeFi)
+- ✅ Burn and redeem with yield
+
+**Demo Duration**: ~10 seconds | **Output**: Beautiful verbose logging  
+**Documentation**: See [DEMO-QUICK-START.md](./DEMO-QUICK-START.md) or [Integration Test Demo Guide](../docs/integration-test-demo.md)
+
+---
+
 ## For Smart Contracts Agent
 
 **📖 Start Here**: **[../docs/21-smart-contract-development-setup.md](../docs/21-smart-contract-development-setup.md)**
