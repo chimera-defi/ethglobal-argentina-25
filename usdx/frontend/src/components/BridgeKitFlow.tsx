@@ -23,7 +23,7 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
   useEffect(() => {
     if (currentChainId) {
       // If on spoke chain, bridge to hub
-      if (currentChainId === SPOKE.id || currentChainId === CHAINS.SPOKE_BASE.id || currentChainId === CHAINS.SPOKE_ARC.id) {
+      if (currentChainId === SPOKE.id || currentChainId === CHAINS.SPOKE_BASE.id || currentChainId === CHAINS.SPOKE_POLYGON.id || currentChainId === CHAINS.SPOKE_ARC.id) {
         setSourceChainId(currentChainId);
         setDestinationChainId(CHAINS.HUB.id);
       } else {
