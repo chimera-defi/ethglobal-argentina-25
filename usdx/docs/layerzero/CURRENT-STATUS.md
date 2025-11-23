@@ -36,22 +36,7 @@
 
 ### ✅ Testing (100% Complete)
 
-```
-Total Tests: 108/108 ✅
-- Integration E2E Tests: 3/3 ✅
-- Integration OVault Tests: 3/3 ✅
-- Unit Tests: 102/102 ✅
-
-Success Rate: 100%
-```
-
-**Key Test Coverage:**
-- ✅ Complete end-to-end user flows
-- ✅ Hub-and-spoke cross-chain minting
-- ✅ USDX cross-chain transfers
-- ✅ OVault composer operations
-- ✅ Share locking/unlocking
-- ✅ LayerZero message handling
+**108/108 tests passing** covering end-to-end user flows, hub-and-spoke cross-chain minting, USDX transfers, OVault operations, and LayerZero message handling.
 
 ## Architecture Compliance
 
@@ -207,28 +192,14 @@ The following documents are now archived in `archive/` as they've been supersede
    - Gas optimization for batching
    - Permissionless error recovery
 
-## Test Contracts Location
+## Running Tests
 
-All test contracts are in:
-```
-/workspace/usdx/contracts/test/forge/
-├── IntegrationE2E_OVault.t.sol   ✅ E2E tests
-├── IntegrationOVault.t.sol       ✅ Integration tests
-├── USDXToken.t.sol               ✅ Token tests
-├── USDXVault.t.sol               ✅ Vault tests
-├── USDXShareOFT.t.sol            ✅ Share OFT tests
-├── USDXShareOFTAdapter.t.sol     ✅ Adapter tests
-├── USDXSpokeMinter.t.sol         ✅ Spoke minter tests
-├── USDXVaultComposerSync.t.sol   ✅ Composer tests
-└── USDXYearnVaultWrapper.t.sol   ✅ Wrapper tests
-```
-
-Run tests:
 ```bash
 cd /workspace/usdx/contracts
 forge test                        # Run all tests
 forge test -vv                    # Verbose output
 forge test --match-path "test/forge/Integration*.sol"  # Integration only
+forge coverage                    # Check coverage
 ```
 
 ## Contract Deployment Order
@@ -254,28 +225,6 @@ forge test --match-path "test/forge/Integration*.sol"  # Integration only
 5. Set trusted remotes to hub
 ```
 
-## Quick Commands
-
-### Run All Tests
-```bash
-cd /workspace/usdx/contracts
-forge test
-```
-
-### Run Integration Tests Only
-```bash
-forge test --match-path "test/forge/Integration*.sol" -vv
-```
-
-### Check Test Coverage
-```bash
-forge coverage
-```
-
-### Build Contracts
-```bash
-forge build
-```
 
 ## Key Achievements ✨
 

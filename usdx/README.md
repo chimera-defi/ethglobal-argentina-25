@@ -180,104 +180,20 @@ usdx/
 └── README.md               # This file
 ```
 
-## Agent-Specific Instructions
+## 🚀 For Developers
 
-### 🤖 For Smart Contracts Agent
-
-**Start Here**: **[docs/21-smart-contract-development-setup.md](./docs/21-smart-contract-development-setup.md)**
-
-**Quick Setup**:
+**Quick Setup:**
 ```bash
 cd contracts
-foundryup  # Install Foundry
-npm install  # Install Hardhat dependencies
-cp .env.example .env  # Configure environment
+foundryup && npm install
+cp .env.example .env
+forge test  # Run tests
 ```
 
-**Key Documents**:
-- **[docs/21-smart-contract-development-setup.md](./docs/21-smart-contract-development-setup.md)** - Complete setup guide
-- **[docs/22-detailed-task-breakdown.md](./docs/22-detailed-task-breakdown.md)** - Phase 2 tasks
-- **[docs/05-technical-specification.md](./docs/05-technical-specification.md)** - Contract interfaces
-
-**First Tasks**:
-1. Set up Foundry + Hardhat
-2. Configure mainnet forking
-3. Start with USDXToken.sol (Week 2)
-
-### 🎨 For Frontend Agent
-
-**Start Here**: **[docs/20-frontend-architecture.md](./docs/20-frontend-architecture.md)**
-
-**Quick Setup**:
-```bash
-cd frontend
-pnpm install  # Install dependencies
-cp .env.example .env.local  # Configure environment
-pnpm dev  # Start development server
-```
-
-**Key Documents**:
-- **[docs/20-frontend-architecture.md](./docs/20-frontend-architecture.md)** - Complete architecture & MVP features
-- **[docs/22-detailed-task-breakdown.md](./docs/22-detailed-task-breakdown.md)** - Phase 4 tasks
-- **[docs/03-flow-diagrams.md](./docs/03-flow-diagrams.md)** - User flows
-
-**First Tasks**:
-1. Set up Next.js project
-2. Configure wagmi + RainbowKit
-3. Build wallet connection component
-
-### ⚙️ For Backend Agent
-
-**Start Here**: **[docs/02-architecture.md](./docs/02-architecture.md)** (Layer 4: Infrastructure Services)
-
-**Quick Setup**:
-```bash
-cd backend
-npm install  # Install dependencies
-cp .env.example .env  # Configure environment
-npm run dev  # Start development server
-```
-
-**Key Documents**:
-- **[docs/RESEARCH-bridge-kit.md](./docs/RESEARCH-bridge-kit.md)** - Bridge Kit backend integration
-- **[docs/02-architecture.md](./docs/02-architecture.md)** - System architecture
-- **[docs/22-detailed-task-breakdown.md](./docs/22-detailed-task-breakdown.md)** - Backend tasks
-
-**First Tasks**:
-1. Set up Node.js/Express service
-2. Integrate Bridge Kit SDK (optional - can be frontend-only)
-3. Set up transaction indexing
-
-### 🏗️ For Infrastructure Agent
-
-**Start Here**: **[docs/02-architecture.md](./docs/02-architecture.md)** (Infrastructure section)
-
-**Quick Setup**:
-```bash
-cd infrastructure
-# Set up monitoring, indexing, deployment configs
-```
-
-**Key Documents**:
-- **[docs/02-architecture.md](./docs/02-architecture.md)** - Infrastructure requirements
-- **[docs/06-implementation-plan.md](./docs/06-implementation-plan.md)** - Deployment phases
-- **[docs/22-detailed-task-breakdown.md](./docs/22-detailed-task-breakdown.md)** - Infrastructure tasks
-
-**First Tasks**:
-1. Set up monitoring (Tenderly, OpenZeppelin Defender)
-2. Configure indexer (The Graph or custom)
-3. Set up CI/CD pipelines
-
-## Documentation
-
-All documentation is in the `docs/` folder. See **[docs/README.md](./docs/README.md)** for complete documentation index.
-
-## Development Workflow
-
-1. **Read agent-specific instructions** above
-2. **Set up development environment** (see setup guides)
-3. **Follow task breakdown** in `docs/22-detailed-task-breakdown.md`
-4. **Check open questions** in `docs/10-open-questions.md`
+**Documentation:**
+- **[docs/README.md](./docs/README.md)** - Complete documentation index
+- **[SETUP.md](./SETUP.md)** - Development environment setup
+- **[docs/layerzero/CURRENT-STATUS.md](./docs/layerzero/CURRENT-STATUS.md)** - Implementation guide
 
 ## 🛠️ Technology Stack
 
@@ -312,12 +228,11 @@ All documentation is in the `docs/` folder. See **[docs/README.md](./docs/README
 - **OpenZeppelin Defender** (security)
 - **LayerZero Scan** (cross-chain message tracking)
 
-## Getting Help
+## 📖 Learn More
 
-- **Architecture questions**: See `docs/02-architecture.md`
-- **Implementation questions**: See `docs/22-detailed-task-breakdown.md`
-- **Protocol questions**: See `docs/RESEARCH-*.md` files
-- **Open questions**: See `docs/10-open-questions.md`
+- **[docs/USDX-PROSPECTUS.md](./docs/USDX-PROSPECTUS.md)** - Executive prospectus
+- **[docs/02-architecture.md](./docs/02-architecture.md)** - System architecture
+- **[docs/README.md](./docs/README.md)** - Complete documentation
 
 ## 📈 Current Status
 
@@ -327,45 +242,17 @@ All documentation is in the `docs/` folder. See **[docs/README.md](./docs/README
 **Documentation:** ✅ Complete and current  
 **Next Step:** 🚀 Ready for Testnet Deployment
 
-### Recent Achievements (2025-11-23)
-- ✅ Layer Zero OVault integration complete
-- ✅ Hub-and-spoke architecture verified
-- ✅ All core contracts implemented
-- ✅ Comprehensive testing complete
-- ✅ Documentation consolidated and updated
-- ✅ Zero architectural divergences found
-- ✅ Token naming consistent across chains
 
 ## 🧪 Testing
 
-Run all tests:
+All smart contracts are thoroughly tested with **108/108 tests passing**.
+
 ```bash
 cd contracts
 forge test
 ```
 
-**Test Results:** 108/108 passing ✅
-
-Test breakdown:
-- Integration E2E: 3/3 ✅
-- Integration OVault: 3/3 ✅  
-- Unit Tests: 102/102 ✅
-
-## 🚀 Next Steps
-
-### Immediate (Ready Now)
-1. Deploy to Ethereum Sepolia (hub)
-2. Deploy to Polygon Mumbai, Arbitrum Sepolia (spokes)
-3. Configure LayerZero endpoints and trusted remotes
-4. Test with real LayerZero infrastructure
-
-### Before Mainnet
-1. Security audit (focus on LayerZero integration)
-2. Replace simplified LayerZero contracts with official SDK
-3. Set up monitoring and alerting
-4. Configure production DVNs and executors
-
-See **[docs/layerzero/CURRENT-STATUS.md](./docs/layerzero/CURRENT-STATUS.md)** for detailed deployment guide.
+See **[docs/layerzero/CURRENT-STATUS.md](./docs/layerzero/CURRENT-STATUS.md)** for deployment guide.
 
 ## 📚 Documentation
 
