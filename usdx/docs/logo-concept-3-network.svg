@@ -1,0 +1,100 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradients -->
+  <defs>
+    <radialGradient id="hubGradient">
+      <stop offset="0%" style="stop-color:#6366F1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4F46E5;stop-opacity:1" />
+    </radialGradient>
+    <linearGradient id="borderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:0.5" />
+      <stop offset="50%" style="stop-color:#10B981;stop-opacity:0.5" />
+      <stop offset="100%" style="stop-color:#FBBF24;stop-opacity:0.5" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Dark Background -->
+  <circle cx="200" cy="200" r="200" fill="#0A0E27"/>
+  
+  <!-- Network Grid Effect -->
+  <g opacity="0.1" stroke="#6366F1" stroke-width="1">
+    <line x1="0" y1="100" x2="400" y2="100"/>
+    <line x1="0" y1="200" x2="400" y2="200"/>
+    <line x1="0" y1="300" x2="400" y2="300"/>
+    <line x1="100" y1="0" x2="100" y2="400"/>
+    <line x1="200" y1="0" x2="200" y2="400"/>
+    <line x1="300" y1="0" x2="300" y2="400"/>
+  </g>
+  
+  <!-- Central Hub (Ethereum) - Larger -->
+  <circle cx="200" cy="200" r="50" fill="url(#hubGradient)"/>
+  <circle cx="200" cy="200" r="38" fill="#4F46E5" opacity="0.8"/>
+  
+  <!-- Upward Arrow (Yield Growth) in Hub -->
+  <g stroke="#FBBF24" stroke-width="4" fill="none" stroke-linecap="round">
+    <path d="M 200 220 L 200 180"/>
+    <path d="M 200 180 L 190 190"/>
+    <path d="M 200 180 L 210 190"/>
+  </g>
+  
+  <!-- USD Symbol in Hub -->
+  <text x="200" y="215" font-family="Arial, sans-serif" font-size="24" 
+        font-weight="bold" fill="#FBBF24" text-anchor="middle" opacity="0.8">$</text>
+  
+  <!-- Spoke Chains (positioned in circle) -->
+  <g>
+    <!-- Chain 1 (Top) -->
+    <circle cx="200" cy="80" r="28" fill="#10B981" opacity="0.9"/>
+    <circle cx="200" cy="80" r="20" fill="#34D399"/>
+    <line x1="200" y1="150" x2="200" y2="108" stroke="#6366F1" stroke-width="3" opacity="0.6"/>
+    
+    <!-- Chain 2 (Top Right) -->
+    <circle cx="300" cy="120" r="28" fill="#10B981" opacity="0.9"/>
+    <circle cx="300" cy="120" r="20" fill="#34D399"/>
+    <line x1="235" y1="170" x2="272" y2="136" stroke="#6366F1" stroke-width="3" opacity="0.6"/>
+    
+    <!-- Chain 3 (Right) -->
+    <circle cx="330" cy="200" r="28" fill="#10B981" opacity="0.9"/>
+    <circle cx="330" cy="200" r="20" fill="#34D399"/>
+    <line x1="250" y1="200" x2="302" y2="200" stroke="#6366F1" stroke-width="3" opacity="0.6"/>
+    
+    <!-- Chain 4 (Bottom Right) -->
+    <circle cx="300" cy="280" r="28" fill="#10B981" opacity="0.9"/>
+    <circle cx="300" cy="280" r="20" fill="#34D399"/>
+    <line x1="235" y1="230" x2="272" y2="264" stroke="#6366F1" stroke-width="3" opacity="0.6"/>
+    
+    <!-- Chain 5 (Bottom) -->
+    <circle cx="200" cy="320" r="28" fill="#10B981" opacity="0.9"/>
+    <circle cx="200" cy="320" r="20" fill="#34D399"/>
+    <line x1="200" y1="250" x2="200" y2="292" stroke="#6366F1" stroke-width="3" opacity="0.6"/>
+    
+    <!-- Chain 6 (Bottom Left) -->
+    <circle cx="100" cy="280" r="28" fill="#10B981" opacity="0.9"/>
+    <circle cx="100" cy="280" r="20" fill="#34D399"/>
+    <line x1="165" y1="230" x2="128" y2="264" stroke="#6366F1" stroke-width="3" opacity="0.6"/>
+    
+    <!-- Chain 7 (Left) -->
+    <circle cx="70" cy="200" r="28" fill="#10B981" opacity="0.9"/>
+    <circle cx="70" cy="200" r="20" fill="#34D399"/>
+    <line x1="150" y1="200" x2="98" y2="200" stroke="#6366F1" stroke-width="3" opacity="0.6"/>
+    
+    <!-- Chain 8 (Top Left) -->
+    <circle cx="100" cy="120" r="28" fill="#10B981" opacity="0.9"/>
+    <circle cx="100" cy="120" r="20" fill="#34D399"/>
+    <line x1="165" y1="170" x2="128" y2="136" stroke="#6366F1" stroke-width="3" opacity="0.6"/>
+  </g>
+  
+  <!-- Data Flow Particles (animated look) -->
+  <g fill="#FBBF24" opacity="0.8">
+    <circle cx="200" cy="130" r="3"/>
+    <circle cx="270" cy="160" r="3"/>
+    <circle cx="285" cy="200" r="3"/>
+    <circle cx="270" cy="240" r="3"/>
+    <circle cx="200" cy="270" r="3"/>
+    <circle cx="130" cy="240" r="3"/>
+    <circle cx="115" cy="200" r="3"/>
+    <circle cx="130" cy="160" r="3"/>
+  </g>
+  
+  <!-- Outer Border -->
+  <circle cx="200" cy="200" r="195" fill="none" stroke="url(#borderGradient)" stroke-width="2"/>
+</svg>
