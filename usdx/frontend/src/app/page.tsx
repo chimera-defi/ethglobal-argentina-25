@@ -220,34 +220,57 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="relative text-center mb-16"
         >
-          <motion.div
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="inline-block mb-6"
-          >
-            <div className="px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full border border-blue-200 dark:border-blue-800">
-              <span className="text-sm font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Yield-Bearing Stablecoin</span>
-            </div>
-          </motion.div>
-          <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-            Deposit USDC, Earn Yield
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed">
-            Mint USDX 1:1 backed by USDC and earn yield automatically through Yearn Finance.
-            Use your USDX seamlessly across multiple chains.
-          </p>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400"
-          >
-            <Zap className="h-4 w-4" />
-            <span>Powered by Yearn Finance & Circle Bridge Kit</span>
-          </motion.div>
+          {/* Decorative hero background */}
+          <div className="absolute inset-0 -mx-8 bg-gradient-to-b from-blue-50 via-purple-50/30 to-transparent dark:from-blue-950/30 dark:via-purple-950/20 dark:to-transparent rounded-3xl blur-3xl" />
+          
+          <div className="relative">
+            <motion.div
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-block mb-6"
+            >
+              <div className="px-6 py-3 bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 dark:from-blue-900/30 dark:via-purple-900/30 dark:to-pink-900/30 rounded-full border-2 border-blue-200 dark:border-blue-800 shadow-lg">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                  <span className="text-sm font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Yield-Bearing Stablecoin</span>
+                  <Sparkles className="h-4 w-4 text-pink-600 dark:text-pink-400" />
+                </div>
+              </div>
+            </motion.div>
+            <h2 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight">
+              Deposit USDC, Earn Yield
+            </h2>
+            <div className="h-2 w-32 mx-auto mb-8 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full" />
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed">
+              Mint USDX 1:1 backed by USDC and earn yield automatically through Yearn Finance.
+              Use your USDX seamlessly across multiple chains.
+            </p>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="inline-flex items-center gap-3 px-6 py-3 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl border-2 border-gray-200 dark:border-gray-700 shadow-xl"
+            >
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg">
+                  <Zap className="h-4 w-4 text-white" />
+                </div>
+                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Powered by</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Shield className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                <span className="text-sm font-bold text-gray-900 dark:text-white">Yearn Finance</span>
+              </div>
+              <span className="text-gray-400">•</span>
+              <div className="flex items-center gap-2">
+                <Network className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                <span className="text-sm font-bold text-gray-900 dark:text-white">Circle Bridge Kit</span>
+              </div>
+            </motion.div>
+          </div>
         </motion.div>
 
         {/* Stats Grid */}
@@ -255,8 +278,10 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-20"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12"
         >
+          {/* Decorative top border */}
+          <div className="absolute -top-6 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-30 blur-sm" />
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
@@ -286,7 +311,27 @@ export default function Home() {
                 <div className={`absolute -right-8 -bottom-8 w-32 h-32 bg-gradient-to-br ${stat.gradient} opacity-5 rounded-full`} />
               </motion.div>
             );
-          })}
+          }          )}
+        </motion.div>
+
+        {/* Section Divider */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
+          className="relative mb-20"
+        >
+          <div className="h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent" />
+          <div className="absolute inset-0 h-px bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-50 blur-sm" />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <div className="px-4 py-1.5 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-full">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 animate-pulse" />
+                <div className="w-2 h-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 animate-pulse" style={{ animationDelay: '0.3s' }} />
+                <div className="w-2 h-2 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 animate-pulse" style={{ animationDelay: '0.6s' }} />
+              </div>
+            </div>
+          </div>
         </motion.div>
 
         {/* Protocol Flow Diagram */}
@@ -294,9 +339,12 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="mb-20"
+          className="relative mb-20"
         >
-          <div className="text-center mb-12">
+          {/* Decorative background for this section */}
+          <div className="absolute inset-0 -mx-4 bg-gradient-to-br from-blue-50/50 via-transparent to-purple-50/50 dark:from-blue-950/20 dark:via-transparent dark:to-purple-950/20 rounded-3xl" />
+          
+          <div className="relative text-center mb-12 pt-8">
             <motion.h2
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -444,14 +492,35 @@ export default function Home() {
           </div>
         </motion.div>
 
+        {/* Gradient Divider */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="relative my-20"
+        >
+          <div className="flex items-center justify-center gap-4">
+            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-emerald-500 to-teal-500 opacity-50" />
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-emerald-500 dark:text-emerald-400 animate-pulse" />
+              <span className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Features</span>
+              <Sparkles className="h-5 w-5 text-teal-500 dark:text-teal-400 animate-pulse" />
+            </div>
+            <div className="flex-1 h-px bg-gradient-to-l from-transparent via-emerald-500 to-teal-500 opacity-50" />
+          </div>
+        </motion.div>
+
         {/* Features Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="mb-20"
+          className="relative mb-20"
         >
-          <div className="text-center mb-12">
+          {/* Colorful background accent */}
+          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/30 via-green-50/30 to-teal-50/30 dark:from-emerald-950/10 dark:via-green-950/10 dark:to-teal-950/10 rounded-3xl -mx-4" />
+          
+          <div className="relative text-center mb-12">
             <h2 className="text-4xl font-black mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
               Why Choose USDX?
             </h2>
@@ -487,6 +556,40 @@ export default function Home() {
           </div>
         </motion.div>
 
+        {/* Decorative Divider with Icon */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ delay: 0.7, duration: 0.8 }}
+          className="relative my-20"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-rose-500/20 via-pink-500/20 to-purple-500/20 h-24 blur-3xl" />
+          <div className="relative flex items-center justify-center">
+            <div className="flex-1 h-1 bg-gradient-to-r from-transparent via-rose-500 to-pink-500 rounded-full" />
+            <div className="mx-6 p-4 bg-white dark:bg-gray-900 rounded-2xl border-2 border-rose-200 dark:border-rose-800 shadow-xl">
+              <Wallet className="h-8 w-8 text-rose-600 dark:text-rose-400" />
+            </div>
+            <div className="flex-1 h-1 bg-gradient-to-l from-transparent via-pink-500 to-purple-500 rounded-full" />
+          </div>
+        </motion.div>
+
+        {/* Interactive Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+          className="text-center mb-12"
+        >
+          <div className="inline-block p-6 bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 dark:from-rose-950/30 dark:via-pink-950/30 dark:to-purple-950/30 rounded-3xl border-2 border-rose-200 dark:border-rose-800 mb-4">
+            <h2 className="text-4xl font-black bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 bg-clip-text text-transparent">
+              Start Using USDX
+            </h2>
+          </div>
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Connect your wallet and interact with the protocol
+          </p>
+        </motion.div>
+
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-20">
           <motion.div
@@ -507,15 +610,42 @@ export default function Home() {
           </motion.div>
         </div>
 
+        {/* Animated Wave Divider */}
+        {!isConnected && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.9 }}
+            className="relative my-20"
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex-1">
+                <div className="h-px bg-gradient-to-r from-transparent via-orange-400 to-amber-400" />
+                <div className="h-px bg-gradient-to-r from-transparent via-orange-300 to-amber-300 mt-1" />
+              </div>
+              <div className="px-6 py-2 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full shadow-lg">
+                <span className="text-white font-bold text-sm uppercase tracking-wider">Get Started</span>
+              </div>
+              <div className="flex-1">
+                <div className="h-px bg-gradient-to-l from-transparent via-amber-400 to-yellow-400" />
+                <div className="h-px bg-gradient-to-l from-transparent via-amber-300 to-yellow-300 mt-1" />
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {/* Quick Start Guide */}
         {!isConnected && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="mb-20"
+            className="relative mb-20"
           >
-            <div className="text-center mb-12">
+            {/* Warm background glow */}
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-50/40 via-amber-50/40 to-yellow-50/40 dark:from-orange-950/20 dark:via-amber-950/20 dark:to-yellow-950/20 rounded-3xl -mx-4" />
+            
+            <div className="relative text-center mb-12">
               <h2 className="text-4xl font-black mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                 Get Started in 4 Steps
               </h2>
@@ -558,6 +688,33 @@ export default function Home() {
             </div>
           </motion.div>
         )}
+
+        {/* Final Section Divider */}
+        <motion.div
+          initial={{ opacity: 0, scaleX: 0 }}
+          animate={{ opacity: 1, scaleX: 1 }}
+          transition={{ delay: 1.0, duration: 0.8 }}
+          className="relative my-20"
+        >
+          <div className="relative h-20 flex items-center justify-center">
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-indigo-500/10 blur-2xl" />
+            <div className="relative flex items-center gap-6 w-full">
+              <div className="flex-1 flex flex-col gap-2">
+                <div className="h-0.5 bg-gradient-to-r from-transparent via-cyan-500 to-blue-500 rounded-full" />
+                <div className="h-px bg-gradient-to-r from-transparent via-cyan-400 to-blue-400 rounded-full" />
+              </div>
+              <div className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 rounded-2xl shadow-2xl">
+                <AlertCircle className="h-6 w-6 text-white" />
+                <span className="text-white font-black text-sm uppercase tracking-wider">Developer Mode</span>
+                <Zap className="h-6 w-6 text-yellow-300" />
+              </div>
+              <div className="flex-1 flex flex-col gap-2">
+                <div className="h-0.5 bg-gradient-to-l from-transparent via-blue-500 to-indigo-500 rounded-full" />
+                <div className="h-px bg-gradient-to-l from-transparent via-blue-400 to-indigo-400 rounded-full" />
+              </div>
+            </div>
+          </div>
+        </motion.div>
 
         {/* Developer Info */}
         <motion.div
@@ -616,53 +773,76 @@ export default function Home() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
-        className="relative border-t border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl mt-24"
+        className="relative border-t-4 border-transparent bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200 dark:from-blue-900 dark:via-purple-900 dark:to-pink-900 mt-24"
       >
-        <div className="container mx-auto px-4 py-12">
-          <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="flex items-center gap-3 mb-4"
-            >
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                <Coins className="h-6 w-6 text-white" />
+        {/* Decorative top border gradient */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+        
+        {/* Background with gradient */}
+        <div className="relative bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl">
+          {/* Subtle gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-purple-50/50 to-pink-50/50 dark:from-blue-950/30 dark:via-purple-950/30 dark:to-pink-950/30" />
+          
+          <div className="relative container mx-auto px-4 py-16">
+            <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
+              {/* Logo and brand */}
+              <motion.div
+                whileHover={{ scale: 1.05, rotate: 2 }}
+                className="flex items-center gap-3 mb-6 p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border-2 border-gray-200 dark:border-gray-700"
+              >
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <Coins className="h-8 w-8 text-white" />
+                </div>
+                <div className="text-left">
+                  <h3 className="text-2xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    USDX Protocol
+                  </h3>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 font-bold">
+                    Cross-Chain Yield Stablecoin
+                  </p>
+                </div>
+              </motion.div>
+              
+              <p className="text-base text-gray-600 dark:text-gray-300 mb-8 max-w-2xl leading-relaxed font-medium">
+                A next-generation stablecoin protocol that combines USDC backing with automatic yield generation 
+                and seamless cross-chain functionality.
+              </p>
+
+              {/* Technology badges */}
+              <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
+                <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl shadow-lg">
+                  <Shield className="h-5 w-5 text-white" />
+                  <span className="text-sm font-bold text-white">Yearn Finance</span>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl shadow-lg">
+                  <Network className="h-5 w-5 text-white" />
+                  <span className="text-sm font-bold text-white">LayerZero OFT</span>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-emerald-500 to-green-500 rounded-xl shadow-lg">
+                  <Layers className="h-5 w-5 text-white" />
+                  <span className="text-sm font-bold text-white">Circle Bridge Kit</span>
+                </motion.div>
               </div>
-              <div className="text-left">
-                <h3 className="text-xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  USDX Protocol
-                </h3>
-                <p className="text-xs text-gray-600 dark:text-gray-400 font-semibold">
-                  Cross-Chain Yield Stablecoin
+
+              {/* Decorative divider */}
+              <div className="w-full max-w-md mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-blue-500 to-purple-500" />
+                  <div className="flex gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                    <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" style={{ animationDelay: '0.2s' }} />
+                    <div className="w-2 h-2 rounded-full bg-pink-500 animate-pulse" style={{ animationDelay: '0.4s' }} />
+                  </div>
+                  <div className="flex-1 h-px bg-gradient-to-l from-transparent via-purple-500 to-pink-500" />
+                </div>
+              </div>
+
+              {/* Tech stack */}
+              <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-850 rounded-xl border-2 border-gray-200 dark:border-gray-700">
+                <p className="text-sm text-gray-600 dark:text-gray-400 font-semibold">
+                  Built with <span className="text-blue-600 dark:text-blue-400 font-bold">Next.js</span>, <span className="text-purple-600 dark:text-purple-400 font-bold">ethers.js</span>, and <span className="text-cyan-600 dark:text-cyan-400 font-bold">Tailwind CSS</span>
                 </p>
               </div>
-            </motion.div>
-            
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 max-w-xl leading-relaxed">
-              A next-generation stablecoin protocol that combines USDC backing with automatic yield generation 
-              and seamless cross-chain functionality.
-            </p>
-
-            <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-500 dark:text-gray-500">
-              <div className="flex items-center gap-1.5">
-                <Shield className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
-                <span>Yearn Finance</span>
-              </div>
-              <span>•</span>
-              <div className="flex items-center gap-1.5">
-                <Network className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
-                <span>LayerZero OFT</span>
-              </div>
-              <span>•</span>
-              <div className="flex items-center gap-1.5">
-                <Layers className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span>Circle Bridge Kit</span>
-              </div>
-            </div>
-
-            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-800 w-full">
-              <p className="text-xs text-gray-500 dark:text-gray-500">
-                Built with Next.js, ethers.js, and Tailwind CSS
-              </p>
             </div>
           </div>
         </div>
