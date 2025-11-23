@@ -5,16 +5,10 @@ applications:
       phases:
         preBuild:
           commands:
-            - echo "Installing dependencies from monorepo root..."
-            - cd ..
-            - npm ci
-            - cd frontend
+            - npm --prefix .. ci
         build:
           commands:
-            - echo "Building frontend from monorepo root..."
-            - cd ..
-            - npm run build:frontend
-            - cd frontend
+            - npm --prefix .. run build:frontend
       artifacts:
         baseDirectory: .next
         files:
