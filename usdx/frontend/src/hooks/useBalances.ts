@@ -31,10 +31,18 @@ export function useBalances(address: string | null) {
         // Get chain name
         let chainName = 'Unknown Chain';
         if (chainId) {
-          if (chainId === CHAINS.HUB.id || chainId === CHAINS.HUB.localhost.id) {
+          if (chainId === CHAINS.HUB.id) {
+            // Ethereum Sepolia (11155111)
             chainName = CHAINS.HUB.name;
-          } else if (chainId === CHAINS.SPOKE_BASE.id || chainId === CHAINS.SPOKE_BASE.localhost.id) {
+          } else if (chainId === CHAINS.HUB.localhost.id) {
+            // Localhost fork of Ethereum Mainnet (1)
+            chainName = 'Ethereum Mainnet (Forked)';
+          } else if (chainId === CHAINS.ETHEREUM_MAINNET.id) {
+            chainName = CHAINS.ETHEREUM_MAINNET.name;
+          } else if (chainId === CHAINS.SPOKE_BASE.id) {
             chainName = CHAINS.SPOKE_BASE.name;
+          } else if (chainId === CHAINS.SPOKE_BASE.localhost.id) {
+            chainName = 'Base Mainnet (Forked)';
           } else if (chainId === CHAINS.SPOKE_POLYGON.id || chainId === CHAINS.SPOKE_POLYGON.localhost.id) {
             chainName = CHAINS.SPOKE_POLYGON.name;
           } else if (chainId === CHAINS.SPOKE_ARC.id || chainId === CHAINS.SPOKE_ARC.localhost.id) {

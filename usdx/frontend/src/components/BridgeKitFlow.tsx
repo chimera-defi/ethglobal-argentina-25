@@ -19,9 +19,10 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
   const [sourceChainId, setSourceChainId] = useState<number | null>(null);
   const [destinationChainId, setDestinationChainId] = useState<number | null>(null);
   const [isBridging, setIsBridging] = useState(false);
+  const [sendToVault, setSendToVault] = useState(true); // Default: send to vault
   
   const { bridgeUSDC, transferStatus, error, reset } = useBridgeKit();
-  const { usdcBalance } = useBalances(userAddress);
+  const { usdcBalance, currentChainName, chainId } = useBalances(userAddress);
 
   // Set default chains based on current chain
   useEffect(() => {
@@ -45,20 +46,36 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
     reset();
 
     try {
-      const parsedAmount = parseAmount(amount);
+      // Parse amount from user input to validate and check balance
+      const parsedAmount = parseAmount(amount, 6); // USDC has 6 decimals
       
       if (parsedAmount <= 0) {
         setIsBridging(false);
         return;
       }
+
+      // Validate that user has enough balance
+      if (parsedAmount > usdcBalance) {
+        const balanceFormatted = formatAmount(usdcBalance, 6);
+        const requestedFormatted = formatAmount(parsedAmount, 6);
+        throw new Error(`Insufficient balance. You have ${balanceFormatted} USDC but requested ${requestedFormatted} USDC.`);
+      }
       
-      const amountString = parsedAmount.toString();
+      // BridgeKit expects amount in human-readable USDC units (e.g., "1" for 1 USDC)
+      // It handles the decimal conversion internally
+      // Pass the user's input directly (already validated above)
+      const amountString = amount;
+
+      // Determine recipient address: vault or user's own address
+      const recipientAddress = sendToVault 
+        ? (CONTRACTS.HUB_VAULT as `0x${string}`)
+        : (userAddress as `0x${string}`);
 
       await bridgeUSDC({
         sourceChainId,
         destinationChainId,
         amount: amountString,
-        recipientAddress: CONTRACTS.HUB_VAULT as `0x${string}`, // Bridge to vault address
+        recipientAddress: recipientAddress,
         onStatusUpdate: (status) => {
           if (status === 'success') {
             setIsBridging(false);
@@ -141,10 +158,19 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
           <p className="text-sm text-gray-600 dark:text-gray-400">Cross-chain via Circle Bridge Kit (CCTP)</p>
         </div>
       </div>
-      <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
+      <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
         Bridge USDC from a spoke chain to the hub chain using Circle Bridge Kit (CCTP).
-        The bridged USDC will be sent directly to the USDX Vault.
       </p>
+      
+      {/* Chain Info */}
+      <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+        <p className="text-xs text-gray-600 dark:text-gray-400">
+          <span className="font-semibold">Reading balances from:</span> {currentChainName} {chainId && `(Chain ID: ${chainId})`}
+        </p>
+        <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+          Balances are read from the chain your wallet is currently connected to.
+        </p>
+      </div>
 
       <div className="space-y-4">
         {/* Chain Selection */}
@@ -214,6 +240,36 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
               MAX
             </button>
           </div>
+        </div>
+
+        {/* Recipient Option */}
+        <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+          <label className="flex items-center gap-3 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={sendToVault}
+              onChange={(e) => setSendToVault(e.target.checked)}
+              disabled={isBridging}
+              className="w-4 h-4 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            />
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-gray-900 dark:text-white">
+                Send to USDX Vault
+              </p>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                {sendToVault 
+                  ? 'USDC will be sent directly to the USDX Vault address for easy deposit'
+                  : 'USDC will be sent to your own address on the destination chain'}
+              </p>
+            </div>
+          </label>
+          {!sendToVault && (
+            <div className="mt-2 p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded border border-yellow-200 dark:border-yellow-800">
+              <p className="text-xs text-yellow-700 dark:text-yellow-300">
+                ⚠️ If sending to yourself, you&apos;ll need to manually deposit the USDC to the vault afterward.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Bridge Button */}
@@ -312,20 +368,24 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
           <ol className="text-sm text-gray-700 dark:text-gray-300 space-y-2 ml-8">
             <li className="flex items-start gap-2">
               <span className="font-bold text-purple-600 dark:text-purple-400">1.</span>
-              <span>Bridge USDC from spoke chain to hub chain using Circle CCTP</span>
+              <span>Bridge USDC from source chain to destination chain using Circle CCTP</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="font-bold text-purple-600 dark:text-purple-400">2.</span>
-              <span>USDC arrives at the USDX Vault on hub chain</span>
+              <span>USDC arrives at {sendToVault ? 'the USDX Vault' : 'your address'} on destination chain</span>
             </li>
-            <li className="flex items-start gap-2">
-              <span className="font-bold text-purple-600 dark:text-purple-400">3.</span>
-              <span>Deposit the bridged USDC to mint USDX</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="font-bold text-purple-600 dark:text-purple-400">4.</span>
-              <span>Your position syncs to spoke chains automatically</span>
-            </li>
+            {sendToVault && (
+              <li className="flex items-start gap-2">
+                <span className="font-bold text-purple-600 dark:text-purple-400">3.</span>
+                <span>Deposit the bridged USDC to mint USDX</span>
+              </li>
+            )}
+            {sendToVault && (
+              <li className="flex items-start gap-2">
+                <span className="font-bold text-purple-600 dark:text-purple-400">4.</span>
+                <span>Your position syncs to spoke chains automatically</span>
+              </li>
+            )}
           </ol>
         </motion.div>
       </div>
