@@ -18,6 +18,12 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+# Load environment variables from .env if it exists
+if [ -f contracts/.env ]; then
+    echo -e "${GREEN}✓${NC} Loading environment from contracts/.env"
+    source contracts/.env
+fi
+
 # Check if anvil is installed
 if ! command -v anvil &> /dev/null; then
     echo -e "${RED}❌ Anvil not found. Please install Foundry first:${NC}"
@@ -40,7 +46,7 @@ fi
 
 if [ -z "$POLYGON_RPC_URL" ]; then
     echo -e "${YELLOW}⚠️  POLYGON_RPC_URL not set. Using default (may be slow).${NC}"
-    POLYGON_RPC_URL="https://polygon.llamarpc.com"
+    POLYGON_RPC_URL="https://polygon-rpc.com"
 fi
 
 # Create log directory
