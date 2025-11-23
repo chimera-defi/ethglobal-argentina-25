@@ -1,0 +1,8 @@
+flowchart LR
+    userA["User on Chain A"] --> transfer["1. transferCrossChain(amount, chainB)"]
+    transfer --> tokenA["USDXToken (Chain A)\nBurns USDX"]
+    tokenA --> bridgeA["CrossChainBridge\nCreates LayerZero message"]
+    bridgeA --> lzSend["LayerZero send()"]
+    lzSend --> bridgeB["CrossChainBridge (Chain B)\nVerifies message"]
+    bridgeB --> tokenB["USDXToken (Chain B)\nMints USDX"]
+    tokenB --> userB["User receives USDX on Chain B"]

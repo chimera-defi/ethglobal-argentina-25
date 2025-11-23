@@ -1,0 +1,10 @@
+flowchart TB
+    user["User"] --> request["1. Request cross-chain deposit"]
+    request --> ui["Frontend UI\ncollects chains + amount"]
+    ui --> api["2. API call to backend"]
+    api --> backend["Backend Service\n(Bridge Kit SDK)"]
+    backend --> sdk["Bridge Kit SDK\ntransfer()\n- Burns USDC on Chain A\n- Polls attestation"]
+    sdk --> webhook["CCTP attestation + webhook"]
+    webhook --> backendProcess["Backend processes webhook"]
+    backendProcess --> vault["USDXVault (Chain B)\nReceives USDC"]
+    vault --> mint["Mints USDX to user"]

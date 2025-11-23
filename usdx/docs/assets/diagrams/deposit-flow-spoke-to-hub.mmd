@@ -1,0 +1,9 @@
+flowchart TB
+    user["User on Spoke Chain"] --> step1["1. Initiate Bridge Kit transfer"]
+    step1 --> bridgeKit["Bridge Kit SDK\n(burns USDC, polls attestation)"]
+    bridgeKit --> cctp["CCTP Attestation"]
+    cctp --> hubArrival["USDC arrives on Hub (Ethereum)"]
+    hubArrival --> deposit["depositUSDC(amount)"]
+    deposit --> vault["USDXVault"]
+    vault --> ovault["OVault / Yield Routes"]
+    ovault --> yearn["Yearn USDC Vault\n(Yield accrues)"]

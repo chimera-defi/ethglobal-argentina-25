@@ -1,0 +1,9 @@
+flowchart LR
+    userA["User on Chain A"] --> request["1. transferCrossChain(amount, chainB)"]
+    request --> tokenA["USDXToken (Chain A)\nBurns USDX"]
+    tokenA --> bridgeA["CrossChainBridge\nCreates Hyperlane message"]
+    bridgeA --> hyperlane["Hyperlane dispatch()\nValidators verify"]
+    hyperlane --> ism["Custom ISM"]
+    ism --> bridgeB["CrossChainBridge (Chain B)\nhandle() callback"]
+    bridgeB --> tokenB["USDXToken (Chain B)\nMints USDX"]
+    tokenB --> userB["User receives USDX on Chain B"]

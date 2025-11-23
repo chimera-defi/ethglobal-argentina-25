@@ -1,0 +1,7 @@
+flowchart TB
+    userHub["User (Hub Position)"] --> intent["1. Request USDX on Spoke Chain"]
+    intent --> spoke["Target Spoke Chain"]
+    spoke --> minter["USDXSpokeMinter\nVerifies hub position"]
+    minter --> verify["OVault / Yield Routes\nvalidation"]
+    verify --> token["USDXToken on Spoke"]
+    token --> transfer["Mints + transfers USDX to user"]

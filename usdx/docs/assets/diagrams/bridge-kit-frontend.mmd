@@ -1,0 +1,10 @@
+flowchart TB
+    user["User"] --> init["1. Initiate deposit in UI"]
+    init --> ui["Frontend (Bridge Kit components)"]
+    ui --> sdk["Bridge Kit SDK\ntransfer()"]
+    sdk --> cctp["CCTP Attestation\n(Circle Network)"]
+    cctp --> hub["USDC minted on Hub"]
+    hub --> vault["USDXVault (Ethereum)\nReceives USDC"]
+    vault --> callback["Bridge Kit callback / webhook"]
+    callback --> mint["Frontend/Backend calls mintUSDX"]
+    mint --> userUSDX["User receives USDX"]
