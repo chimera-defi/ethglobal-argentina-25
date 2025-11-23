@@ -1,8 +1,17 @@
 #!/bin/bash
 
 # USDX Protocol - Multi-Chain Local Setup Script
-# This script starts hub and spoke chains, deploys contracts, and starts the bridge relayer
-# Supports: Hub (Ethereum Sepolia), Spoke Base (Base Sepolia), Spoke Arc (Arc Testnet)
+# Batteries included - forks mainnet chains with default RPCs, ready to test!
+# 
+# Supports:
+#   - Hub: Ethereum Mainnet (Chain ID: 1)
+#   - Spoke Base: Base Mainnet (Chain ID: 8453)
+#   - Spoke Arc: Arc Testnet (Chain ID: 5042002) - Enabled by default
+#
+# Usage:
+#   ./start-multi-chain.sh                    # Start all chains (default)
+#   START_ARC=false ./start-multi-chain.sh    # Disable Arc chain
+#   HUB_RPC_URL=... ./start-multi-chain.sh    # Use custom RPC URLs
 
 set -e
 
@@ -34,28 +43,30 @@ if ! command -v forge &> /dev/null; then
     exit 1
 fi
 
-# RPC URL configuration with fallbacks
-# Hub Chain (Ethereum Sepolia)
+# RPC URL configuration with reliable defaults (batteries included)
+# Hub Chain (Ethereum Mainnet)
 if [ -z "$HUB_RPC_URL" ]; then
-    echo -e "${YELLOW}⚠️  HUB_RPC_URL not set. Trying fallback RPCs...${NC}"
-    # Try multiple RPC endpoints
-    HUB_RPC_URL="https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161"  # Public Infura
-    # Fallback: https://rpc.sepolia.org (public)
+    echo -e "${BLUE}ℹ️  Using default Ethereum Mainnet RPC...${NC}"
+    # Public RPC endpoints (reliable defaults)
+    HUB_RPC_URL="https://eth.llamarpc.com"  # LlamaRPC (reliable public endpoint)
+    # Alternatives: https://rpc.ankr.com/eth, https://eth-mainnet.public.blastapi.io
 fi
 
-# Spoke Chain - Base Sepolia
+# Spoke Chain - Base Mainnet
 if [ -z "$SPOKE_BASE_RPC_URL" ]; then
-    echo -e "${YELLOW}⚠️  SPOKE_BASE_RPC_URL not set. Using public Base Sepolia RPC...${NC}"
-    SPOKE_BASE_RPC_URL="https://sepolia.base.org"  # Public Base Sepolia RPC
+    echo -e "${BLUE}ℹ️  Using default Base Mainnet RPC...${NC}"
+    SPOKE_BASE_RPC_URL="https://mainnet.base.org"  # Official Base Mainnet RPC
+    # Alternative: https://base.llamarpc.com
 fi
 
-# Spoke Chain - Arc Testnet (optional)
+# Spoke Chain - Arc Testnet (mainnet not available yet)
 if [ -z "$SPOKE_ARC_RPC_URL" ]; then
-    SPOKE_ARC_RPC_URL="https://rpc.testnet.arc.network"  # Public Arc Testnet RPC
+    echo -e "${BLUE}ℹ️  Using default Arc Testnet RPC...${NC}"
+    SPOKE_ARC_RPC_URL="https://rpc.testnet.arc.network"  # Official Arc Testnet RPC
 fi
 
-# Check which chains to start
-START_ARC=${START_ARC:-false}  # Set START_ARC=true to also start Arc chain
+# Arc chain is enabled by default (set START_ARC=false to disable)
+START_ARC=${START_ARC:-true}  # Default: true (include Arc by default)
 
 # Create log directory
 mkdir -p logs
@@ -78,21 +89,21 @@ test_rpc() {
 }
 
 # Test RPC connections
-test_rpc "$HUB_RPC_URL" "Hub (Ethereum Sepolia)"
-test_rpc "$SPOKE_BASE_RPC_URL" "Spoke Base (Base Sepolia)"
-if [ "$START_ARC" = "true" ]; then
+test_rpc "$HUB_RPC_URL" "Hub (Ethereum Mainnet)"
+test_rpc "$SPOKE_BASE_RPC_URL" "Spoke Base (Base Mainnet)"
+if [ "$START_ARC" != "false" ]; then
     test_rpc "$SPOKE_ARC_RPC_URL" "Spoke Arc (Arc Testnet)"
 fi
 
 echo ""
 
-# Start Hub Chain (Ethereum Sepolia)
-echo -e "${GREEN}✓${NC} Starting Hub Chain (Ethereum Sepolia) on port 8545..."
-echo "   Chain ID: 11155111"
+# Start Hub Chain (Ethereum Mainnet)
+echo -e "${GREEN}✓${NC} Starting Hub Chain (Ethereum Mainnet) on port 8545..."
+echo "   Chain ID: 1"
 echo "   RPC: $HUB_RPC_URL"
 anvil \
   --port 8545 \
-  --chain-id 11155111 \
+  --chain-id 1 \
   --fork-url "$HUB_RPC_URL" \
   --block-time 2 \
   > logs/anvil-hub.log 2>&1 &
@@ -101,13 +112,13 @@ echo "   PID: $HUB_PID"
 
 sleep 3
 
-# Start Spoke Chain - Base Sepolia
-echo -e "${GREEN}✓${NC} Starting Spoke Chain (Base Sepolia) on port 8546..."
-echo "   Chain ID: 84532"
+# Start Spoke Chain - Base Mainnet
+echo -e "${GREEN}✓${NC} Starting Spoke Chain (Base Mainnet) on port 8546..."
+echo "   Chain ID: 8453"
 echo "   RPC: $SPOKE_BASE_RPC_URL"
 anvil \
   --port 8546 \
-  --chain-id 84532 \
+  --chain-id 8453 \
   --fork-url "$SPOKE_BASE_RPC_URL" \
   --block-time 2 \
   > logs/anvil-spoke.log 2>&1 &
@@ -116,8 +127,8 @@ echo "   PID: $SPOKE_BASE_PID"
 
 sleep 3
 
-# Start Spoke Chain - Arc Testnet (optional)
-if [ "$START_ARC" = "true" ]; then
+# Start Spoke Chain - Arc Testnet (enabled by default)
+if [ "$START_ARC" != "false" ]; then
     echo -e "${GREEN}✓${NC} Starting Spoke Chain (Arc Testnet) on port 8547..."
     echo "   Chain ID: 5042002"
     echo "   RPC: $SPOKE_ARC_RPC_URL"
@@ -131,6 +142,7 @@ if [ "$START_ARC" = "true" ]; then
     echo "   PID: $SPOKE_ARC_PID"
     sleep 3
 else
+    echo -e "${YELLOW}⚠️  Arc chain disabled (START_ARC=false)${NC}"
     SPOKE_ARC_PID=""
 fi
 
@@ -153,11 +165,11 @@ if [ -n "$SPOKE_ARC_PID" ] && ! kill -0 $SPOKE_ARC_PID 2>/dev/null; then
 fi
 
 echo ""
-if [ "$START_ARC" = "true" ]; then
+if [ "$START_ARC" != "false" ]; then
     echo -e "${GREEN}✓${NC} All chains are running! (Hub + Base + Arc)"
 else
     echo -e "${GREEN}✓${NC} Chains are running! (Hub + Base)"
-    echo -e "${BLUE}💡 Tip: Set START_ARC=true to also start Arc chain${NC}"
+    echo -e "${BLUE}💡 Tip: Arc chain is enabled by default. Set START_ARC=false to disable${NC}"
 fi
 echo ""
 
@@ -177,7 +189,7 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-echo -e "${GREEN}✓${NC} Deploying Spoke contracts (Base Sepolia)..."
+echo -e "${GREEN}✓${NC} Deploying Spoke contracts (Base Mainnet)..."
 forge script script/DeploySpokeOnly.s.sol:DeploySpokeOnly \
   --rpc-url http://localhost:8546 \
   --broadcast \
@@ -191,7 +203,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Deploy Arc chain if started
-if [ "$START_ARC" = "true" ] && [ -n "$SPOKE_ARC_PID" ]; then
+if [ "$START_ARC" != "false" ] && [ -n "$SPOKE_ARC_PID" ]; then
     echo -e "${GREEN}✓${NC} Deploying Spoke contracts (Arc Testnet)..."
     forge script script/DeploySpoke.s.sol:DeploySpoke \
       --rpc-url http://localhost:8547 \
@@ -233,8 +245,8 @@ echo "║                                                           ║"
 echo "╚═══════════════════════════════════════════════════════════╝"
 echo ""
 echo "📡 Chains Running:"
-echo "   Hub Chain (Ethereum Sepolia):  http://localhost:8545 (Chain ID: 11155111)"
-echo "   Spoke Chain (Base Sepolia):   http://localhost:8546 (Chain ID: 84532)"
+echo "   Hub Chain (Ethereum Mainnet):  http://localhost:8545 (Chain ID: 1)"
+echo "   Spoke Chain (Base Mainnet):    http://localhost:8546 (Chain ID: 8453)"
 if [ -n "$SPOKE_ARC_PID" ]; then
 echo "   Spoke Chain (Arc Testnet):     http://localhost:8547 (Chain ID: 5042002)"
 fi
