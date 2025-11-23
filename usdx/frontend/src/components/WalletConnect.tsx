@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useWallet } from '@/hooks/useWallet';
 import { formatAddress } from '@/lib/ethers';
 import { WalletModal } from './WalletModal';
@@ -12,18 +12,37 @@ export function WalletConnect() {
   const { address, isConnected, isConnecting, isCorrectChain, error, walletType, connectByType, disconnect, switchNetwork } = useWallet();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Close modal when connection succeeds
+  useEffect(() => {
+    if (isConnected && !isConnecting) {
+      setIsModalOpen(false);
+    }
+  }, [isConnected, isConnecting]);
+
   const handleConnectClick = () => {
     setIsModalOpen(true);
   };
 
   const handleSelectWallet = async (type: WalletType) => {
     try {
-      await connectByType(type);
+      // Add timeout for WalletConnect (30 seconds)
+      const connectionPromise = connectByType(type);
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Connection timeout. Please try again.')), 30000);
+      });
+      
+      await Promise.race([connectionPromise, timeoutPromise]);
       setIsModalOpen(false);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Connection failed:', err);
       // Modal will stay open on error so user can try again
+      // Error is already set in useWallet hook
     }
+  };
+
+  const handleCloseModal = () => {
+    // Always allow closing, even when connecting
+    setIsModalOpen(false);
   };
 
   const handleDisconnect = async () => {
@@ -103,9 +122,10 @@ export function WalletConnect() {
 
       <WalletModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseModal}
         onSelectWallet={handleSelectWallet}
         isConnecting={isConnecting}
+        error={error}
       />
     </>
   );

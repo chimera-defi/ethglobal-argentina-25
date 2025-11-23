@@ -9,7 +9,9 @@ export interface WalletProviderInstance {
 }
 
 // WalletConnect configuration
-const WALLETCONNECT_PROJECT_ID = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || 'c3ab5e7e3b9b8f0d2c1a9e8f7d6c5b4a'; // Demo project ID
+// Only enable WalletConnect if a valid project ID is provided
+const WALLETCONNECT_PROJECT_ID = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
+const IS_WALLETCONNECT_ENABLED = !!WALLETCONNECT_PROJECT_ID && WALLETCONNECT_PROJECT_ID.length > 0;
 
 // Supported chains for WalletConnect
 const SUPPORTED_CHAINS = [
@@ -52,11 +54,11 @@ export function detectWallets() {
     available: !!(window as any).ethereum,
   });
 
-  // WalletConnect (always available as it uses QR code)
+  // WalletConnect (only available if project ID is configured)
   wallets.push({
     type: 'walletconnect',
     name: 'WalletConnect',
-    available: true,
+    available: IS_WALLETCONNECT_ENABLED,
   });
 
   return wallets;
@@ -123,33 +125,53 @@ async function connectInjected(): Promise<WalletProviderInstance> {
  * Connect to WalletConnect
  */
 async function connectWalletConnect(): Promise<WalletProviderInstance> {
-  // Initialize WalletConnect provider
-  const provider = await EthereumProvider.init({
-    projectId: WALLETCONNECT_PROJECT_ID,
-    chains: [SUPPORTED_CHAINS[0]], // Start with first chain
-    optionalChains: SUPPORTED_CHAINS.slice(1), // Add other chains as optional
-    showQrModal: true,
-    qrModalOptions: {
-      themeMode: 'light',
-      themeVariables: {
-        '--wcm-z-index': '9999',
+  if (!IS_WALLETCONNECT_ENABLED || !WALLETCONNECT_PROJECT_ID) {
+    throw new Error('WalletConnect is not configured. Please set NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID environment variable.');
+  }
+
+  try {
+    // Initialize WalletConnect provider with error handling
+    const provider = await EthereumProvider.init({
+      projectId: WALLETCONNECT_PROJECT_ID,
+      chains: [SUPPORTED_CHAINS[0]], // Start with first chain
+      optionalChains: SUPPORTED_CHAINS.slice(1), // Add other chains as optional
+      showQrModal: true,
+      qrModalOptions: {
+        themeMode: 'light',
+        themeVariables: {
+          '--wcm-z-index': '9999',
+        },
       },
-    },
-    metadata: {
-      name: 'USDX Protocol',
-      description: 'Omnichain Vault-Backed Stablecoin',
-      url: typeof window !== 'undefined' ? window.location.origin : 'https://usdx.io',
-      icons: ['https://usdx.io/icon.png'],
-    },
-  });
+      metadata: {
+        name: 'USDX Protocol',
+        description: 'Omnichain Vault-Backed Stablecoin',
+        url: typeof window !== 'undefined' ? window.location.origin : 'https://usdx.io',
+        icons: ['https://usdx.io/icon.png'],
+      },
+    });
 
-  // Enable session (triggers QR Code modal)
-  await provider.enable();
+    // Enable session (triggers QR Code modal) with timeout
+    const enablePromise = provider.enable();
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('WalletConnect connection timeout. Please try again.')), 30000);
+    });
 
-  return {
-    provider,
-    type: 'walletconnect',
-  };
+    await Promise.race([enablePromise, timeoutPromise]);
+
+    return {
+      provider,
+      type: 'walletconnect',
+    };
+  } catch (error: any) {
+    // Clean up on error
+    if (error?.message?.includes('User rejected') || error?.message?.includes('User closed')) {
+      throw new Error('Connection cancelled by user');
+    }
+    if (error?.message?.includes('Project not found') || error?.code === 3000) {
+      throw new Error('WalletConnect project ID is invalid. Please configure a valid NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID.');
+    }
+    throw new Error(error?.message || 'Failed to connect with WalletConnect. Please try again.');
+  }
 }
 
 /**

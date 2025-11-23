@@ -13,6 +13,7 @@ const balanceItems = [
   {
     key: 'usdc',
     label: 'USDC',
+    description: 'USDC balance on this chain',
     icon: Coins,
     bgGradient: 'from-blue-500 to-cyan-500',
     bgLight: 'bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20',
@@ -23,6 +24,7 @@ const balanceItems = [
   {
     key: 'hubUsdx',
     label: 'USDX (Hub)',
+    description: 'USDX on hub chain (Ethereum)',
     icon: CircleDollarSign,
     bgGradient: 'from-purple-500 to-pink-500',
     bgLight: 'bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20',
@@ -33,6 +35,7 @@ const balanceItems = [
   {
     key: 'spokeUsdx',
     label: 'USDX (Spoke)',
+    description: 'USDX on this spoke chain',
     icon: CircleDollarSign,
     bgGradient: 'from-green-500 to-emerald-500',
     bgLight: 'bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20',
@@ -43,7 +46,7 @@ const balanceItems = [
 ];
 
 export function BalanceCard({ address }: BalanceCardProps) {
-  const { usdcBalance, hubUsdxBalance, spokeUsdxBalance, isLoading } = useBalances(address);
+  const { usdcBalance, hubUsdxBalance, spokeUsdxBalance, isLoading, currentChainName, chainId } = useBalances(address);
 
   const getBalance = (key: string): bigint => {
     switch (key) {
@@ -89,11 +92,18 @@ export function BalanceCard({ address }: BalanceCardProps) {
       animate={{ opacity: 1, y: 0 }}
       className="card"
     >
-      <div className="flex items-center gap-3 mb-6">
-        <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg">
-          <Wallet className="h-6 w-6 text-white" />
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="p-3 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl shadow-lg">
+            <Wallet className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Your Balances</h2>
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+              On {currentChainName} {chainId && `(Chain ID: ${chainId})`}
+            </p>
+          </div>
         </div>
-        <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Your Balances</h2>
       </div>
       
       {isLoading ? (
@@ -128,6 +138,9 @@ export function BalanceCard({ address }: BalanceCardProps) {
                   <div>
                     <p className="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1">
                       {item.label}
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                      {item.description}
                     </p>
                     <p className={`text-3xl font-bold ${item.textColor}`}>
                       {amount}

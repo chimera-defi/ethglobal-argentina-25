@@ -10,6 +10,7 @@ interface WalletModalProps {
   onClose: () => void;
   onSelectWallet: (type: WalletType) => void;
   isConnecting: boolean;
+  error?: string | null;
 }
 
 interface WalletOption {
@@ -21,7 +22,7 @@ interface WalletOption {
   color: string;
 }
 
-export function WalletModal({ isOpen, onClose, onSelectWallet, isConnecting }: WalletModalProps) {
+export function WalletModal({ isOpen, onClose, onSelectWallet, isConnecting, error }: WalletModalProps) {
   const [selectedWallet, setSelectedWallet] = useState<WalletType | null>(null);
   const availableWallets = detectWallets();
 
@@ -80,12 +81,13 @@ export function WalletModal({ isOpen, onClose, onSelectWallet, isConnecting }: W
           />
 
           {/* Modal */}
-          <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
+          <div className="fixed inset-0 flex items-center justify-center z-50 p-8 pointer-events-none" style={{ paddingTop: '30rem' }}>
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border-2 border-gray-200 dark:border-gray-700 max-w-md w-full max-h-[90vh] overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+              className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl border-2 border-gray-200 dark:border-gray-700 max-w-md w-full max-h-[90vh] overflow-hidden pointer-events-auto"
             >
               {/* Header */}
               <div className="flex items-center justify-between p-6 border-b-2 border-gray-200 dark:border-gray-700">
@@ -99,12 +101,20 @@ export function WalletModal({ isOpen, onClose, onSelectWallet, isConnecting }: W
                 </div>
                 <button
                   onClick={onClose}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-                  disabled={isConnecting}
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={false}
+                  title={isConnecting ? "Close (connection will continue)" : "Close"}
                 >
                   <X className="h-5 w-5 text-gray-500" />
                 </button>
               </div>
+
+              {/* Error Message */}
+              {error && (
+                <div className="mx-6 mt-4 p-3 bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-lg">
+                  <p className="text-sm text-red-600 dark:text-red-400 font-medium">{error}</p>
+                </div>
+              )}
 
               {/* Wallet Options */}
               <div className="p-6 space-y-3 overflow-y-auto max-h-[calc(90vh-120px)]">
@@ -147,9 +157,9 @@ export function WalletModal({ isOpen, onClose, onSelectWallet, isConnecting }: W
                             <h3 className="text-base font-bold text-gray-900 dark:text-white">
                               {wallet.name}
                             </h3>
-                            {!wallet.available && wallet.type !== 'walletconnect' && (
+                            {!wallet.available && (
                               <span className="text-xs px-2 py-0.5 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded-full font-medium">
-                                Not Detected
+                                {wallet.type === 'walletconnect' ? 'Not Configured' : 'Not Detected'}
                               </span>
                             )}
                           </div>
