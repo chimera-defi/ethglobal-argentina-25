@@ -27,9 +27,10 @@ These files were archived because:
 
 ## Consolidation Results
 
-- **Vercel Documentation**: 9 files (~3147 lines) → 1 file (186 lines) = **94% reduction**
-- **Review Documents**: 9 files → 1 file (`REVIEW-SUMMARY.md`)
-- **Summary Documents**: 20+ files → Archived (information preserved in active docs)
+- **Vercel Documentation**: 9 files (~3147 lines) → 1 file (186 lines) = **94% reduction**, duplicates deleted
+- **Review Documents**: 2 files (489 lines) → 1 file (223 lines) = **54% reduction** (`REVIEW-SUMMARY.md` + `LAYERZERO-ARCHITECTURE-REVIEW.md` merged)
+- **Total Line Reduction**: ~30,299 lines → 27,073 lines = **10.7% reduction**
+- **Summary Documents**: 20+ files archived (historical snapshots, information preserved in active docs)
 
 ## Accessing Archived Content
 

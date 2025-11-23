@@ -30,9 +30,8 @@ All USDX protocol documentation is organized here.
 
 ### Current Status & Reviews
 
-15. **[REVIEW-SUMMARY.md](./REVIEW-SUMMARY.md)** - ⭐ **Latest Review** - Layer Zero integration verification (2025-11-23)
-16. **[LAYERZERO-ARCHITECTURE-REVIEW.md](./LAYERZERO-ARCHITECTURE-REVIEW.md)** - Complete technical architecture review
-17. **[layerzero/CURRENT-STATUS.md](./layerzero/CURRENT-STATUS.md)** - Current implementation status and next steps
+15. **[REVIEW-SUMMARY.md](./REVIEW-SUMMARY.md)** - ⭐ **Latest Review** - Complete Layer Zero integration review and verification (2025-11-23)
+16. **[layerzero/CURRENT-STATUS.md](./layerzero/CURRENT-STATUS.md)** - Current implementation status and next steps
 
 ### Implementation Guides
 
