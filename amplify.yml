@@ -1,24 +1,25 @@
 version: 1
 applications:
-  - appRoot: usdx/frontend
+  - appRoot: usdx
     frontend:
       phases:
         preBuild:
           commands:
-            - npm --prefix .. ci
-            - cp -r ../node_modules ./node_modules
+            - npm ci
+            - cd frontend && ln -sf ../node_modules ./node_modules
         build:
           commands:
-            - npm --prefix .. run build:frontend
+            - npm run build:frontend
       artifacts:
-        baseDirectory: .
+        baseDirectory: frontend
         files:
           - '.next/**/*'
-          - 'node_modules/**/*'
+          - '../node_modules/**/*'
+          - 'node_modules'
           - 'package.json'
           - 'next.config.js'
           - 'public/**/*'
       cache:
         paths:
           - node_modules/**/*
-          - .next/cache/**/*
+          - frontend/.next/cache/**/*

@@ -75,6 +75,40 @@
 - **Test Tailwind classes** - Verify class names exist before using them
 - **Professional borders** - Modern design uses subtle borders (1-2px) or shadows, not thick borders everywhere
 
+### Deployment & Build Configuration - CRITICAL
+- **NEVER modify deployment configs (amplify.yml, vercel.json) without testing the EXACT build flow**
+- **For monorepo + Amplify/Vercel deployments:**
+  - Understand where node_modules is installed (workspace root vs individual packages)
+  - Ensure runtime dependencies (like 'next') are accessible in the deployment directory
+  - Test the complete build flow: install → build → verify artifacts
+  - For workspaces, dependencies may be hoisted to parent - handle accordingly
+- **Amplify Monorepo Setup (CRITICAL - DO NOT BREAK THIS):**
+  - Set `appRoot` to the workspace root where node_modules is installed
+  - Set `baseDirectory` in artifacts to the app subdirectory (e.g., `frontend`)
+  - Create symlink from app to parent node_modules: `ln -sf ../node_modules ./node_modules`
+  - Include both the symlink and parent node_modules in artifacts
+  - **NEVER copy node_modules** - it creates duplicate React instances and breaks builds
+  - **ALWAYS use symlinks** for monorepo node_modules access
+- **Testing Deployment Configs:**
+  ```bash
+  # Test exact Amplify build flow:
+  cd /workspace/usdx
+  rm -rf frontend/.next frontend/node_modules
+  npm ci
+  cd frontend && ln -sf ../node_modules ./node_modules && cd ..
+  npm run build:frontend
+  cd frontend && ls -la node_modules  # Verify symlink exists
+  node -e "console.log(require.resolve('next'))"  # Verify Node can resolve it
+  ```
+- **Deployment Config Review Checklist:**
+  1. Is appRoot set to where node_modules actually installs?
+  2. Does baseDirectory point to the correct build output directory?
+  3. Are ALL runtime dependencies accessible in the deployed directory?
+  4. Does the artifacts section include node_modules (or symlink to it)?
+  5. Have I tested the EXACT commands in amplify.yml locally?
+  6. Does `require.resolve('next')` work from the deployed directory?
+  7. Are there NO duplicate node_modules directories causing React conflicts?
+
 ### Self-Assessment Checklist
 Before committing, ask:
 1. **Have I run all tests locally and verified they pass?** (CRITICAL - never skip this)
@@ -91,3 +125,4 @@ Before committing, ask:
 12. **Would a professional designer approve this?** (for UI changes)
 13. **Is there a consistent color palette (max 2-3 colors)?** (for UI changes)
 14. **Did I establish clear visual hierarchy?** (for UI changes)
+15. **Have I tested the EXACT deployment build flow locally?** (for amplify.yml/vercel.json changes)
