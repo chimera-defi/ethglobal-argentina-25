@@ -30,7 +30,7 @@ async function main() {
       console.log(`Connected to network: ${network.name} (chainId: ${network.chainId})\n`);
       connected = true;
       break;
-    } catch (error: any) {
+    } catch (error: unknown) {
       if (i < 4) {
         await new Promise(resolve => setTimeout(resolve, 1000));
         continue;
@@ -41,6 +41,10 @@ async function main() {
       console.error("Then run this script again.\n");
       throw new Error("Hardhat node not running. Start it with 'npx hardhat node'");
     }
+  }
+  
+  if (!connected) {
+    throw new Error("Failed to connect to Hardhat node after retries");
   }
   
   // Hardhat default accounts
@@ -71,7 +75,7 @@ async function main() {
   // This ensures we have full control over transaction sending
   let currentNonce = await provider.getTransactionCount(deployer.address, "latest");
   
-  const deployContract = async (factory: ethers.ContractFactory, ...args: any[]) => {
+  const deployContract = async (factory: ethers.ContractFactory, ...args: unknown[]) => {
     // Use tracked nonce
     const nonce = currentNonce;
     
@@ -104,7 +108,7 @@ async function main() {
   };
   
   // Helper to send a transaction with proper nonce management
-  const sendTx = async (contract: ethers.Contract, method: string, ...args: any[]) => {
+  const sendTx = async (contract: ethers.Contract, method: string, ...args: unknown[]) => {
     // Use our tracked nonce
     const nonce = currentNonce;
     const tx = await contract[method].populateTransaction(...args);
