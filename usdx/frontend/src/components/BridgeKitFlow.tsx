@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import { useBridgeKit, TransferStatus } from '@/hooks/useBridgeKit';
 import { parseAmount, CONTRACTS } from '@/config/contracts';
-import { CHAINS, SPOKE_CHAINS, isSpokeChain, isHubChain } from '@/config/chains';
+import { CHAINS, SPOKE_CHAINS, isSpokeChain, isHubChain, isMainnetChain, isTestnetChain } from '@/config/chains';
 import { motion } from 'framer-motion';
-import { Network, Loader2, Info, ArrowRightLeft } from 'lucide-react';
+import { Network, Loader2, Info, ArrowRightLeft, AlertTriangle } from 'lucide-react';
 
 interface BridgeKitFlowProps {
   userAddress: string | null;
@@ -87,6 +87,10 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
     }
   };
 
+  // Check if bridging from mainnet to testnet (risky operation)
+  const isMainnetToTestnet = sourceChainId && destinationChainId && 
+    isMainnetChain(sourceChainId) && isTestnetChain(destinationChainId);
+
   if (!userAddress) {
     return (
       <motion.div
@@ -149,6 +153,7 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
                 </option>
               ))}
               <option value={CHAINS.HUB.id}>{CHAINS.HUB.name}</option>
+              <option value={CHAINS.ETHEREUM_MAINNET.id}>{CHAINS.ETHEREUM_MAINNET.name}</option>
             </select>
           </div>
           <div>
@@ -160,6 +165,7 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
               disabled={isBridging}
             >
               <option value={CHAINS.HUB.id}>{CHAINS.HUB.name}</option>
+              <option value={CHAINS.ETHEREUM_MAINNET.id}>{CHAINS.ETHEREUM_MAINNET.name}</option>
               {SPOKE_CHAINS.map((chain) => (
                 <option key={chain.id} value={chain.id}>
                   {chain.name}
@@ -235,6 +241,27 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
           </motion.div>
         )}
 
+        {/* Mainnet to Testnet Warning */}
+        {isMainnetToTestnet && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border-2 border-yellow-400 dark:border-yellow-600 rounded-xl"
+          >
+            <div className="flex items-start gap-3">
+              <AlertTriangle className="h-5 w-5 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-semibold text-yellow-800 dark:text-yellow-200 mb-1">
+                  ⚠️ Warning: Mainnet to Testnet Transfer
+                </p>
+                <p className="text-sm text-yellow-700 dark:text-yellow-300">
+                  You are bridging USDC from a mainnet chain to a testnet chain. This may result in loss of funds as testnet tokens have no real value. Only proceed if you understand the risks.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {/* Error Display */}
         {error && (
           <motion.div
@@ -274,10 +301,6 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
               <span>Your position syncs to spoke chains automatically</span>
             </li>
           </ol>
-          <p className="text-xs text-gray-600 dark:text-gray-400 mt-3 pt-3 border-t border-purple-200 dark:border-purple-800">
-            ⚠️ Note: Bridge Kit integration requires viem/wagmi. For full functionality,
-            consider migrating to wagmi hooks or using viem directly.
-          </p>
         </motion.div>
       </div>
     </motion.div>
