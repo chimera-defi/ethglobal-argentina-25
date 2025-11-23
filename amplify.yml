@@ -1,26 +1,27 @@
 version: 1
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - cd usdx/frontend
-        - npm install
-        - ls -la node_modules/.bin | grep next || (echo "ERROR: next not found" && exit 1)
-    build:
-      commands:
-        - npm run build
-  artifacts:
-    baseDirectory: usdx/frontend
-    files:
-      - '.next/**/*'
-      - 'node_modules/**/*'
-      - 'package.json'
-      - 'next.config.js'
-      - 'public/**/*'
-      - 'src/**/*'
-      - 'tsconfig.json'
-      - 'tailwind.config.js'
-  cache:
-    paths:
-      - usdx/frontend/node_modules/**/*
-      - usdx/frontend/.next/cache/**/*
+applications:
+  - appRoot: usdx/frontend
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm install
+            - ls -la node_modules/.bin | grep next || (echo "ERROR: next not found" && exit 1)
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: .
+        files:
+          - '.next/**/*'
+          - 'public/**/*'
+          - 'package.json'
+          - 'next.config.js'
+          - 'tsconfig.json'
+          - 'tailwind.config.js'
+          - 'src/**/*'
+          - 'node_modules/**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+          - .next/cache/**/*
