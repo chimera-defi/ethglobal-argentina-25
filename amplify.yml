@@ -6,14 +6,19 @@ applications:
         preBuild:
           commands:
             - npm --prefix .. ci
+            - cp -r ../node_modules ./node_modules
         build:
           commands:
             - npm --prefix .. run build:frontend
       artifacts:
-        baseDirectory: .next
+        baseDirectory: .
         files:
-          - '**/*'
+          - '.next/**/*'
+          - 'node_modules/**/*'
+          - 'package.json'
+          - 'next.config.js'
+          - 'public/**/*'
       cache:
         paths:
-          - ../node_modules/**/*
+          - node_modules/**/*
           - .next/cache/**/*
