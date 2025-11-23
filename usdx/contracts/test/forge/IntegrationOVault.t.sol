@@ -151,13 +151,14 @@ contract IntegrationOVaultTest is Test {
         
         // User deposits via OVault
         vm.deal(user, 1 ether);
-        vm.prank(user);
+        vm.startPrank(user);
         vault.depositViaOVault{value: 0.001 ether}(
             DEPOSIT_AMOUNT,
             SPOKE_EID,
             receiver,
             options
         );
+        vm.stopPrank();
         
         // Verify deposit
         assertEq(vault.totalCollateral(), DEPOSIT_AMOUNT);
@@ -167,11 +168,13 @@ contract IntegrationOVaultTest is Test {
     
     function testFullFlow_DepositAndMintUSDX() public {
         // Step 1: Deposit into vault (direct, not via OVault for simplicity)
-        vm.prank(user);
+        vm.startPrank(user);
         vault.deposit(DEPOSIT_AMOUNT);
+        vm.stopPrank();
         
         // Step 2: Get shares from vault wrapper
         uint256 shares = vaultWrapper.balanceOf(user);
+        assertGt(shares, 0, "User should have vault wrapper shares");
         
         // Step 3: Lock shares in adapter (user needs to approve adapter first)
         vm.startPrank(user);
@@ -179,17 +182,23 @@ contract IntegrationOVaultTest is Test {
         shareOFTAdapter.lockShares(shares);
         vm.stopPrank();
         
+        // Verify shares are locked
+        assertGt(shareOFTAdapter.lockedShares(user), 0, "Shares should be locked");
+        
         // Step 4: Send shares cross-chain (simulate)
         bytes memory options = "";
-        vm.prank(user);
+        vm.deal(user, 1 ether);
+        vm.startPrank(user);
         shareOFTAdapter.send{value: 0.001 ether}(
             SPOKE_EID,
             bytes32(uint256(uint160(user))),
             shares,
             options
         );
+        vm.stopPrank();
         
         // Step 5: Manually trigger lzReceive on spoke (simulating LayerZero delivery)
+        // The payload format should match what the adapter sends
         bytes memory payload = abi.encode(user, shares);
         vm.prank(address(lzEndpointSpoke));
         shareOFTSpoke.lzReceive(
@@ -200,6 +209,9 @@ contract IntegrationOVaultTest is Test {
             ""
         );
         
+        // Verify shares were received on spoke
+        assertEq(shareOFTSpoke.balanceOf(user), shares, "User should have shares on spoke chain");
+        
         // Step 6: Approve and mint USDX on spoke using shares
         vm.startPrank(user);
         shareOFTSpoke.approve(address(spokeMinter), shares);
@@ -207,7 +219,7 @@ contract IntegrationOVaultTest is Test {
         vm.stopPrank();
         
         // Verify
-        assertEq(usdxSpoke.balanceOf(user), shares);
+        assertEq(usdxSpoke.balanceOf(user), shares, "User should have USDX on spoke");
         assertEq(shareOFTSpoke.balanceOf(user), 0, "Shares should be burned");
     }
     
@@ -215,10 +227,14 @@ contract IntegrationOVaultTest is Test {
         uint256 amount = 500 * 10**6;
         
         // Mint USDX on hub
-        vm.prank(admin);
+        vm.startPrank(admin);
         usdxHub.mint(user, amount);
+        vm.stopPrank();
         
-        // Set trusted remotes
+        // Verify initial balance
+        assertEq(usdxHub.balanceOf(user), amount, "User should have USDX on hub");
+        
+        // Set trusted remotes (already set in setUp, but ensure they're correct)
         bytes32 hubRemote = bytes32(uint256(uint160(address(usdxHub))));
         bytes32 spokeRemote = bytes32(uint256(uint160(address(usdxSpoke))));
         
@@ -227,22 +243,26 @@ contract IntegrationOVaultTest is Test {
         usdxSpoke.setTrustedRemote(HUB_EID, hubRemote);
         vm.stopPrank();
         
+        // Set remote contracts on endpoints
         lzEndpointHub.setRemoteContract(SPOKE_EID, address(usdxSpoke));
+        lzEndpointSpoke.setRemoteContract(HUB_EID, address(usdxHub));
         
         // Give user ETH and send cross-chain
         vm.deal(user, 1 ether);
-        vm.prank(user);
+        vm.startPrank(user);
         usdxHub.sendCrossChain{value: 0.001 ether}(
             SPOKE_EID,
             bytes32(uint256(uint160(user))),
             amount,
             ""
         );
+        vm.stopPrank();
         
         // Verify burn on hub
         assertEq(usdxHub.balanceOf(user), 0, "USDX should be burned on hub");
         
         // Manually trigger lzReceive on spoke (simulating LayerZero delivery)
+        // The payload format should match what USDXToken sends
         bytes memory payload = abi.encode(user, amount);
         vm.prank(address(lzEndpointSpoke));
         usdxSpoke.lzReceive(
