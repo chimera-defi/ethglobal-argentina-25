@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useBridgeKit, TransferStatus } from '@/hooks/useBridgeKit';
 import { parseAmount, CONTRACTS } from '@/config/contracts';
-import { CHAINS, SPOKE, SPOKE_CHAINS } from '@/config/chains';
+import { CHAINS, SPOKE_CHAINS, isSpokeChain, isHubChain } from '@/config/chains';
 import { motion } from 'framer-motion';
 import { Network, Loader2, Info, ArrowRightLeft } from 'lucide-react';
 
@@ -24,13 +24,13 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
   // Set default chains based on current chain
   useEffect(() => {
     if (currentChainId) {
-      // If on spoke chain, bridge to hub
-      if (currentChainId === SPOKE.id || currentChainId === CHAINS.SPOKE_BASE.id || currentChainId === CHAINS.SPOKE_POLYGON.id || currentChainId === CHAINS.SPOKE_ARC.id) {
+      if (isSpokeChain(currentChainId)) {
+        // If on spoke chain, bridge to hub
         setSourceChainId(currentChainId);
         setDestinationChainId(CHAINS.HUB.id);
-      } else {
-        // If on hub chain, allow bridging from spoke
-        setSourceChainId(SPOKE.id);
+      } else if (isHubChain(currentChainId)) {
+        // If on hub chain, default to bridging from first spoke chain
+        setSourceChainId(SPOKE_CHAINS[0]?.id || null);
         setDestinationChainId(CHAINS.HUB.id);
       }
     }
@@ -44,6 +44,12 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
 
     try {
       const parsedAmount = parseAmount(amount);
+      
+      if (parsedAmount <= 0) {
+        setIsBridging(false);
+        return;
+      }
+      
       const amountString = parsedAmount.toString();
 
       await bridgeUSDC({
@@ -64,6 +70,7 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
     } catch (err: any) {
       console.error('Bridge failed:', err);
       setIsBridging(false);
+      // Error is already handled by useBridgeKit hook and displayed via error state
     }
   };
 
