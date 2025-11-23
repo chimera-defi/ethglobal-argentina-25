@@ -169,10 +169,7 @@ export default function Home() {
       </div>
 
       {/* Header */}
-      <motion.header
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl sticky top-0 z-50 shadow-sm"
+      <header className="border-b border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl sticky top-0 z-50 shadow-sm"
       >
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <motion.div
@@ -207,7 +204,7 @@ export default function Home() {
             <WalletConnect />
           </div>
         </div>
-      </motion.header>
+      </header>
 
       {/* Toast Container */}
       <ToastContainer toasts={toasts} onClose={removeToast} />
@@ -216,14 +213,12 @@ export default function Home() {
       <div className="container mx-auto px-4 py-12">
         {/* Hero Section */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           className="relative text-center mb-20 p-12 rounded-3xl border-4 border-blue-500 bg-gradient-to-br from-blue-50 via-cyan-50 to-indigo-50 dark:from-blue-950 dark:via-cyan-950 dark:to-indigo-950 shadow-2xl"
         >
           <div className="relative z-10">
             <motion.div
-              initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.2 }}
               className="inline-block mb-6"
@@ -245,7 +240,6 @@ export default function Home() {
               Deposit USDC on any chain, earn yield automatically, and use your shares anywhere.
             </p>
             <motion.div
-              initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
               className="inline-flex items-center gap-3 px-6 py-3 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl border-2 border-gray-200 dark:border-gray-700 shadow-xl"
@@ -271,7 +265,6 @@ export default function Home() {
 
         {/* Stats Grid Section */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           className="mb-20 p-8 rounded-3xl border-4 border-blue-400 bg-gradient-to-br from-white via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-blue-950 dark:to-cyan-950 shadow-2xl"
@@ -283,7 +276,6 @@ export default function Home() {
             return (
               <motion.div
                 key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + index * 0.1 }}
                 whileHover={{ scale: 1.05, y: -8 }}
@@ -314,14 +306,12 @@ export default function Home() {
 
         {/* Protocol Flow Diagram Section */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
           className="mb-20 p-10 rounded-3xl border-4 border-indigo-500 bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50 dark:from-indigo-950 dark:via-blue-950 dark:to-cyan-950 shadow-2xl"
         >
           <div className="text-center mb-12">
               <motion.h2
-              initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
               className="text-4xl font-black mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
@@ -329,7 +319,6 @@ export default function Home() {
               How OVAULT Technology Works
             </motion.h2>
             <motion.p
-              initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.6 }}
               className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
@@ -342,7 +331,6 @@ export default function Home() {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {/* Step 1: Deposit */}
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.6 }}
                 className="relative"
@@ -369,7 +357,6 @@ export default function Home() {
 
               {/* Step 2: Yearn Deposit */}
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.7 }}
                 className="relative"
@@ -396,7 +383,6 @@ export default function Home() {
 
               {/* Step 3: Mint USDX */}
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.8 }}
                 className="relative"
@@ -423,7 +409,6 @@ export default function Home() {
 
               {/* Step 4: Use Cross-Chain */}
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.9 }}
                 className="relative"
@@ -447,7 +432,6 @@ export default function Home() {
 
             {/* Additional info */}
             <motion.div
-              initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.0 }}
               className="mt-8 p-6 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-900/10 dark:via-purple-900/10 dark:to-pink-900/10 rounded-xl border-2 border-blue-200/50 dark:border-blue-800/50"
@@ -470,7 +454,6 @@ export default function Home() {
 
         {/* Features Section */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
           className="mb-20 p-10 rounded-3xl border-4 border-cyan-500 bg-gradient-to-br from-cyan-50 via-sky-50 to-blue-50 dark:from-cyan-950 dark:via-sky-950 dark:to-blue-950 shadow-2xl"
@@ -490,7 +473,6 @@ export default function Home() {
               return (
                 <motion.div
                   key={feature.title}
-                  initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6 + index * 0.1 }}
                   whileHover={{ scale: 1.05, y: -8 }}
@@ -513,7 +495,6 @@ export default function Home() {
 
         {/* Interactive Section */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
           className="mb-20 p-10 rounded-3xl border-4 border-blue-600 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950 shadow-2xl"
@@ -529,7 +510,6 @@ export default function Home() {
           <div className="space-y-8">
             {/* Balance Card - Full Width */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
             >
@@ -538,7 +518,6 @@ export default function Home() {
 
             {/* Bridge Kit Flow - Full Width */}
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
             >
@@ -552,14 +531,12 @@ export default function Home() {
             {/* Deposit and Withdraw - Side by Side */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <motion.div
-                initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.7 }}
               >
                 <DepositFlow signer={signer} onSuccess={handleSuccess} />
               </motion.div>
               <motion.div
-                initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.8 }}
               >
@@ -573,7 +550,6 @@ export default function Home() {
         {/* Quick Start Guide */}
         {!isConnected && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
             className="mb-20 p-10 rounded-3xl border-4 border-sky-500 bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-sky-950 dark:via-blue-950 dark:to-indigo-950 shadow-2xl"
@@ -593,7 +569,6 @@ export default function Home() {
                 return (
                   <motion.div
                     key={step.number}
-                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 + index * 0.1 }}
                     whileHover={{ y: -8, scale: 1.03 }}
@@ -625,7 +600,6 @@ export default function Home() {
 
         {/* Developer Info Section */}
         <motion.div
-          initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.9 }}
           className="max-w-4xl mx-auto p-8 rounded-3xl border-4 border-amber-500 bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 dark:from-amber-950 dark:via-yellow-950 dark:to-orange-950 shadow-2xl"
@@ -677,7 +651,6 @@ export default function Home() {
 
       {/* Footer */}
       <motion.footer
-        initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
         className="relative border-t-4 border-transparent bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200 dark:from-blue-900 dark:via-purple-900 dark:to-pink-900 mt-24"

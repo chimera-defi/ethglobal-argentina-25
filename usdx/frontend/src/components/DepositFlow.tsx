@@ -79,7 +79,6 @@ export function DepositFlow({ signer, onSuccess }: DepositFlowProps) {
   if (!signer) {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="card"
       >
@@ -103,7 +102,6 @@ export function DepositFlow({ signer, onSuccess }: DepositFlowProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="card"
     >
@@ -167,7 +165,6 @@ export function DepositFlow({ signer, onSuccess }: DepositFlowProps) {
         </motion.button>
 
         <motion.div
-          initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="p-5 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl border border-blue-200 dark:border-blue-800"
         >

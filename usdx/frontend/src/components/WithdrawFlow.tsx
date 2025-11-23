@@ -79,7 +79,6 @@ export function WithdrawFlow({ signer, onSuccess }: WithdrawFlowProps) {
   if (!signer) {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="card"
       >
@@ -103,7 +102,6 @@ export function WithdrawFlow({ signer, onSuccess }: WithdrawFlowProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="card"
     >
@@ -167,7 +165,6 @@ export function WithdrawFlow({ signer, onSuccess }: WithdrawFlowProps) {
         </motion.button>
 
         <motion.div
-          initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className="p-5 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl border border-purple-200 dark:border-purple-800"
         >

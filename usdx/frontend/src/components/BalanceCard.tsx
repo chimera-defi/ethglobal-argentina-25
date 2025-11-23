@@ -61,7 +61,6 @@ export function BalanceCard({ address }: BalanceCardProps) {
   if (!address) {
     return (
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="card"
       >
@@ -85,7 +84,6 @@ export function BalanceCard({ address }: BalanceCardProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="card"
     >
@@ -115,7 +113,6 @@ export function BalanceCard({ address }: BalanceCardProps) {
             return (
               <motion.div
                 key={item.key}
-                initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ scale: 1.02 }}
