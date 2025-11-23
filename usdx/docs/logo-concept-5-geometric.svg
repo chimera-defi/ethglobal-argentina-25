@@ -1,0 +1,102 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="400" fill="#0A0E27" rx="40"/>
+  
+  <!-- Geometric X Structure -->
+  <g transform="translate(200, 200)">
+    <!-- Left Upper Triangle -->
+    <polygon points="-90,-110 -30,-30 -110,-30" 
+             fill="url(#triGradient1)" stroke="#4F46E5" stroke-width="2"/>
+    
+    <!-- Right Upper Triangle -->
+    <polygon points="90,-110 110,-30 30,-30" 
+             fill="url(#triGradient2)" stroke="#6366F1" stroke-width="2"/>
+    
+    <!-- Left Lower Triangle -->
+    <polygon points="-90,110 -110,30 -30,30" 
+             fill="url(#triGradient3)" stroke="#10B981" stroke-width="2"/>
+    
+    <!-- Right Lower Triangle with Upward Extension (Yield Arrow) -->
+    <polygon points="90,110 30,30 110,30" 
+             fill="url(#triGradient4)" stroke="#FBBF24" stroke-width="2"/>
+    
+    <!-- Central Hexagon (Hub) -->
+    <polygon points="0,-35 30,-17.5 30,17.5 0,35 -30,17.5 -30,-17.5" 
+             fill="#4F46E5" stroke="#6366F1" stroke-width="2"/>
+    
+    <!-- Inner Hexagon Detail -->
+    <polygon points="0,-20 17,-10 17,10 0,20 -17,10 -17,-10" 
+             fill="#6366F1"/>
+    
+    <!-- Yield Arrow in Center -->
+    <g stroke="#FBBF24" stroke-width="3" fill="none" stroke-linecap="round">
+      <line x1="0" y1="10" x2="0" y2="-15"/>
+      <line x1="0" y1="-15" x2="-5" y2="-10"/>
+      <line x1="0" y1="-15" x2="5" y2="-10"/>
+    </g>
+    
+    <!-- Connection Lines to Corners (Spokes) -->
+    <g stroke="#6366F1" stroke-width="2" opacity="0.3" stroke-dasharray="5,5">
+      <line x1="0" y1="-35" x2="0" y2="-70"/>
+      <line x1="30" y1="-17.5" x2="70" y2="-40"/>
+      <line x1="30" y1="17.5" x2="70" y2="40"/>
+      <line x1="0" y1="35" x2="0" y2="70"/>
+      <line x1="-30" y1="17.5" x2="-70" y2="40"/>
+      <line x1="-30" y1="-17.5" x2="-70" y2="-40"/>
+    </g>
+    
+    <!-- Spoke Nodes -->
+    <g>
+      <circle cx="0" cy="-70" r="8" fill="#10B981" opacity="0.9"/>
+      <circle cx="70" cy="-40" r="8" fill="#10B981" opacity="0.9"/>
+      <circle cx="70" cy="40" r="8" fill="#10B981" opacity="0.9"/>
+      <circle cx="0" cy="70" r="8" fill="#10B981" opacity="0.9"/>
+      <circle cx="-70" cy="40" r="8" fill="#10B981" opacity="0.9"/>
+      <circle cx="-70" cy="-40" r="8" fill="#10B981" opacity="0.9"/>
+    </g>
+    
+    <!-- Particle Effects -->
+    <g fill="#FBBF24" opacity="0.6">
+      <circle cx="15" cy="-50" r="2"/>
+      <circle cx="50" cy="-25" r="2"/>
+      <circle cx="50" cy="25" r="2"/>
+      <circle cx="15" cy="50" r="2"/>
+      <circle cx="-15" cy="50" r="2"/>
+      <circle cx="-50" cy="25" r="2"/>
+      <circle cx="-50" cy="-25" r="2"/>
+      <circle cx="-15" cy="-50" r="2"/>
+    </g>
+  </g>
+  
+  <!-- Typography -->
+  <text x="200" y="350" font-family="Arial, sans-serif" font-size="56" 
+        font-weight="bold" fill="#FFFFFF" text-anchor="middle">USDX</text>
+  
+  <!-- Outer Ring -->
+  <circle cx="200" cy="200" r="190" fill="none" stroke="url(#outerGradient)" stroke-width="2" opacity="0.3"/>
+  
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="triGradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#6366F1;stop-opacity:0.4" />
+    </linearGradient>
+    <linearGradient id="triGradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366F1;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#4F46E5;stop-opacity:0.4" />
+    </linearGradient>
+    <linearGradient id="triGradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10B981;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#34D399;stop-opacity:0.4" />
+    </linearGradient>
+    <linearGradient id="triGradient4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FBBF24;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#FCD34D;stop-opacity:0.4" />
+    </linearGradient>
+    <linearGradient id="outerGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FBBF24;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>

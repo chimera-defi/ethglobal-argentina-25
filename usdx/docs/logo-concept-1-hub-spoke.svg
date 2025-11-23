@@ -1,0 +1,74 @@
+<svg width="400" height="400" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="200" cy="200" r="180" fill="#0A0E27" />
+  
+  <!-- Hub (Central Circle) -->
+  <circle cx="200" cy="200" r="45" fill="#4F46E5" />
+  <circle cx="200" cy="200" r="35" fill="#6366F1" />
+  
+  <!-- Growth Arrow in Center (Yield Symbol) -->
+  <path d="M 200 215 L 200 185 L 190 195 M 200 185 L 210 195" 
+        stroke="#FBBF24" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Spokes (8 directions representing multiple chains) -->
+  <g stroke="#6366F1" stroke-width="2.5" opacity="0.6">
+    <!-- Top -->
+    <line x1="200" y1="155" x2="200" y2="60" />
+    <!-- Top Right -->
+    <line x1="231.8" y1="168.2" x2="283.8" y2="116.2" />
+    <!-- Right -->
+    <line x1="245" y1="200" x2="340" y2="200" />
+    <!-- Bottom Right -->
+    <line x1="231.8" y1="231.8" x2="283.8" y2="283.8" />
+    <!-- Bottom -->
+    <line x1="200" y1="245" x2="200" y2="340" />
+    <!-- Bottom Left -->
+    <line x1="168.2" y1="231.8" x2="116.2" y2="283.8" />
+    <!-- Left -->
+    <line x1="155" y1="200" x2="60" y2="200" />
+    <!-- Top Left -->
+    <line x1="168.2" y1="168.2" x2="116.2" y2="116.2" />
+  </g>
+  
+  <!-- Spoke Endpoint Circles (Chain Nodes) -->
+  <g fill="#10B981">
+    <circle cx="200" cy="60" r="12" />
+    <circle cx="283.8" cy="116.2" r="12" />
+    <circle cx="340" cy="200" r="12" />
+    <circle cx="283.8" cy="283.8" r="12" />
+    <circle cx="200" cy="340" r="12" />
+    <circle cx="116.2" cy="283.8" r="12" />
+    <circle cx="60" cy="200" r="12" />
+    <circle cx="116.2" cy="116.2" r="12" />
+  </g>
+  
+  <!-- Spoke Inner Circles (highlight effect) -->
+  <g fill="#34D399">
+    <circle cx="200" cy="60" r="6" />
+    <circle cx="283.8" cy="116.2" r="6" />
+    <circle cx="340" cy="200" r="6" />
+    <circle cx="283.8" cy="283.8" r="6" />
+    <circle cx="200" cy="340" r="6" />
+    <circle cx="116.2" cy="283.8" r="6" />
+    <circle cx="60" cy="200" r="6" />
+    <circle cx="116.2" cy="116.2" r="6" />
+  </g>
+  
+  <!-- X Symbol Overlay (USDX branding) -->
+  <g opacity="0.15" stroke="#FBBF24" stroke-width="25" stroke-linecap="round">
+    <line x1="120" y1="120" x2="280" y2="280" />
+    <line x1="280" y1="120" x2="120" y2="280" />
+  </g>
+  
+  <!-- Outer Glow Ring -->
+  <circle cx="200" cy="200" r="180" fill="none" stroke="url(#gradient)" stroke-width="2" opacity="0.5"/>
+  
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4F46E5;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#10B981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FBBF24;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>
