@@ -6,6 +6,11 @@
 
 USDX integrates **Circle Bridge Kit** to allow users to seamlessly and without fees bridge USDC from any of the spoke chains to the hub chain (Ethereum) to mint USDX, providing a frictionless cross-chain experience.
 
+### Links
+
+- **[Demo](https://main.dnrm062bu337h.amplifyapp.com/)** - Live demo application
+- **[Presentation](https://docs.google.com/presentation/d/1ypfIj6x8PBf13JReZLw1dM0ddXXJNOfZZalHQKUaULs/edit?usp=sharing)** - Project presentation
+
 **Documentation:**
 - **[USDX Prospectus](./usdx/docs/USDX-PROSPECTUS.md)** - Executive overview
 - **[USDX README](./usdx/README.md)** - Complete project documentation with architecture diagrams
