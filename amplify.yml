@@ -6,7 +6,7 @@ applications:
         preBuild:
           commands:
             - npm install
-            - ls -la node_modules/.bin | grep next || (echo "ERROR: next not found" && exit 1)
+            - 'ls -la node_modules/.bin | grep next || (echo "ERROR: next not found" && exit 1)'
         build:
           commands:
             - npm run build
