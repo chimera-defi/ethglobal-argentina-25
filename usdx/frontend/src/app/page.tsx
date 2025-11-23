@@ -218,12 +218,9 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="relative text-center mb-16"
+          className="relative text-center mb-20 p-12 rounded-3xl border-4 border-blue-500 bg-gradient-to-br from-blue-50 via-cyan-50 to-indigo-50 dark:from-blue-950 dark:via-cyan-950 dark:to-indigo-950 shadow-2xl"
         >
-          {/* Decorative hero background */}
-          <div className="absolute inset-0 -mx-8 bg-gradient-to-b from-blue-50 via-purple-50/30 to-transparent dark:from-blue-950/30 dark:via-purple-950/20 dark:to-transparent rounded-3xl blur-3xl" />
-          
-          <div className="relative">
+          <div className="relative z-10">
             <motion.div
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
@@ -271,15 +268,15 @@ export default function Home() {
           </div>
         </motion.div>
 
-        {/* Stats Grid */}
+        {/* Stats Grid Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12"
+          className="mb-20 p-8 rounded-3xl border-4 border-blue-400 bg-gradient-to-br from-white via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-blue-950 dark:to-cyan-950 shadow-2xl"
         >
-          {/* Decorative top border */}
-          <div className="absolute -top-6 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-blue-500 to-transparent opacity-30 blur-sm" />
+          <h2 className="text-3xl font-black text-center mb-8 text-blue-600 dark:text-blue-400">Protocol Statistics</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
@@ -288,8 +285,8 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + index * 0.1 }}
-                whileHover={{ scale: 1.03, y: -4 }}
-                className={`relative overflow-hidden rounded-2xl p-6 border-2 ${stat.bgLight} border-gray-200/50 dark:border-gray-700/50 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300`}
+                whileHover={{ scale: 1.05, y: -8 }}
+                className={`relative overflow-hidden rounded-2xl p-6 border-4 border-blue-400 dark:border-blue-600 ${stat.bgLight} shadow-xl hover:shadow-2xl hover:border-blue-500 dark:hover:border-blue-500 transition-all duration-300`}
               >
                 <div className="relative z-10">
                   <div className={`inline-flex p-3 bg-gradient-to-br ${stat.gradient} rounded-xl mb-3 shadow-md`}>
@@ -310,39 +307,18 @@ export default function Home() {
               </motion.div>
             );
             })}
-        </motion.div>
-
-        {/* Section Divider */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-          className="relative mb-20"
-        >
-          <div className="h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent" />
-          <div className="absolute inset-0 h-px bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-50 blur-sm" />
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            <div className="px-4 py-1.5 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-700 rounded-full">
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 animate-pulse" />
-                <div className="w-2 h-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 animate-pulse" style={{ animationDelay: '0.3s' }} />
-                <div className="w-2 h-2 rounded-full bg-gradient-to-r from-pink-500 to-orange-500 animate-pulse" style={{ animationDelay: '0.6s' }} />
-              </div>
-            </div>
           </div>
         </motion.div>
 
-        {/* Protocol Flow Diagram */}
+
+        {/* Protocol Flow Diagram Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="relative mb-20"
+          className="mb-20 p-10 rounded-3xl border-4 border-indigo-500 bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50 dark:from-indigo-950 dark:via-blue-950 dark:to-cyan-950 shadow-2xl"
         >
-          {/* Decorative background for this section */}
-          <div className="absolute inset-0 -mx-4 bg-gradient-to-br from-blue-50/50 via-transparent to-purple-50/50 dark:from-blue-950/20 dark:via-transparent dark:to-purple-950/20 rounded-3xl" />
-          
-          <div className="relative text-center mb-12 pt-8">
+          <div className="text-center mb-12">
               <motion.h2
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -361,7 +337,7 @@ export default function Home() {
             </motion.p>
           </div>
 
-          <div className="card max-w-6xl mx-auto p-8 md:p-12">
+          <div className="max-w-6xl mx-auto p-8 md:p-12 rounded-2xl border-3 border-blue-300 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm shadow-xl">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {/* Step 1: Deposit */}
               <motion.div
@@ -490,35 +466,15 @@ export default function Home() {
           </div>
         </motion.div>
 
-        {/* Gradient Divider */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="relative my-20"
-        >
-          <div className="flex items-center justify-center gap-4">
-            <div className="flex-1 h-px bg-gradient-to-r from-transparent via-emerald-500 to-teal-500 opacity-50" />
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-emerald-500 dark:text-emerald-400 animate-pulse" />
-              <span className="text-sm font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Features</span>
-              <Sparkles className="h-5 w-5 text-teal-500 dark:text-teal-400 animate-pulse" />
-            </div>
-            <div className="flex-1 h-px bg-gradient-to-l from-transparent via-emerald-500 to-teal-500 opacity-50" />
-          </div>
-        </motion.div>
 
         {/* Features Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="relative mb-20"
+          className="mb-20 p-10 rounded-3xl border-4 border-cyan-500 bg-gradient-to-br from-cyan-50 via-sky-50 to-blue-50 dark:from-cyan-950 dark:via-sky-950 dark:to-blue-950 shadow-2xl"
         >
-          {/* Colorful background accent */}
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/30 via-green-50/30 to-teal-50/30 dark:from-emerald-950/10 dark:via-green-950/10 dark:to-teal-950/10 rounded-3xl -mx-4" />
-          
-          <div className="relative text-center mb-12">
+          <div className="text-center mb-12">
             <h2 className="text-4xl font-black mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
               Why Choose USDX?
             </h2>
@@ -536,8 +492,8 @@ export default function Home() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6 + index * 0.1 }}
-                  whileHover={{ scale: 1.03, y: -5 }}
-                  className="card group"
+                  whileHover={{ scale: 1.05, y: -8 }}
+                  className="card group border-4 border-cyan-400 dark:border-cyan-600 hover:border-cyan-500 dark:hover:border-cyan-500"
                 >
                   <div className={`inline-flex p-4 bg-gradient-to-br ${feature.gradient} rounded-xl mb-4 shadow-lg group-hover:shadow-xl transition-shadow duration-300`}>
                     <Icon className="h-6 w-6 text-white" />
@@ -554,42 +510,22 @@ export default function Home() {
           </div>
         </motion.div>
 
-        {/* Decorative Divider with Icon */}
-        <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ delay: 0.7, duration: 0.8 }}
-          className="relative my-20"
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-rose-500/20 via-pink-500/20 to-purple-500/20 h-24 blur-3xl" />
-          <div className="relative flex items-center justify-center">
-            <div className="flex-1 h-1 bg-gradient-to-r from-transparent via-rose-500 to-pink-500 rounded-full" />
-            <div className="mx-6 p-4 bg-white dark:bg-gray-900 rounded-2xl border-2 border-rose-200 dark:border-rose-800 shadow-xl">
-              <Wallet className="h-8 w-8 text-rose-600 dark:text-rose-400" />
-            </div>
-            <div className="flex-1 h-1 bg-gradient-to-l from-transparent via-pink-500 to-purple-500 rounded-full" />
-          </div>
-        </motion.div>
-
-        {/* Interactive Section Header */}
+        {/* Interactive Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8 }}
-          className="text-center mb-12"
+          transition={{ delay: 0.6 }}
+          className="mb-20 p-10 rounded-3xl border-4 border-blue-600 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950 shadow-2xl"
         >
-          <div className="inline-block p-6 bg-gradient-to-br from-rose-50 via-pink-50 to-purple-50 dark:from-rose-950/30 dark:via-pink-950/30 dark:to-purple-950/30 rounded-3xl border-2 border-rose-200 dark:border-rose-800 mb-4">
-            <h2 className="text-4xl font-black bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 bg-clip-text text-transparent">
+          <div className="text-center mb-10">
+            <h2 className="text-4xl font-black text-blue-600 dark:text-blue-400 mb-3">
               Start Using USDX
             </h2>
+            <p className="text-lg text-gray-700 dark:text-gray-300">
+              Connect your wallet and interact with the protocol
+            </p>
           </div>
-          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Connect your wallet and interact with the protocol
-          </p>
-        </motion.div>
-
-        {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -606,31 +542,9 @@ export default function Home() {
             <DepositFlow signer={signer} onSuccess={handleSuccess} />
             <WithdrawFlow signer={signer} onSuccess={handleSuccess} />
           </motion.div>
-        </div>
+          </div>
+        </motion.div>
 
-        {/* Animated Wave Divider */}
-        {!isConnected && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.9 }}
-            className="relative my-20"
-          >
-            <div className="flex items-center gap-3">
-              <div className="flex-1">
-                <div className="h-px bg-gradient-to-r from-transparent via-orange-400 to-amber-400" />
-                <div className="h-px bg-gradient-to-r from-transparent via-orange-300 to-amber-300 mt-1" />
-              </div>
-              <div className="px-6 py-2 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full shadow-lg">
-                <span className="text-white font-bold text-sm uppercase tracking-wider">Get Started</span>
-              </div>
-              <div className="flex-1">
-                <div className="h-px bg-gradient-to-l from-transparent via-amber-400 to-yellow-400" />
-                <div className="h-px bg-gradient-to-l from-transparent via-amber-300 to-yellow-300 mt-1" />
-              </div>
-            </div>
-          </motion.div>
-        )}
 
         {/* Quick Start Guide */}
         {!isConnected && (
@@ -638,12 +552,9 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="relative mb-20"
+            className="mb-20 p-10 rounded-3xl border-4 border-sky-500 bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-sky-950 dark:via-blue-950 dark:to-indigo-950 shadow-2xl"
           >
-            {/* Warm background glow */}
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-50/40 via-amber-50/40 to-yellow-50/40 dark:from-orange-950/20 dark:via-amber-950/20 dark:to-yellow-950/20 rounded-3xl -mx-4" />
-            
-            <div className="relative text-center mb-12">
+            <div className="text-center mb-12">
               <h2 className="text-4xl font-black mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
                 Get Started in 4 Steps
               </h2>
@@ -661,10 +572,10 @@ export default function Home() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 + index * 0.1 }}
-                    whileHover={{ y: -5 }}
+                    whileHover={{ y: -8, scale: 1.03 }}
                     className="relative group"
                   >
-                    <div className="card p-6 h-full flex flex-col items-center text-center">
+                    <div className="card p-6 h-full flex flex-col items-center text-center border-4 border-sky-400 dark:border-sky-600 hover:border-sky-500 dark:hover:border-sky-500">
                       <div className="relative mb-4">
                         <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
                           <span className="text-white font-black text-xl">{step.number}</span>
@@ -687,41 +598,15 @@ export default function Home() {
           </motion.div>
         )}
 
-        {/* Final Section Divider */}
-        <motion.div
-          initial={{ opacity: 0, scaleX: 0 }}
-          animate={{ opacity: 1, scaleX: 1 }}
-          transition={{ delay: 1.0, duration: 0.8 }}
-          className="relative my-20"
-        >
-          <div className="relative h-20 flex items-center justify-center">
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 via-blue-500/10 to-indigo-500/10 blur-2xl" />
-            <div className="relative flex items-center gap-6 w-full">
-              <div className="flex-1 flex flex-col gap-2">
-                <div className="h-0.5 bg-gradient-to-r from-transparent via-cyan-500 to-blue-500 rounded-full" />
-                <div className="h-px bg-gradient-to-r from-transparent via-cyan-400 to-blue-400 rounded-full" />
-              </div>
-              <div className="flex items-center gap-3 px-6 py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 rounded-2xl shadow-2xl">
-                <AlertCircle className="h-6 w-6 text-white" />
-                <span className="text-white font-black text-sm uppercase tracking-wider">Developer Mode</span>
-                <Zap className="h-6 w-6 text-yellow-300" />
-              </div>
-              <div className="flex-1 flex flex-col gap-2">
-                <div className="h-0.5 bg-gradient-to-l from-transparent via-blue-500 to-indigo-500 rounded-full" />
-                <div className="h-px bg-gradient-to-l from-transparent via-blue-400 to-indigo-400 rounded-full" />
-              </div>
-            </div>
-          </div>
-        </motion.div>
 
-        {/* Developer Info */}
+        {/* Developer Info Section */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.9 }}
-          className="max-w-4xl mx-auto"
+          className="max-w-4xl mx-auto p-8 rounded-3xl border-4 border-amber-500 bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 dark:from-amber-950 dark:via-yellow-950 dark:to-orange-950 shadow-2xl"
         >
-          <div className="card bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 dark:from-amber-900/10 dark:via-yellow-900/10 dark:to-orange-900/10 border-2 border-amber-200/50 dark:border-amber-800/50">
+          <div className="bg-white/50 dark:bg-gray-900/50 rounded-2xl p-6 border-2 border-amber-300 dark:border-amber-700">
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
