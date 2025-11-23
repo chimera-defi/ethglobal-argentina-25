@@ -3,19 +3,19 @@ import { ethers } from "hardhat";
 
 /**
  * @title DeployHub Ignition Module
- * @notice Hardhat Ignition deployment module for USDX Hub Chain contracts
- * @dev This complements Foundry Scripts with Hardhat Ignition's deployment orchestration
+ * @notice Deploys USDX Hub Chain contracts (Token and Vault)
+ * @dev This module handles the complete hub deployment with proper dependency management
  * 
  * Run with: npx hardhat ignition deploy ignition/modules/DeployHub.ts --network sepolia
  */
 export default buildModule("DeployHub", (m) => {
-  // Get deployer account
   const deployer = m.getAccount(0);
   
-  // Configuration - can be overridden via parameters
+  // Get parameters (can be overridden via --parameters)
   const usdcAddress = m.getParameter("usdcAddress", "0x0000000000000000000000000000000000000000");
   const treasuryAddress = m.getParameter("treasuryAddress", deployer);
   const yearnVaultAddress = m.getParameter("yearnVaultAddress", "0x0000000000000000000000000000000000000000");
+  const localEid = m.getParameter("localEid", 30101);
   
   // Deploy USDXToken
   const usdxToken = m.contract("USDXToken", [deployer], {
@@ -23,19 +23,21 @@ export default buildModule("DeployHub", (m) => {
   });
   
   // Deploy USDXVault
+  // Note: OVault components are optional and can be set to zero address for MVP
   const usdxVault = m.contract(
     "USDXVault",
     [
       usdcAddress,
       usdxToken,
       treasuryAddress,
-      deployer,
-      "0x0000000000000000000000000000000000000000", // ovaultComposer (set later)
-      "0x0000000000000000000000000000000000000000", // shareOFTAdapter (set later)
-      "0x0000000000000000000000000000000000000000", // vaultWrapper (set later)
+      deployer, // admin
+      "0x0000000000000000000000000000000000000000", // ovaultComposer (optional)
+      "0x0000000000000000000000000000000000000000", // shareOFTAdapter (optional)
+      "0x0000000000000000000000000000000000000000", // vaultWrapper (optional)
     ],
     {
       id: "USDXVault",
+      after: [usdxToken],
     }
   );
   
@@ -52,6 +54,15 @@ export default buildModule("DeployHub", (m) => {
     id: "GrantBurnerRole",
     after: [usdxVault],
   });
+  
+  // Set LayerZero endpoint if provided
+  const lzEndpointAddress = m.getParameter("lzEndpointAddress", "0x0000000000000000000000000000000000000000");
+  if (lzEndpointAddress !== "0x0000000000000000000000000000000000000000") {
+    m.call(usdxToken, "setLayerZeroEndpoint", [lzEndpointAddress, localEid], {
+      id: "SetLayerZeroEndpoint",
+      after: [usdxToken],
+    });
+  }
   
   // Set Yearn vault if provided
   if (yearnVaultAddress !== "0x0000000000000000000000000000000000000000") {

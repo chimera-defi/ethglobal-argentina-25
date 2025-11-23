@@ -40,10 +40,28 @@ forge install hyperlane-xyz/hyperlane-monorepo
 forge remappings > remappings.txt
 ```
 
-### 5. Test Setup
+### 5. Local Testnet Setup
+
+**Quick Setup** (recommended):
+```bash
+npm run setup:local
+```
+
+This single command will:
+- Deploy all mock contracts (USDC, Yearn Vault, LayerZero)
+- Deploy USDX contracts (Token and Vault)
+- Set up all permissions
+- Fund a user account with ETH, USDC, and USDX
+- Report all addresses and balances
+
+See [Hardhat Ignition Deployment Guide](../docs/hardhat-ignition-deployment-guide.md) for details.
+
+### 6. Test Setup
 
 ```bash
 # Test Foundry
+npm run test:foundry
+# or
 forge test
 
 # Test Hardhat3
@@ -51,16 +69,13 @@ npm run test
 # or
 npx hardhat test
 
-# Test Foundry
-npm run test:foundry
-# or
-forge test
-
 # Test both
 npm run test:all
 
 # Test mainnet forking
 forge test --fork-url $MAINNET_RPC_URL
+# or
+npm run test:fork
 ```
 
 ## Project Structure
@@ -80,11 +95,14 @@ contracts/
 ├── test/
 │   ├── forge/              # Foundry tests (*.t.sol)
 │   └── hardhat/            # Hardhat3 tests (*.test.sol)
+├── script/                 # Foundry deployment scripts (*.s.sol)
+├── scripts/                # Hardhat scripts (*.ts)
+│   └── setup-local-testnet.ts  # Local testnet setup
 ├── ignition/
-│   └── modules/            # Hardhat Ignition deployment modules (*.ts)
-├── script/
-│   ├── deploy/             # Deployment scripts
-│   └── fork/               # Fork test scripts
+│   └── modules/           # Hardhat Ignition modules (*.ts)
+│       ├── DeployMocks.ts
+│       ├── DeployHub.ts
+│       └── LocalTestnetSetup.ts
 ├── foundry.toml            # Foundry configuration
 ├── hardhat.config.ts      # Hardhat3 configuration
 └── package.json
@@ -158,11 +176,14 @@ npm run test:fork              # Fork tests
 npm run verify                 # Verify contracts
 
 # Hardhat Ignition (deployment)
-npx hardhat ignition deploy ignition/modules/DeployHub.ts --network sepolia
+npm run setup:local           # Complete local testnet setup
+npm run deploy:mocks sepolia  # Deploy mocks only
+npm run deploy:hub sepolia    # Deploy hub contracts
+npm run deploy:local          # Deploy complete local setup
 
 # Foundry
-npm run compile:foundry        # Compile contracts
-npm run test:foundry           # Run Foundry tests
+npm run compile:foundry       # Compile contracts
+npm run test:foundry          # Run Foundry tests
 forge script script/DeployHub.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast
 ```
 
@@ -217,6 +238,8 @@ hardhat: {
 ## Resources
 
 - **[Setup Guide](../docs/21-smart-contract-development-setup.md)** - Complete setup instructions
+- **[Hardhat Ignition Deployment Guide](../docs/hardhat-ignition-deployment-guide.md)** - Deployment with Ignition
+- **[Hardhat3 Integration Guide](../docs/hardhat3-integration-guide.md)** - Using Hardhat3
 - **[Task Breakdown](../docs/22-detailed-task-breakdown.md)** - Phase 2 detailed tasks
 - **[Technical Spec](../docs/05-technical-specification.md)** - Contract interfaces
 - **[Architecture](../docs/02-architecture.md)** - System architecture
