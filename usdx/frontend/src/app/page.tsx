@@ -522,7 +522,9 @@ export default function Home() {
               Start Using USDX
             </h2>
             <p className="text-lg text-gray-700 dark:text-gray-300">
-              Connect your wallet and interact with the protocol
+              {isConnected 
+                ? 'View your balances, deposit USDC, and withdraw'
+                : 'Connect your wallet to see balances, deposit USDC, and withdraw'}
             </p>
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

@@ -300,43 +300,51 @@ echo ""
 # Deploy contracts
 cd contracts
 
+# Set private key as environment variable (scripts use vm.envUint("PRIVATE_KEY"))
+export PRIVATE_KEY=0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+
 echo -e "${GREEN}✓${NC} Deploying Hub contracts..."
-forge script script/DeployHubOnly.s.sol:DeployHubOnly \
+echo -e "${BLUE}   This may take a minute...${NC}"
+if ! forge script script/DeployHubOnly.s.sol:DeployHubOnly \
   --rpc-url http://localhost:8545 \
   --broadcast \
-  --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 \
-  > ../logs/deploy-hub.log 2>&1
-
-if [ $? -ne 0 ]; then
-    echo -e "${RED}❌ Hub deployment failed. Check logs/deploy-hub.log${NC}"
+  2>&1 | tee ../logs/deploy-hub.log; then
+    echo ""
+    echo -e "${RED}❌ Hub deployment failed!${NC}"
+    echo -e "${YELLOW}Last 20 lines of log:${NC}"
+    tail -20 ../logs/deploy-hub.log 2>/dev/null || echo "   (log file not found)"
     kill $HUB_PID $SPOKE_BASE_PID ${SPOKE_ARC_PID:+$SPOKE_ARC_PID} 2>/dev/null || true
     exit 1
 fi
 
+echo ""
 echo -e "${GREEN}✓${NC} Deploying Spoke contracts (Base Mainnet)..."
-forge script script/DeploySpokeOnly.s.sol:DeploySpokeOnly \
+echo -e "${BLUE}   This may take a minute...${NC}"
+if ! forge script script/DeploySpokeOnly.s.sol:DeploySpokeOnly \
   --rpc-url http://localhost:8546 \
   --broadcast \
-  --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 \
-  > ../logs/deploy-spoke-base.log 2>&1
-
-if [ $? -ne 0 ]; then
-    echo -e "${RED}❌ Spoke Base deployment failed. Check logs/deploy-spoke-base.log${NC}"
+  2>&1 | tee ../logs/deploy-spoke-base.log; then
+    echo ""
+    echo -e "${RED}❌ Spoke Base deployment failed!${NC}"
+    echo -e "${YELLOW}Last 20 lines of log:${NC}"
+    tail -20 ../logs/deploy-spoke-base.log 2>/dev/null || echo "   (log file not found)"
     kill $HUB_PID $SPOKE_BASE_PID ${SPOKE_ARC_PID:+$SPOKE_ARC_PID} 2>/dev/null || true
     exit 1
 fi
 
 # Deploy Arc chain if started
 if [ "$START_ARC" != "false" ] && [ -n "$SPOKE_ARC_PID" ]; then
+    echo ""
     echo -e "${GREEN}✓${NC} Deploying Spoke contracts (Arc Testnet)..."
-    forge script script/DeploySpoke.s.sol:DeploySpoke \
+    echo -e "${BLUE}   This may take a minute...${NC}"
+    if ! forge script script/DeploySpoke.s.sol:DeploySpoke \
       --rpc-url http://localhost:8547 \
       --broadcast \
-      --private-key 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80 \
-      > ../logs/deploy-spoke-arc.log 2>&1
-
-    if [ $? -ne 0 ]; then
-        echo -e "${YELLOW}⚠️  Spoke Arc deployment failed. Check logs/deploy-spoke-arc.log${NC}"
+      2>&1 | tee ../logs/deploy-spoke-arc.log; then
+        echo ""
+        echo -e "${YELLOW}⚠️  Spoke Arc deployment failed!${NC}"
+        echo -e "${YELLOW}Last 20 lines of log:${NC}"
+        tail -20 ../logs/deploy-spoke-arc.log 2>/dev/null || echo "   (log file not found)"
         echo "   Continuing with Hub and Base chains..."
     fi
 fi
