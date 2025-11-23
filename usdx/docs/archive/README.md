@@ -19,10 +19,17 @@ For current documentation, see:
 ## Why These Files Are Archived
 
 These files were archived because:
-1. They were superseded by consolidated versions
-2. They contain duplicate information
-3. They are historical snapshots that are no longer current
-4. They were interim progress reports that have been completed
+1. **Consolidated** - Merged into single comprehensive guides (e.g., 9 Vercel docs → 1 guide, ~3147 lines → 186 lines)
+2. **Duplicate** - Contained repetitive information already covered elsewhere
+3. **Outdated** - Superseded by newer documentation (e.g., ARCHITECTURE-REVIEW.md and CRITICAL-GAPS.md from before LayerZero implementation)
+4. **Historical** - Interim progress reports that have been completed
+5. **Superseded** - Replaced by more current and accurate versions
+
+## Consolidation Results
+
+- **Vercel Documentation**: 9 files (~3147 lines) → 1 file (186 lines) = **94% reduction**
+- **Review Documents**: 9 files → 1 file (`REVIEW-SUMMARY.md`)
+- **Summary Documents**: 20+ files → Archived (information preserved in active docs)
 
 ## Accessing Archived Content
 
