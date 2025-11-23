@@ -9,9 +9,10 @@ I've done a thorough multi-pass review and can confirm **all frontend issues hav
 ## 📸 Visual Proof - 6 Screenshots Captured
 
 ### Screenshot 1: Hero Section
-**File:** `screenshot-1-hero.png`
 
-Shows:
+![Hero Section - Gradient backgrounds and Protocol Statistics](./screenshot-1-hero.png)
+
+**What you can see:**
 - ✅ Beautiful gradient hero section with blue border
 - ✅ "Earn Yield Across Any Chain" - gradient text (blue → purple → pink)
 - ✅ "Yield-Bearing Stablecoin" badge with sparkle icons
@@ -23,10 +24,13 @@ Shows:
 - ✅ All icons displaying correctly
 - ✅ Borders, shadows, and rounded corners working
 
-### Screenshot 2: OVAULT Technology Flow
-**File:** `screenshot-2-ovault.png`
+---
 
-Shows:
+### Screenshot 2: OVAULT Technology Flow
+
+![OVAULT Technology - 4-step flow diagram](./screenshot-2-ovault.png)
+
+**What you can see:**
 - ✅ "How OVAULT Technology Works" section with gradient title
 - ✅ 4-step flow diagram with colored icons:
   - Step 1: Bridge USDC (blue icon)
@@ -36,10 +40,13 @@ Shows:
 - ✅ "Understanding OVAULT" information box
 - ✅ Educational content explaining the process
 
-### Screenshot 3: Feature Cards
-**File:** `screenshot-3-features.png`
+---
 
-Shows:
+### Screenshot 3: Feature Cards
+
+![Feature Cards - Why Choose USDX section](./screenshot-3-features.png)
+
+**What you can see:**
 - ✅ "Why Choose USDX?" section with gradient title
 - ✅ 6 feature cards with gradient icons:
   - LayerZero OVAULT (purple icon)
@@ -51,10 +58,13 @@ Shows:
 - ✅ Cyan borders on all cards
 - ✅ Hover effects configured
 
-### Screenshot 4: Interactive Section - "Start Using USDX"
-**File:** `screenshot-4-interactive.png`
+---
 
-Shows:
+### Screenshot 4: Interactive Section - "Start Using USDX"
+
+![Interactive Section - Balance, Bridge, Deposit, Withdraw](./screenshot-4-interactive.png)
+
+**What you can see:**
 - ✅ "Start Using USDX" header in blue
 - ✅ **Your Balances** card with purple icon
 - ✅ **Bridge USDC** section (NEW - Bridge Kit integration!)
@@ -62,10 +72,13 @@ Shows:
 - ✅ **Withdraw USDC** card with purple/magenta icon
 - ✅ All components properly styled with borders
 
-### Screenshot 5: Bridge Kit Component (KEY SCREENSHOT!)
-**File:** `screenshot-5-bridgekit.png`
+---
 
-Shows:
+### Screenshot 5: Bridge Kit Component (KEY SCREENSHOT!)
+
+![Bridge Kit Integration - Proof it's working](./screenshot-5-bridgekit.png)
+
+**What you can see:**
 - ✅ **Bridge USDC** component prominently displayed
 - ✅ "Connect your wallet to bridge USDC" message
 - ✅ Deposit and Withdraw cards below
@@ -74,10 +87,13 @@ Shows:
 
 **This proves the Bridge Kit is now integrated and visible on the page!**
 
-### Screenshot 6: Deposit & Withdraw Flows
-**File:** `screenshot-6-deposit-withdraw.png`
+---
 
-Shows:
+### Screenshot 6: Deposit & Withdraw Flows
+
+![Deposit and Withdraw Flows - Side by side](./screenshot-6-deposit-withdraw.png)
+
+**What you can see:**
 - ✅ Bridge USDC section at top
 - ✅ Deposit USDC and Withdraw USDC side-by-side
 - ✅ "Get Started in 4 Steps" guide below
