@@ -5,6 +5,7 @@ import { WalletConnect } from '@/components/WalletConnect';
 import { BalanceCard } from '@/components/BalanceCard';
 import { DepositFlow } from '@/components/DepositFlow';
 import { WithdrawFlow } from '@/components/WithdrawFlow';
+import { BridgeKitFlow } from '@/components/BridgeKitFlow';
 import { ToastContainer } from '@/components/Toast';
 import { useToast } from '@/hooks/useToast';
 import { useState, useEffect } from 'react';
@@ -28,7 +29,7 @@ import {
 } from 'lucide-react';
 
 export default function Home() {
-  const { address, signer, isConnected } = useWallet();
+  const { address, signer, isConnected, chainId } = useWallet();
   const [refreshKey, setRefreshKey] = useState(0);
   const [darkMode, setDarkMode] = useState(false);
   const { toasts, removeToast } = useToast();
@@ -543,6 +544,20 @@ export default function Home() {
             <WithdrawFlow signer={signer} onSuccess={handleSuccess} />
           </motion.div>
           </div>
+          
+          {/* Bridge Kit Section - Prominently displayed for cross-chain USDC transfers */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            className="mt-8"
+          >
+            <BridgeKitFlow 
+              userAddress={address} 
+              currentChainId={chainId} 
+              onSuccess={handleSuccess} 
+            />
+          </motion.div>
         </motion.div>
 
 
