@@ -287,8 +287,8 @@ fi
 echo "   kill $STOP_PIDS"
 echo ""
 
-# Save PIDs to file for easy cleanup
-echo "$HUB_PID $SPOKE_BASE_PID ${SPOKE_ARC_PID} ${RELAYER_PID}" > .usdx-pids
+# Save PIDs to file for easy cleanup (only non-empty PIDs)
+echo "$STOP_PIDS" > .usdx-pids
 
 echo "💡 Run './stop-multi-chain.sh' to stop all services"
 echo ""

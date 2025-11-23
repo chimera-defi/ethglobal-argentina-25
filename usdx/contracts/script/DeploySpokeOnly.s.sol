@@ -35,7 +35,7 @@ contract DeploySpokeOnly is Script {
             "USDX Vault Shares",
             "USDX-SHARES",
             LZ_ENDPOINT, // TODO: Set actual LayerZero endpoint
-            30109, // Polygon endpoint ID (update for your chain)
+            30110, // Base Sepolia endpoint ID (update for your chain)
             deployer
         );
         console2.log("USDXShareOFT:", address(shareOFT));
@@ -66,7 +66,7 @@ contract DeploySpokeOnly is Script {
         // Save deployment info
         console2.log("");
         console2.log("=== Spoke Chain Deployment Complete ===");
-        console2.log("Network: Polygon (Spoke)");
+        console2.log("Network: Base Mainnet (Spoke)");
         console2.log("RPC: http://localhost:8546");
         console2.log("Chain ID:", block.chainid);
         console2.log("");

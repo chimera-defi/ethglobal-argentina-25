@@ -9,8 +9,10 @@ import {ILayerZeroEndpoint} from "../contracts/interfaces/ILayerZeroEndpoint.sol
 
 /**
  * @title DeploySpoke
- * @notice Deployment script for USDX Spoke Chain contracts (Polygon/Mumbai)
- * @dev Run with: forge script script/DeploySpoke.s.sol:DeploySpoke --rpc-url $MUMBAI_RPC_URL --broadcast --verify
+ * @notice Deployment script for USDX Spoke Chain contracts
+ * @dev Supports: Polygon Mainnet (137), Mumbai Testnet (80001), Arc Testnet (5042002)
+ * @dev For Arc Testnet: LayerZero is not supported, so USDXShareOFT will not be deployed
+ * @dev Run with: forge script script/DeploySpoke.s.sol:DeploySpoke --rpc-url $RPC_URL --broadcast --verify
  */
 contract DeploySpoke is Script {
     // Configuration
