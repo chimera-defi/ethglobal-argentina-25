@@ -82,32 +82,47 @@
   - Ensure runtime dependencies (like 'next') are accessible in the deployment directory
   - Test the complete build flow: install → build → verify artifacts
   - For workspaces, dependencies may be hoisted to parent - handle accordingly
-- **Amplify Monorepo Setup (CRITICAL - DO NOT BREAK THIS):**
-  - Set `appRoot` to the workspace root where node_modules is installed
+
+- **Amplify Monorepo Setup - FINAL BULLETPROOF SOLUTION:**
+  - Set `appRoot` to the workspace root where node_modules is installed (e.g., `usdx`)
+  - In preBuild: Install dependencies with `npm ci`, then COPY node_modules to app directory
+  - Use `cp -r node_modules frontend/node_modules` (NOT cp -rL, NOT symlinks)
   - Set `baseDirectory` in artifacts to the app subdirectory (e.g., `frontend`)
-  - Create symlink from app to parent node_modules: `ln -sf ../node_modules ./node_modules`
-  - Include both the symlink and parent node_modules in artifacts
-  - **NEVER copy node_modules** - it creates duplicate React instances and breaks builds
-  - **ALWAYS use symlinks** for monorepo node_modules access
-- **Testing Deployment Configs:**
+  - Include ALL artifacts: `.next/**/*`, `node_modules/**/*`, `package.json`, `next.config.js`, `public/**/*`
+  - **WHY THIS WORKS:**
+    - Amplify artifacts must be self-contained (symlinks may not resolve correctly)
+    - `cp -r` preserves internal symlinks within node_modules while making it portable
+    - Node.js can resolve dependencies from the copied node_modules directory
+    - No duplicate React instances because we copy the entire structure as-is
+
+- **Testing Deployment Configs (MANDATORY BEFORE COMMITTING):**
   ```bash
-  # Test exact Amplify build flow:
+  # Test EXACT Amplify build flow:
   cd /workspace/usdx
-  rm -rf frontend/.next frontend/node_modules
-  npm ci
-  cd frontend && ln -sf ../node_modules ./node_modules && cd ..
-  npm run build:frontend
-  cd frontend && ls -la node_modules  # Verify symlink exists
+  rm -rf frontend/.next frontend/node_modules node_modules
+  npm ci                                    # Install in parent (workspace root)
+  cp -r node_modules frontend/node_modules  # Copy to frontend
+  cd frontend && npm run build              # Build from frontend directory
+  ls -la node_modules/next                  # Verify 'next' exists
   node -e "console.log(require.resolve('next'))"  # Verify Node can resolve it
   ```
+
 - **Deployment Config Review Checklist:**
   1. Is appRoot set to where node_modules actually installs?
-  2. Does baseDirectory point to the correct build output directory?
-  3. Are ALL runtime dependencies accessible in the deployed directory?
-  4. Does the artifacts section include node_modules (or symlink to it)?
-  5. Have I tested the EXACT commands in amplify.yml locally?
-  6. Does `require.resolve('next')` work from the deployed directory?
-  7. Are there NO duplicate node_modules directories causing React conflicts?
+  2. Is `cp -r node_modules frontend/node_modules` in preBuild phase?
+  3. Does baseDirectory point to the correct app directory?
+  4. Are ALL runtime dependencies copied to the app directory?
+  5. Does the artifacts section include `node_modules/**/*`?
+  6. Have I tested the EXACT commands in amplify.yml locally?
+  7. Does `require.resolve('next')` work from the app directory after copy?
+  8. Does the build complete without errors after the copy?
+
+- **Common Mistakes to AVOID:**
+  - ❌ Using symlinks (`ln -s`) - Amplify may not follow them in artifacts
+  - ❌ Using `cp -rL` (follow symlinks) - Breaks on circular refs in node_modules
+  - ❌ Using `../node_modules/**/*` in artifacts - Path resolution issues
+  - ❌ Setting appRoot to frontend when workspace installs in parent
+  - ❌ Not testing the complete build flow before committing
 
 ### Self-Assessment Checklist
 Before committing, ask:

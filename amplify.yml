@@ -6,16 +6,15 @@ applications:
         preBuild:
           commands:
             - npm ci
-            - cd frontend && ln -sf ../node_modules ./node_modules
+            - cp -r node_modules frontend/node_modules
         build:
           commands:
-            - npm run build:frontend
+            - cd frontend && npm run build
       artifacts:
         baseDirectory: frontend
         files:
           - '.next/**/*'
-          - '../node_modules/**/*'
-          - 'node_modules'
+          - 'node_modules/**/*'
           - 'package.json'
           - 'next.config.js'
           - 'public/**/*'
