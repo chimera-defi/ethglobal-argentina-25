@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ethers } from 'ethers';
 import { getSpokeMinterContract, getSpokeUSDXContract, waitForTransaction } from '@/lib/contracts';
 import { parseAmount, formatAmount } from '@/config/contracts';
 import { getProvider } from '@/lib/ethers';
+import { SPOKE_CHAINS } from '@/config/chains';
+import { Network, ChevronDown } from 'lucide-react';
 
 interface SpokeMintFlowProps {
   signer: ethers.Signer | null;
@@ -12,7 +14,12 @@ interface SpokeMintFlowProps {
   onSuccess?: () => void;
 }
 
+type SpokeChainConfig = typeof SPOKE_CHAINS[number];
+
 export function SpokeMintFlow({ signer, userAddress, onSuccess }: SpokeMintFlowProps) {
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [selectedChain, setSelectedChain] = useState<SpokeChainConfig>(SPOKE_CHAINS[0]);
+  const [showChainDropdown, setShowChainDropdown] = useState(false);
   const [amount, setAmount] = useState('');
   const [isMinting, setIsMinting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -20,6 +27,20 @@ export function SpokeMintFlow({ signer, userAddress, onSuccess }: SpokeMintFlowP
   const [hubPosition, setHubPosition] = useState<bigint>(BigInt(0));
   const [spokeBalance, setSpokeBalance] = useState<bigint>(BigInt(0));
   const [isLoading, setIsLoading] = useState(false);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setShowChainDropdown(false);
+      }
+    };
+
+    if (showChainDropdown) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [showChainDropdown]);
 
   // Load user's hub position and spoke balance
   useEffect(() => {
@@ -79,7 +100,7 @@ export function SpokeMintFlow({ signer, userAddress, onSuccess }: SpokeMintFlowP
       setIsMinting(false);
 
       if (receipt) {
-        setSuccess(`Successfully minted ${amount} USDX on Polygon!`);
+        setSuccess(`Successfully minted ${amount} USDX on ${selectedChain.name}!`);
         setAmount('');
         onSuccess?.();
       }
@@ -103,10 +124,69 @@ export function SpokeMintFlow({ signer, userAddress, onSuccess }: SpokeMintFlowP
 
   return (
     <div className="card">
-      <h2 className="text-xl font-bold mb-4">Mint USDX on Polygon</h2>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-xl font-bold">Mint USDX on Spoke Chain</h2>
+        <Network className="h-5 w-5 text-purple-600" />
+      </div>
       <p className="text-sm text-gray-600 mb-4">
-        Mint USDX on Polygon based on your hub chain position. No additional collateral needed!
+        Mint USDX on a spoke chain based on your hub chain position. No additional collateral needed!
       </p>
+
+      {/* Chain Selector */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium mb-2">Select Destination Chain</label>
+        <div className="relative" ref={dropdownRef}>
+          <button
+            onClick={() => setShowChainDropdown(!showChainDropdown)}
+            className="w-full flex items-center justify-between p-3 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:border-purple-400 dark:hover:border-purple-500 transition-colors"
+            disabled={isMinting}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                <span className="text-white text-xs font-bold">{selectedChain.name.substring(0, 2).toUpperCase()}</span>
+              </div>
+              <div className="text-left">
+                <p className="font-bold text-gray-900 dark:text-white">{selectedChain.name}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">Chain ID: {selectedChain.id}</p>
+              </div>
+            </div>
+            <ChevronDown className={`h-5 w-5 text-gray-500 transition-transform ${showChainDropdown ? 'rotate-180' : ''}`} />
+          </button>
+
+          {/* Dropdown Menu */}
+          {showChainDropdown && (
+            <div className="absolute z-10 w-full mt-2 bg-white dark:bg-gray-800 border-2 border-gray-300 dark:border-gray-600 rounded-lg shadow-xl max-h-64 overflow-y-auto">
+              {SPOKE_CHAINS.map((chain) => (
+                <button
+                  key={chain.id}
+                  onClick={() => {
+                    setSelectedChain(chain);
+                    setShowChainDropdown(false);
+                    setError(null);
+                    setSuccess(null);
+                  }}
+                  className={`w-full flex items-center gap-3 p-3 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
+                    selectedChain.id === chain.id ? 'bg-purple-50 dark:bg-purple-900/20' : ''
+                  }`}
+                >
+                  <div className={`w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center ${
+                    selectedChain.id === chain.id ? 'ring-2 ring-purple-500' : ''
+                  }`}>
+                    <span className="text-white text-xs font-bold">{chain.name.substring(0, 2).toUpperCase()}</span>
+                  </div>
+                  <div className="text-left flex-1">
+                    <p className="font-bold text-gray-900 dark:text-white">{chain.name}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">Chain ID: {chain.id} • {chain.currency}</p>
+                  </div>
+                  {selectedChain.id === chain.id && (
+                    <div className="w-2 h-2 bg-purple-500 rounded-full" />
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
 
       {isLoading ? (
         <div className="text-center py-8">
@@ -187,12 +267,12 @@ export function SpokeMintFlow({ signer, userAddress, onSuccess }: SpokeMintFlowP
             </div>
           )}
 
-          <div className="p-4 bg-blue-50 rounded-lg">
-            <h3 className="font-medium mb-2">How it works:</h3>
-            <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
+          <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+            <h3 className="font-medium mb-2 text-gray-900 dark:text-white">How it works:</h3>
+            <ol className="text-sm text-gray-700 dark:text-gray-300 space-y-1 list-decimal list-inside">
               <li>Deposit USDC on Hub (Ethereum)</li>
               <li>Bridge relayer syncs your position</li>
-              <li>Mint USDX here on Spoke (Polygon)</li>
+              <li>Mint USDX on {selectedChain.name}</li>
               <li>Use USDX with low gas fees!</li>
             </ol>
           </div>
