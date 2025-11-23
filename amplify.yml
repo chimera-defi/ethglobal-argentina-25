@@ -1,0 +1,18 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - cd usdx/frontend
+        - npm ci
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: usdx/frontend
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - usdx/frontend/node_modules/**/*
+      - usdx/frontend/.next/cache/**/*
