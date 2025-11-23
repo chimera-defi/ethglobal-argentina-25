@@ -42,9 +42,7 @@ export function DepositFlow({ signer, onSuccess }: DepositFlowProps) {
       setLoadingToastId(approveToastId);
       
       // Get chainId to use correct USDC address
-      const provider = signer.provider;
-      const network = provider ? await provider.getNetwork() : null;
-      const chainId = network ? Number(network.chainId) : undefined;
+      const chainId = signer.provider ? Number((await signer.provider.getNetwork()).chainId) : undefined;
       
       const usdc = getUSDCContract(signer, chainId);
       const approveTx = await usdc.approve(CONTRACTS.HUB_VAULT, parsedAmount);

@@ -48,7 +48,7 @@ export function useBalances(address: string | null) {
         
         // Get balances on the current chain
         // Pass chainId to getUSDCContract so it uses the correct USDC address for this chain
-        const usdc = getUSDCContract(provider, chainId || undefined);
+        const usdc = getUSDCContract(provider, chainId ?? undefined);
         const hubUsdx = getHubUSDXContract(provider);
         const spokeUsdx = getSpokeUSDXContract(provider);
 
