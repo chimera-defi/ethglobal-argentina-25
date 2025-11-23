@@ -1,5 +1,5 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
-import { ethers } from "hardhat";
+import hre from "hardhat";
 
 /**
  * @title LocalTestnetSetup Ignition Module
@@ -23,6 +23,7 @@ export default buildModule("LocalTestnetSetup", (m) => {
   const userAddress = m.getParameter("userAddress", m.getAccount(1));
   
   // Amounts to fund user
+  const { ethers } = hre;
   const ethAmount = m.getParameter("ethAmount", ethers.parseEther("10"));
   const usdcAmount = m.getParameter("usdcAmount", ethers.parseUnits("100000", 6)); // 100k USDC
   const usdxAmount = m.getParameter("usdxAmount", ethers.parseUnits("50000", 6)); // 50k USDX
@@ -78,6 +79,7 @@ export default buildModule("LocalTestnetSetup", (m) => {
   
   // ============ Step 3: Set Up Permissions ============
   
+  // ethers already imported above
   const MINTER_ROLE = ethers.keccak256(ethers.toUtf8Bytes("MINTER_ROLE"));
   const BURNER_ROLE = ethers.keccak256(ethers.toUtf8Bytes("BURNER_ROLE"));
   

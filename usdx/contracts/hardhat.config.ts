@@ -1,4 +1,4 @@
-import { HardhatUserConfig } from "hardhat/config";
+import type { HardhatUserConfig } from "hardhat/config";
 import "@nomicfoundation/hardhat-ethers";
 import "@nomicfoundation/hardhat-ignition";
 import "@nomicfoundation/hardhat-ignition-ethers";
@@ -16,7 +16,7 @@ const config: HardhatUserConfig = {
         runs: 200,
       },
       viaIR: false,
-      evmVersion: "cancun",
+      evmVersion: "shanghai",
     },
   },
   remappings: {

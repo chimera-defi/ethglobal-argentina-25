@@ -1,5 +1,5 @@
 import hre from "hardhat";
-import { ethers } from "hardhat";
+import "@nomicfoundation/hardhat-ethers";
 
 /**
  * @title Local Testnet Setup Script
@@ -15,13 +15,26 @@ import { ethers } from "hardhat";
 async function main() {
   console.log("\n=== USDX Local Testnet Setup ===\n");
   
-  // Get signers
-  const [deployer, user] = await ethers.getSigners();
+  // Get ethers - use Hardhat's network provider
+  const { ethers } = await import("ethers");
+  // For Hardhat network, use localhost
+  const provider = new ethers.JsonRpcProvider("http://127.0.0.1:8545");
+  
+  // Get accounts from Hardhat network
+  const accounts = await hre.network.provider.request({ method: "eth_accounts" });
+  const deployerAddress = accounts[0];
+  const userAddress = accounts[1] || "0x70997970C51812dc3A010C7d01b50e0d17dc79C8";
+  
+  // Create signers using Hardhat's default private keys
+  // Hardhat's first account private key: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+  // Second account: 0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d
+  const deployer = new ethers.Wallet("0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80", provider);
+  const user = new ethers.Wallet("0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d", provider);
   
   console.log("Deployer:", deployer.address);
   console.log("User:", user.address);
-  console.log("Deployer Balance:", ethers.formatEther(await ethers.provider.getBalance(deployer.address)), "ETH");
-  console.log("User Balance:", ethers.formatEther(await ethers.provider.getBalance(user.address)), "ETH\n");
+  console.log("Deployer Balance:", ethers.formatEther(await provider.getBalance(deployer.address)), "ETH");
+  console.log("User Balance:", ethers.formatEther(await provider.getBalance(user.address)), "ETH\n");
   
   // Deploy using Hardhat Ignition
   const result = await hre.ignition.deploy("ignition/modules/LocalTestnetSetup.ts", {
@@ -43,24 +56,28 @@ async function main() {
   const usdxTokenAddress = result.LocalTestnetSetup.USDXToken;
   const usdxVaultAddress = result.LocalTestnetSetup.USDXVault;
   
-  const mockUSDC = await ethers.getContractAt("MockUSDC", mockUSDCAddress);
-  const mockYearnVault = await ethers.getContractAt("MockYearnVault", mockYearnVaultAddress);
-  const mockLayerZeroEndpoint = await ethers.getContractAt(
-    "MockLayerZeroEndpoint",
-    mockLayerZeroEndpointAddress
-  );
-  const usdxToken = await ethers.getContractAt("USDXToken", usdxTokenAddress);
-  const usdxVault = await ethers.getContractAt("USDXVault", usdxVaultAddress);
+  // Get contract factories and instances
+  const MockUSDC = await hre.artifacts.readArtifact("MockUSDC");
+  const MockYearnVault = await hre.artifacts.readArtifact("MockYearnVault");
+  const MockLayerZeroEndpoint = await hre.artifacts.readArtifact("MockLayerZeroEndpoint");
+  const USDXToken = await hre.artifacts.readArtifact("USDXToken");
+  const USDXVault = await hre.artifacts.readArtifact("USDXVault");
+  
+  const mockUSDC = new ethers.Contract(mockUSDCAddress, MockUSDC.abi, provider);
+  const mockYearnVault = new ethers.Contract(mockYearnVaultAddress, MockYearnVault.abi, provider);
+  const mockLayerZeroEndpoint = new ethers.Contract(mockLayerZeroEndpointAddress, MockLayerZeroEndpoint.abi, provider);
+  const usdxToken = new ethers.Contract(usdxTokenAddress, USDXToken.abi, provider);
+  const usdxVault = new ethers.Contract(usdxVaultAddress, USDXVault.abi, provider);
   
   // Send ETH to user (using hardhat_setBalance)
   const ethAmount = ethers.parseEther("10");
-  await ethers.provider.send("hardhat_setBalance", [
+  await provider.send("hardhat_setBalance", [
     user.address,
     ethAmount.toHexString(),
   ]);
   
   // Get balances
-  const userEthBalance = await ethers.provider.getBalance(user.address);
+  const userEthBalance = await provider.getBalance(user.address);
   const userUSDCBalance = await mockUSDC.balanceOf(user.address);
   const userUSDXBalance = await usdxToken.balanceOf(user.address);
   
@@ -93,11 +110,11 @@ async function main() {
   
   // Verify Yearn vault setup
   const yearnVaultAddress = await usdxVault.yearnVault();
-  console.log("Yearn Vault set:", yearnVaultAddress === mockYearnVaultAddress ? "✓" : "✗");
+  console.log("Yearn Vault set:", yearnVaultAddress.toLowerCase() === mockYearnVaultAddress.toLowerCase() ? "✓" : "✗");
   
   // Verify LayerZero endpoint
   const lzEndpoint = await usdxToken.lzEndpoint();
-  console.log("LayerZero Endpoint set:", lzEndpoint === mockLayerZeroEndpointAddress ? "✓" : "✗");
+  console.log("LayerZero Endpoint set:", lzEndpoint.toLowerCase() === mockLayerZeroEndpointAddress.toLowerCase() ? "✓" : "✗");
   
   console.log("\n=== Setup Complete! ===\n");
   console.log("You can now use these contracts for testing:");

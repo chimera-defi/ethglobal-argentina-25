@@ -1,5 +1,5 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
-import { ethers } from "hardhat";
+import hre from "hardhat";
 
 /**
  * @title DeployHub Ignition Module
@@ -42,6 +42,7 @@ export default buildModule("DeployHub", (m) => {
   );
   
   // Grant roles to vault
+  const { ethers } = hre;
   const MINTER_ROLE = ethers.keccak256(ethers.toUtf8Bytes("MINTER_ROLE"));
   const BURNER_ROLE = ethers.keccak256(ethers.toUtf8Bytes("BURNER_ROLE"));
   
