@@ -475,15 +475,17 @@ contract USDXSpokeMinterArcTest is Test {
         minter.updateHubPosition(user1, verifiedPosition);
         
         // User mints USDX
-        vm.startPrank(user1);
+        vm.prank(user1);
         minter.mint(mintAmount);
-        vm.stopPrank();
         
-        // Verify mint succeeded
+        // Verify mint succeeded - CRITICAL: These assertions must pass
         assertEq(usdx.balanceOf(user1), mintAmount, "User should have USDX tokens");
         assertEq(minter.getMintedAmount(user1), mintAmount, "Minted amount should be tracked");
         assertEq(minter.getVerifiedHubPosition(user1), verifiedPosition - mintAmount, "Position should decrease");
         assertEq(minter.getAvailableMintAmount(user1), verifiedPosition - mintAmount, "Available should decrease");
+        
+        // Verify mintedPerUser is set correctly before burn
+        assertGe(minter.getMintedAmount(user1), burnAmount, "Must have minted at least burnAmount");
         
         // User burns some USDX
         vm.startPrank(user1);
@@ -496,5 +498,186 @@ contract USDXSpokeMinterArcTest is Test {
         assertEq(minter.getAvailableMintAmount(user1), verifiedPosition - mintAmount + burnAmount, "Available should be restored");
         assertEq(minter.getMintedAmount(user1), mintAmount - burnAmount, "Minted amount should decrease");
         assertEq(usdx.balanceOf(user1), mintAmount - burnAmount, "User USDX balance should decrease");
+    }
+    
+    function testArcMintUSDXFromOVault() public {
+        uint256 verifiedPosition = 1000 * 10**6;
+        uint256 mintAmount = 500 * 10**6;
+        
+        // Oracle updates verified hub position
+        vm.prank(oracle);
+        minter.updateHubPosition(user1, verifiedPosition);
+        
+        // User mints USDX using mintUSDXFromOVault
+        vm.prank(user1);
+        minter.mintUSDXFromOVault(mintAmount);
+        
+        // Verify
+        assertEq(usdx.balanceOf(user1), mintAmount, "User should have USDX");
+        assertEq(minter.getMintedAmount(user1), mintAmount, "Minted amount should be tracked");
+        assertEq(minter.totalMinted(), mintAmount, "Total minted should increase");
+        assertEq(minter.getVerifiedHubPosition(user1), verifiedPosition - mintAmount, "Position should decrease");
+    }
+    
+    function testArcBurnRevertsIfInsufficientMinted() public {
+        uint256 verifiedPosition = 1000 * 10**6;
+        uint256 mintAmount = 500 * 10**6;
+        uint256 burnAmount = 600 * 10**6; // More than minted
+        
+        // Oracle updates verified hub position
+        vm.prank(oracle);
+        minter.updateHubPosition(user1, verifiedPosition);
+        
+        // User mints USDX
+        vm.prank(user1);
+        minter.mint(mintAmount);
+        
+        // Try to burn more than minted
+        vm.startPrank(user1);
+        usdx.approve(address(minter), burnAmount);
+        vm.expectRevert(USDXSpokeMinter.InsufficientShares.selector);
+        minter.burn(burnAmount);
+        vm.stopPrank();
+    }
+    
+    function testArcBurnAllowsReminting() public {
+        uint256 verifiedPosition = 1000 * 10**6;
+        uint256 mintAmount = 1000 * 10**6;
+        
+        // Oracle updates verified hub position
+        vm.prank(oracle);
+        minter.updateHubPosition(user1, verifiedPosition);
+        
+        // User mints full amount
+        vm.prank(user1);
+        minter.mint(mintAmount);
+        
+        // Verify can't mint more (no position left)
+        vm.prank(user1);
+        vm.expectRevert(USDXSpokeMinter.InsufficientHubPosition.selector);
+        minter.mint(1);
+        
+        // Burn half
+        uint256 burnAmount = 500 * 10**6;
+        vm.startPrank(user1);
+        usdx.approve(address(minter), burnAmount);
+        minter.burn(burnAmount);
+        vm.stopPrank();
+        
+        // Verify position restored
+        assertEq(minter.getVerifiedHubPosition(user1), burnAmount, "Position should be restored");
+        assertEq(minter.getAvailableMintAmount(user1), burnAmount, "Available should be restored");
+        
+        // Now can mint again up to restored position
+        vm.prank(user1);
+        minter.mint(burnAmount);
+        
+        assertEq(minter.getMintedAmount(user1), mintAmount, "Should have minted full amount again");
+    }
+    
+    function testArcBurnRevertsIfZeroAmount() public {
+        vm.prank(user1);
+        vm.expectRevert(USDXSpokeMinter.ZeroAmount.selector);
+        minter.burn(0);
+    }
+    
+    function testArcPauseAndUnpause() public {
+        uint256 verifiedPosition = 1000 * 10**6;
+        uint256 mintAmount = 500 * 10**6;
+        
+        // Oracle updates verified hub position
+        vm.prank(oracle);
+        minter.updateHubPosition(user1, verifiedPosition);
+        
+        // Pause
+        vm.prank(admin);
+        minter.pause();
+        
+        // Mint should revert when paused
+        vm.prank(user1);
+        vm.expectRevert();
+        minter.mint(mintAmount);
+        
+        // Unpause
+        vm.prank(admin);
+        minter.unpause();
+        
+        // Should work after unpause
+        vm.prank(user1);
+        minter.mint(mintAmount);
+        
+        assertEq(usdx.balanceOf(user1), mintAmount);
+    }
+    
+    function testArcUpdateHubPositionRequiresRole() public {
+        vm.prank(user1); // Not oracle
+        vm.expectRevert();
+        minter.updateHubPosition(user1, 1000 * 10**6);
+    }
+    
+    function testArcMultipleUsersIndependent() public {
+        address user2 = address(0x7);
+        
+        // Oracle updates positions for both users
+        vm.startPrank(oracle);
+        minter.updateHubPosition(user1, 1000 * 10**6);
+        minter.updateHubPosition(user2, 2000 * 10**6);
+        vm.stopPrank();
+        
+        // User1 mints
+        vm.prank(user1);
+        minter.mint(500 * 10**6);
+        
+        // User2 should still have full capacity
+        assertEq(minter.getAvailableMintAmount(user2), 2000 * 10**6);
+        
+        // User2 mints
+        vm.prank(user2);
+        minter.mint(1500 * 10**6);
+        
+        // Verify independence
+        assertEq(minter.getMintedAmount(user1), 500 * 10**6);
+        assertEq(minter.getMintedAmount(user2), 1500 * 10**6);
+        assertEq(minter.totalMinted(), 2000 * 10**6);
+    }
+    
+    function testArcBatchUpdatePositionsMismatch() public {
+        address[] memory users = new address[](2);
+        uint256[] memory positions = new uint256[](3); // Mismatch
+        
+        users[0] = user1;
+        users[1] = address(0x6);
+        positions[0] = 1000 * 10**6;
+        positions[1] = 2000 * 10**6;
+        positions[2] = 3000 * 10**6;
+        
+        // Batch update should revert
+        vm.prank(oracle);
+        vm.expectRevert("Arrays length mismatch");
+        minter.batchUpdateHubPositions(users, positions);
+    }
+    
+    function testArcBurnFullAmount() public {
+        uint256 verifiedPosition = 1000 * 10**6;
+        uint256 mintAmount = 1000 * 10**6;
+        
+        // Oracle updates verified hub position
+        vm.prank(oracle);
+        minter.updateHubPosition(user1, verifiedPosition);
+        
+        // User mints full amount
+        vm.prank(user1);
+        minter.mint(mintAmount);
+        
+        // Burn full amount
+        vm.startPrank(user1);
+        usdx.approve(address(minter), mintAmount);
+        minter.burn(mintAmount);
+        vm.stopPrank();
+        
+        // Verify
+        assertEq(minter.getMintedAmount(user1), 0, "Minted amount should be zero");
+        assertEq(minter.getVerifiedHubPosition(user1), verifiedPosition, "Position should be fully restored");
+        assertEq(usdx.balanceOf(user1), 0, "USDX balance should be zero");
     }
 }

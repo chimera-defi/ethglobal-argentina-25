@@ -104,6 +104,9 @@ contract DeploySpoke is Script {
             console2.log("   Set minter on USDXShareOFT");
         } else {
             console2.log("   Arc chain: Using verified hub positions instead of shareOFT");
+            // Grant POSITION_UPDATER_ROLE to oracle for Arc chain
+            minter.grantRole(POSITION_UPDATER_ROLE, POSITION_ORACLE);
+            console2.log("   Granted POSITION_UPDATER_ROLE to oracle");
         }
         
         vm.stopBroadcast();
