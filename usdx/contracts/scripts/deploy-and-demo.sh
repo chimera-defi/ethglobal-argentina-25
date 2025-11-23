@@ -39,8 +39,13 @@ check_env() {
 # Load deployment addresses from file
 load_deployments() {
     if [ -f "$DEPLOYMENT_FILE" ]; then
-        echo -e "${BLUE}Loading deployment addresses from $DEPLOYMENT_FILE${NC}"
-        source <(jq -r 'to_entries[] | "export \(.key | ascii_upcase)=\(.value)"' "$DEPLOYMENT_FILE")
+        if command -v jq &> /dev/null; then
+            echo -e "${BLUE}Loading deployment addresses from $DEPLOYMENT_FILE${NC}"
+            source <(jq -r '.hub | to_entries[] | "export HUB_\(.key | ascii_upcase)=\(.value)"' "$DEPLOYMENT_FILE" 2>/dev/null)
+            source <(jq -r '.spoke | to_entries[] | "export SPOKE_\(.key | ascii_upcase)=\(.value)"' "$DEPLOYMENT_FILE" 2>/dev/null)
+        else
+            echo -e "${YELLOW}Note: jq not found, skipping deployment file loading${NC}"
+        fi
     fi
 }
 

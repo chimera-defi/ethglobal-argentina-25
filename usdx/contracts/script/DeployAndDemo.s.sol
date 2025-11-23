@@ -11,8 +11,6 @@ import {USDXShareOFT} from "../contracts/USDXShareOFT.sol";
 import {USDXSpokeMinter} from "../contracts/USDXSpokeMinter.sol";
 import {MockUSDC} from "../contracts/mocks/MockUSDC.sol";
 import {MockYearnVault} from "../contracts/mocks/MockYearnVault.sol";
-import {ILayerZeroEndpoint} from "../contracts/interfaces/ILayerZeroEndpoint.sol";
-import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /**
  * @title DeployAndDemo
@@ -321,8 +319,10 @@ contract DeployAndDemo is Script {
     
     /**
      * @notice Configure cross-chain connections (run after both chains deployed)
+     * @dev Must be run on Ethereum Sepolia (hub chain)
      */
     function configureCrossChain() public {
+        require(block.chainid == CHAIN_ID_SEPOLIA, "Must run on Ethereum Sepolia");
         require(hubUSDX != address(0), "Hub USDX not set");
         require(spokeUSDX != address(0), "Spoke USDX not set");
         require(hubShareAdapter != address(0), "Hub Share Adapter not set");
@@ -332,9 +332,12 @@ contract DeployAndDemo is Script {
         address deployer = vm.addr(deployerPrivateKey);
         
         console2.log("\n=== Configuring Cross-Chain Connections ===");
+        console2.log("Chain ID:", block.chainid);
+        console2.log("Hub USDX:", hubUSDX);
+        console2.log("Spoke USDX:", spokeUSDX);
+        console2.log("Hub Share Adapter:", hubShareAdapter);
+        console2.log("Spoke Share OFT:", spokeShareOFT);
         
-        // Configure hub chain
-        console2.log("\nConfiguring Hub Chain (Ethereum Sepolia)...");
         vm.startBroadcast(deployerPrivateKey);
         
         USDXToken hubUSDXToken = USDXToken(hubUSDX);
@@ -350,14 +353,18 @@ contract DeployAndDemo is Script {
         
         console2.log("✓ Hub chain configured");
         console2.log("✓ Cross-chain connections established");
+        console2.log("\nNote: Trusted remotes on spoke chain should already be set during deployment");
     }
     
     /**
      * @notice Run cross-chain demo
+     * @dev Must be run on Ethereum Sepolia (hub chain)
      */
     function runDemo() public {
+        require(block.chainid == CHAIN_ID_SEPOLIA, "Must run on Ethereum Sepolia");
         require(hubUSDX != address(0), "Hub USDX not set");
         require(hubVault != address(0), "Hub Vault not set");
+        require(hubUSDC != address(0), "Hub USDC not set");
         require(spokeUSDX != address(0), "Spoke USDX not set");
         require(spokeMinter != address(0), "Spoke Minter not set");
         

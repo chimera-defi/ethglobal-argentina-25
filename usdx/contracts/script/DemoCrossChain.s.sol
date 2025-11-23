@@ -62,6 +62,7 @@ contract DemoCrossChain is Script {
     function runHubDemo() public {
         require(hubUSDX != address(0), "HUB_USDX not set");
         require(hubVault != address(0), "HUB_VAULT not set");
+        require(hubVaultWrapper != address(0), "HUB_VAULT_WRAPPER not set");
         require(hubShareAdapter != address(0), "HUB_SHARE_ADAPTER not set");
         require(hubUSDC != address(0), "HUB_USDC not set");
         
@@ -254,12 +255,11 @@ contract DemoCrossChain is Script {
         
         USDXShareOFT shareOFT = USDXShareOFT(spokeShareOFT);
         
-        // Simulate lzReceive call
-        bytes memory payload = abi.encode(user, amount);
-        bytes32 sender = bytes32(uint256(uint160(hubShareAdapter)));
-        
-        // Note: This would normally be called by LayerZero endpoint
-        // For demo, we'll mint directly
+        // Note: In production, LayerZero endpoint would call lzReceive with:
+        // - srcEid: Hub chain EID
+        // - sender: Hub Share Adapter address (bytes32)
+        // - payload: abi.encode(user, amount)
+        // For demo purposes, we mint directly to simulate the delivery
         shareOFT.mint(user, amount);
         
         console2.log("✓ Simulated delivery of", amount / 10**6, "shares to", user);
