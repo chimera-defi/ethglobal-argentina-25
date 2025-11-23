@@ -1,5 +1,4 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
-import hre from "hardhat";
 
 /**
  * @title DeployHub Ignition Module
@@ -42,9 +41,12 @@ export default buildModule("DeployHub", (m) => {
   );
   
   // Grant roles to vault
-  const { ethers } = hre;
-  const MINTER_ROLE = ethers.keccak256(ethers.toUtf8Bytes("MINTER_ROLE"));
-  const BURNER_ROLE = ethers.keccak256(ethers.toUtf8Bytes("BURNER_ROLE"));
+  // Calculate role hashes
+  // MINTER_ROLE = keccak256("MINTER_ROLE")
+  // BURNER_ROLE = keccak256("BURNER_ROLE")
+  // Using pre-calculated values for reliability in ESM module context
+  const MINTER_ROLE = "0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6";
+  const BURNER_ROLE = "0x3c11d16cbaffd01df69ce1c404f6340ee057498f5f00246190ea54220576a848";
   
   m.call(usdxToken, "grantRole", [MINTER_ROLE, usdxVault], {
     id: "GrantMinterRole",

@@ -56,6 +56,14 @@
 - **Test Tailwind classes** - Verify class names exist before using them
 - **Professional borders** - Modern design uses subtle borders (1-2px) or shadows, not thick borders everywhere
 
+### Hardhat3 & Development Tooling
+- **Hardhat3 Plugin Loading**: Hardhat3 plugins may not register tasks properly when imported. Use direct API calls or ensure plugins are explicitly imported in scripts.
+- **Hardhat Network**: Hardhat3 uses EDR (Ethereum Development Runtime) which is in-process. For scripts using `JsonRpcProvider`, start `hardhat node` separately first.
+- **Ignition Modules**: Use pre-calculated role hashes in Ignition modules (ESM context limitations). Example: `MINTER_ROLE = "0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6"`
+- **Provider Access**: Hardhat3's `hre.network.provider` may not expose standard ethers provider interface. Use `hre.network.connect()` for network access.
+- **Nonce Management**: When deploying multiple contracts sequentially, ensure each deployment completes before starting the next to avoid nonce conflicts.
+- **ESM Modules**: Hardhat3 requires ESM (`"type": "module"` in package.json). Use `import` not `require`, and handle async module loading properly.
+
 ### Self-Assessment Checklist
 Before committing, ask:
 1. Is all the code I added actually being used?
@@ -70,3 +78,5 @@ Before committing, ask:
 10. **Would a professional designer approve this?**
 11. **Is there a consistent color palette (max 2-3 colors)?**
 12. **Did I establish clear visual hierarchy?**
+13. **For Hardhat3 scripts: Does the script work with `hardhat node` running separately?**
+14. **Are Ignition modules using pre-calculated hashes instead of runtime calculations?**

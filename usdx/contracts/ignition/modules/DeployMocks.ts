@@ -1,5 +1,4 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
-import hre from "hardhat";
 
 /**
  * @title DeployMocks Ignition Module

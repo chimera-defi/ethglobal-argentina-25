@@ -1,5 +1,4 @@
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
-import hre from "hardhat";
 
 /**
  * @title LocalTestnetSetup Ignition Module
@@ -23,10 +22,11 @@ export default buildModule("LocalTestnetSetup", (m) => {
   const userAddress = m.getParameter("userAddress", m.getAccount(1));
   
   // Amounts to fund user
-  const { ethers } = hre;
-  const ethAmount = m.getParameter("ethAmount", ethers.parseEther("10"));
-  const usdcAmount = m.getParameter("usdcAmount", ethers.parseUnits("100000", 6)); // 100k USDC
-  const usdxAmount = m.getParameter("usdxAmount", ethers.parseUnits("50000", 6)); // 50k USDX
+  // Use string values for parameters - Ignition will handle conversion
+  // Default values: 10 ETH, 100k USDC, 50k USDX
+  const ethAmount = m.getParameter("ethAmount", "10000000000000000000"); // 10 ETH in wei
+  const usdcAmount = m.getParameter("usdcAmount", "100000000000"); // 100k USDC (6 decimals)
+  const usdxAmount = m.getParameter("usdxAmount", "50000000000"); // 50k USDX (6 decimals)
   
   const localEid = m.getParameter("localEid", 30101);
   
@@ -79,9 +79,12 @@ export default buildModule("LocalTestnetSetup", (m) => {
   
   // ============ Step 3: Set Up Permissions ============
   
-  // ethers already imported above
-  const MINTER_ROLE = ethers.keccak256(ethers.toUtf8Bytes("MINTER_ROLE"));
-  const BURNER_ROLE = ethers.keccak256(ethers.toUtf8Bytes("BURNER_ROLE"));
+  // Calculate role hashes
+  // MINTER_ROLE = keccak256("MINTER_ROLE")
+  // BURNER_ROLE = keccak256("BURNER_ROLE")
+  // Using pre-calculated values for reliability in ESM module context
+  const MINTER_ROLE = "0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6";
+  const BURNER_ROLE = "0x3c11d16cbaffd01df69ce1c404f6340ee057498f5f00246190ea54220576a848";
   
   // Grant vault minter and burner roles
   m.call(usdxToken, "grantRole", [MINTER_ROLE, usdxVault], {

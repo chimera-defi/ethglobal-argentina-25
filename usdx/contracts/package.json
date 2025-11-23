@@ -10,10 +10,11 @@
     "test:foundry": "forge test",
     "test:fork": "hardhat test --network hardhat",
     "test:all": "npm run test && npm run test:foundry",
-    "setup:local": "hardhat run scripts/setup-local-testnet.ts --network hardhat",
-    "deploy:mocks": "hardhat ignition deploy ignition/modules/DeployMocks.ts --network",
-    "deploy:hub": "hardhat ignition deploy ignition/modules/DeployHub.ts --network",
-    "deploy:local": "hardhat ignition deploy ignition/modules/LocalTestnetSetup.ts --network hardhat",
+    "setup:local": "hardhat run scripts/setup-local-direct.ts --network hardhat",
+    "setup:local:ignition": "hardhat run scripts/setup-local-testnet.ts --network hardhat",
+    "deploy:mocks": "hardhat ignition deploy ignition/modules/DeployMocks.ts",
+    "deploy:hub": "hardhat ignition deploy ignition/modules/DeployHub.ts",
+    "deploy:local": "hardhat ignition deploy ignition/modules/LocalTestnetSetup.ts",
     "deploy:foundry": "forge script",
     "verify": "hardhat verify",
     "lint": "eslint .",
@@ -37,7 +38,12 @@
   "dependencies": {
     "@layerzerolabs/lz-evm-oapp-v2": "^3.0.147",
     "@layerzerolabs/lz-evm-protocol-v2": "^3.0.147",
-    "@layerzerolabs/toolbox-hardhat": "^0.6.12",
+    "@nomicfoundation/ignition-core": "^3.0.5",
     "@openzeppelin/contracts": "^5.4.0"
+  },
+  "peerDependenciesMeta": {
+    "@layerzerolabs/toolbox-hardhat": {
+      "optional": true
+    }
   }
 }
