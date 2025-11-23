@@ -6,10 +6,13 @@ applications:
         preBuild:
           commands:
             - npm install
-            - cp -r node_modules frontend/node_modules || true
         build:
           commands:
             - npm run build --workspace=frontend
+        postBuild:
+          commands:
+            - cp -rL node_modules frontend/node_modules 2>&1 | grep -v "cannot stat" || true
+            - test -d frontend/node_modules/next && echo "✓ next found in frontend/node_modules" || (echo "✗ ERROR: next not found" && exit 1)
       artifacts:
         baseDirectory: frontend
         files:
