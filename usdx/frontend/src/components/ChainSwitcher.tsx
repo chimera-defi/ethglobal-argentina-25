@@ -29,18 +29,18 @@ export function ChainSwitcher({ currentChain, onSwitch }: ChainSwitcherProps) {
         </button>
 
         <button
-          onClick={() => onSwitch('SPOKE')}
+          onClick={() => onSwitch('SPOKE_BASE')}
           className={`p-4 rounded-lg border-2 transition-all ${
-            currentChain === 'SPOKE'
+            currentChain === 'SPOKE_BASE'
               ? 'border-purple-500 bg-purple-50'
               : 'border-gray-200 hover:border-purple-300'
           }`}
         >
           <div className="flex items-center gap-2 mb-2">
-            <div className={`w-3 h-3 rounded-full ${currentChain === 'SPOKE' ? 'bg-purple-500' : 'bg-gray-300'}`} />
+            <div className={`w-3 h-3 rounded-full ${currentChain === 'SPOKE_BASE' ? 'bg-purple-500' : 'bg-gray-300'}`} />
             <span className="font-bold">Spoke Chain</span>
           </div>
-          <p className="text-sm text-gray-600">Polygon</p>
+          <p className="text-sm text-gray-600">Base</p>
           <p className="text-xs text-gray-500">Mint & Use USDX</p>
         </button>
       </div>

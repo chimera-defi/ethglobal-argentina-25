@@ -9,8 +9,10 @@ import {ILayerZeroEndpoint} from "../contracts/interfaces/ILayerZeroEndpoint.sol
 
 /**
  * @title DeploySpoke
- * @notice Deployment script for USDX Spoke Chain contracts (Polygon/Mumbai)
- * @dev Run with: forge script script/DeploySpoke.s.sol:DeploySpoke --rpc-url $MUMBAI_RPC_URL --broadcast --verify
+ * @notice Deployment script for USDX Spoke Chain contracts
+ * @dev Supports: Polygon Mainnet (137), Mumbai Testnet (80001), Arc Testnet (5042002)
+ * @dev For Arc Testnet: LayerZero is not supported, so USDXShareOFT will not be deployed
+ * @dev Run with: forge script script/DeploySpoke.s.sol:DeploySpoke --rpc-url $RPC_URL --broadcast --verify
  */
 contract DeploySpoke is Script {
     // Configuration
@@ -31,6 +33,10 @@ contract DeploySpoke is Script {
         } else if (chainId == 80001) {
             // Mumbai Testnet
             POSITION_ORACLE = msg.sender; // Use deployer as oracle for testing
+        } else if (chainId == 5042002) {
+            // Arc Testnet
+            POSITION_ORACLE = msg.sender; // Use deployer as oracle for testing
+            // NOTE: LayerZero not supported on Arc, so USDXShareOFT will not be deployed
         } else {
             revert("Unsupported chain");
         }
@@ -55,25 +61,34 @@ contract DeploySpoke is Script {
         // Configuration - Update these with actual addresses
         address LZ_ENDPOINT = address(0); // TODO: Set LayerZero endpoint address
         uint32 HUB_CHAIN_ID = 30101; // Ethereum endpoint ID
-        uint32 LOCAL_EID = chainId == 137 ? 30109 : 30110; // Polygon or Mumbai
+        uint256 chainId = block.chainid;
+        uint32 LOCAL_EID = chainId == 137 ? 30109 : 30110; // Polygon (30109) or Mumbai/Base Sepolia (30110)
         
-        // 2. Deploy USDXShareOFT (OVault shares on spoke chain)
-        console2.log("\n2. Deploying USDXShareOFT...");
-        USDXShareOFT shareOFT = new USDXShareOFT(
-            "USDX Vault Shares",
-            "USDX-SHARES",
-            LZ_ENDPOINT, // TODO: Set actual LayerZero endpoint
-            LOCAL_EID,
-            deployer
-        );
-        console2.log("   USDXShareOFT deployed at:", address(shareOFT));
+        // Check if LayerZero is supported (Arc doesn't support LayerZero)
+        bool isLayerZeroSupported = (chainId != 5042002);
+        
+        // 2. Deploy USDXShareOFT (OVault shares on spoke chain) - Skip for Arc
+        USDXShareOFT shareOFT;
+        if (isLayerZeroSupported) {
+            console2.log("\n2. Deploying USDXShareOFT...");
+            shareOFT = new USDXShareOFT(
+                "USDX Vault Shares",
+                "USDX-SHARES",
+                LZ_ENDPOINT, // TODO: Set actual LayerZero endpoint
+                LOCAL_EID,
+                deployer
+            );
+            console2.log("   USDXShareOFT deployed at:", address(shareOFT));
+        } else {
+            console2.log("\n2. Skipping USDXShareOFT deployment (Arc chain - LayerZero not supported)");
+        }
         
         // 3. Deploy USDXSpokeMinter
         console2.log("\n3. Deploying USDXSpokeMinter...");
         USDXSpokeMinter minter = new USDXSpokeMinter(
             address(usdx),
-            address(shareOFT),
-            LZ_ENDPOINT, // TODO: Set actual LayerZero endpoint
+            isLayerZeroSupported ? address(shareOFT) : address(0), // address(0) for Arc
+            isLayerZeroSupported ? LZ_ENDPOINT : address(0), // address(0) for Arc
             HUB_CHAIN_ID,
             deployer
         );
@@ -87,8 +102,15 @@ contract DeploySpoke is Script {
         usdx.grantRole(BURNER_ROLE, address(minter));
         console2.log("   Granted BURNER_ROLE to minter");
         
-        shareOFT.setMinter(address(minter)); // Minter can mint shares
-        console2.log("   Set minter on USDXShareOFT");
+        if (isLayerZeroSupported) {
+            shareOFT.setMinter(address(minter)); // Minter can mint shares
+            console2.log("   Set minter on USDXShareOFT");
+        } else {
+            console2.log("   Arc chain: Using verified hub positions instead of shareOFT");
+            // Grant POSITION_UPDATER_ROLE to oracle for Arc chain
+            minter.grantRole(POSITION_UPDATER_ROLE, POSITION_ORACLE);
+            console2.log("   Granted POSITION_UPDATER_ROLE to oracle");
+        }
         
         vm.stopBroadcast();
         
@@ -96,6 +118,11 @@ contract DeploySpoke is Script {
         console2.log("\n=== Deployment Complete ===");
         console2.log("USDXToken:", address(usdx));
         console2.log("USDXSpokeMinter:", address(minter));
+        if (isLayerZeroSupported) {
+            console2.log("USDXShareOFT:", address(shareOFT));
+        } else {
+            console2.log("USDXShareOFT: Not deployed (Arc chain - LayerZero not supported)");
+        }
         console2.log("Position Oracle:", POSITION_ORACLE);
         
         // Print verification commands

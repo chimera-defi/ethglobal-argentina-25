@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useBridgeKit, TransferStatus } from '@/hooks/useBridgeKit';
 import { parseAmount, formatAmount, CONTRACTS } from '@/config/contracts';
-import { CHAINS } from '@/config/chains';
+import { CHAINS, SPOKE } from '@/config/chains';
 
 interface BridgeKitFlowProps {
   userAddress: string | null;
@@ -23,12 +23,12 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
   useEffect(() => {
     if (currentChainId) {
       // If on spoke chain, bridge to hub
-      if (currentChainId === CHAINS.SPOKE.id) {
-        setSourceChainId(CHAINS.SPOKE.id);
+      if (currentChainId === SPOKE.id || currentChainId === CHAINS.SPOKE_BASE.id || currentChainId === CHAINS.SPOKE_POLYGON.id || currentChainId === CHAINS.SPOKE_ARC.id) {
+        setSourceChainId(currentChainId);
         setDestinationChainId(CHAINS.HUB.id);
       } else {
         // If on hub chain, allow bridging from spoke
-        setSourceChainId(CHAINS.SPOKE.id);
+        setSourceChainId(SPOKE.id);
         setDestinationChainId(CHAINS.HUB.id);
       }
     }
@@ -106,7 +106,7 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
               className="input w-full"
               disabled={isBridging}
             >
-              <option value={CHAINS.SPOKE.id}>Spoke Chain (Base Sepolia)</option>
+              <option value={SPOKE.id}>Spoke Chain (Base Sepolia)</option>
               <option value={CHAINS.HUB.id}>Hub Chain (Ethereum Sepolia)</option>
             </select>
           </div>
@@ -119,7 +119,7 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
               disabled={isBridging}
             >
               <option value={CHAINS.HUB.id}>Hub Chain (Ethereum Sepolia)</option>
-              <option value={CHAINS.SPOKE.id}>Spoke Chain (Base Sepolia)</option>
+              <option value={SPOKE.id}>Spoke Chain (Base Sepolia)</option>
             </select>
           </div>
         </div>

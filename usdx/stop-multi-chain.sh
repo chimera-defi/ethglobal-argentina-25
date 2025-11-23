@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # USDX Protocol - Stop Multi-Chain Setup
+# Stops all running chains: Hub (Ethereum), Spoke Base, Spoke Arc (if enabled), and bridge relayer
 
 echo "🛑 Stopping USDX multi-chain services..."
 

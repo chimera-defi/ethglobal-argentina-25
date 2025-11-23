@@ -40,6 +40,25 @@
 - Rebase on main/master before creating PRs
 - Keep commit messages clear and descriptive
 
+### Testing Requirements - CRITICAL
+- **NEVER upload untested code** - All code must be tested locally before committing
+- **Always run tests locally** - Never assume tests will pass without running them
+- For Solidity contracts: **Always run `forge test`** before committing any contract changes
+- For TypeScript/React: **Always run `npm run build` and `npm run type-check`** before committing
+- If tests fail, fix them immediately - do not commit failing tests
+- Install missing testing tools automatically (Foundry, npm packages, etc.) - do not complain about missing tools
+
+### Foundry Installation & Usage
+- **Install Foundry automatically** if not available:
+  ```bash
+  curl -L https://foundry.paradigm.xyz | bash
+  source ~/.bashrc && foundryup
+  ```
+- Foundry binaries are installed to `~/.foundry/bin/` - add to PATH: `export PATH="$HOME/.foundry/bin:$PATH"`
+- Always run `forge test` after making contract changes
+- Run specific test suites: `forge test --match-contract ContractName`
+- Use `-vv` flag for verbose output when debugging: `forge test -vv`
+
 ### TypeScript & Build Requirements
 - **Always test builds locally** before pushing changes
 - Fix all TypeScript type errors - never ignore type errors
@@ -58,15 +77,17 @@
 
 ### Self-Assessment Checklist
 Before committing, ask:
-1. Is all the code I added actually being used?
-2. Can I simplify this further?
-3. Am I using Tailwind utilities instead of custom CSS?
-4. **Have I verified all Tailwind classes are valid?** (border-3 doesn't exist!)
-5. Are there any unused imports or exports?
-6. Have I moved all generated docs to the docs folder?
-7. Is the code readable and maintainable?
-8. **Does `npm run build` pass without errors?**
-9. **Are all TypeScript types correct?**
-10. **Would a professional designer approve this?**
-11. **Is there a consistent color palette (max 2-3 colors)?**
-12. **Did I establish clear visual hierarchy?**
+1. **Have I run all tests locally and verified they pass?** (CRITICAL - never skip this)
+2. Is all the code I added actually being used?
+3. Can I simplify this further?
+4. Am I using Tailwind utilities instead of custom CSS?
+5. **Have I verified all Tailwind classes are valid?** (border-3 doesn't exist!)
+6. Are there any unused imports or exports?
+7. Have I moved all generated docs to the docs folder?
+8. Is the code readable and maintainable?
+9. **Does `npm run build` pass without errors?** (for frontend changes)
+10. **Does `forge test` pass without errors?** (for contract changes)
+11. **Are all TypeScript types correct?**
+12. **Would a professional designer approve this?** (for UI changes)
+13. **Is there a consistent color palette (max 2-3 colors)?** (for UI changes)
+14. **Did I establish clear visual hierarchy?** (for UI changes)

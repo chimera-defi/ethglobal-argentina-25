@@ -112,9 +112,11 @@ export function getBridgeKitBlockchain(chainId: number): Blockchain | null {
     84532: Blockchain.Base_Sepolia, // Base Sepolia
     421614: Blockchain.Arbitrum_Sepolia, // Arbitrum Sepolia
     11155420: Blockchain.Optimism_Sepolia, // Optimism Sepolia
+    5042002: Blockchain.Arc_Testnet as any, // Arc Testnet - TODO: Verify exact enum value
     // Mainnets
     1: Blockchain.Ethereum, // Ethereum Mainnet
     8453: Blockchain.Base, // Base Mainnet
+    137: Blockchain.Polygon, // Polygon Mainnet
     42161: Blockchain.Arbitrum, // Arbitrum Mainnet
     10: Blockchain.Optimism, // Optimism Mainnet
   };
