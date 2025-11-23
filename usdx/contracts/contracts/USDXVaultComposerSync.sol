@@ -125,29 +125,21 @@ contract USDXVaultComposerSync is Ownable, ReentrancyGuard, IOVaultComposer {
         // Deposit into vault wrapper (vault is USDXYearnVaultWrapper)
         uint256 shares = vault.deposit(_params.assets, address(this));
         
-        // Lock shares in share OFT adapter
+        // Lock shares in share OFT adapter (this gives us OFT tokens)
         // Vault is ERC4626 which extends ERC20, so we can approve
         IERC20(address(vault)).approve(address(shareOFT), shares);
         shareOFT.lockSharesFrom(address(this), shares);
         
-        // Build payload for cross-chain transfer
-        bytes memory payload = abi.encode(
-            Action.DEPOSIT,
-            operationId,
-            _params.receiver,
-            shares
+        // Send shares cross-chain using sendTo with custom receiver
+        // Composer has OFT tokens and sends them to the user's address on destination chain
+        // Note: sendTo encodes the receiver address in the payload, so shares go to _params.receiver
+        shareOFT.sendTo{value: msg.value}(
+            address(this),      // from: composer has the OFT tokens
+            _params.dstEid,     // destination chain
+            _params.receiver,   // receiver on destination (user)
+            shares,             // amount to send
+            options             // LayerZero options
         );
-        
-        // Send shares to destination chain
-        ILayerZeroEndpoint.MessagingParams memory lzParams = ILayerZeroEndpoint.MessagingParams({
-            dstEid: _params.dstEid,
-            receiver: trustedRemotes[_params.dstEid],
-            message: payload,
-            options: options,
-            payInLzToken: false
-        });
-        
-        lzEndpoint.send{value: msg.value}(lzParams, msg.sender);
         
         emit DepositInitiated(operationId, msg.sender, _params.assets, _params.dstEid, _params.receiver);
         emit DepositCompleted(operationId, msg.sender, shares);
