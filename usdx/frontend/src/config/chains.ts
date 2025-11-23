@@ -32,7 +32,7 @@ export const CHAINS = {
   SPOKE_POLYGON: {
     id: 137, // Polygon Mainnet (Bridge Kit + LayerZero supported)
     name: 'Polygon',
-    rpcUrl: process.env.NEXT_PUBLIC_POLYGON_RPC_URL || 'https://polygon.llamarpc.com',
+    rpcUrl: process.env.NEXT_PUBLIC_POLYGON_RPC_URL || 'https://polygon-rpc.com',
     currency: 'MATIC',
     blockExplorer: 'https://polygonscan.com',
     // Localhost fallback for development
@@ -76,7 +76,7 @@ export const BRIDGE_KIT_CHAINS = {
   polygon: {
     id: 137,
     name: 'Polygon',
-    rpcUrl: 'https://polygon.llamarpc.com',
+    rpcUrl: 'https://polygon-rpc.com',
   },
   arbitrumSepolia: {
     id: 421614,
