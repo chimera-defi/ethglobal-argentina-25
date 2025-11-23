@@ -67,6 +67,10 @@ export async function bridgeUSDC(
   }
 
   // Create adapter contexts for source and destination
+  // Note: We use the same adapter for both chains. Circle's CCTP handles destination
+  // minting automatically via their relayer, so no user signature should be required
+  // on the destination chain. If MetaMask prompts for a destination transaction,
+  // it may be due to BridgeKit checking balances or other read operations.
   const fromContext: AdapterContext = {
     adapter: sourceAdapter,
     chain: sourceBlockchain,
