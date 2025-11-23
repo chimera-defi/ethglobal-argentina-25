@@ -8,6 +8,61 @@ USDX integrates **Circle Bridge Kit** to allow users to seamlessly and without f
 
 For more information, see the **[USDX Prospectus](./usdx/docs/USDX-PROSPECTUS.md)**.
 
+### Prize Submissions
+
+#### LayerZero Cross-Chain Implementation Prize
+
+We are targeting the **LayerZero Cross-Chain Implementation** prize at ETHGlobal Buenos Aires 2025.
+
+**Prize Category:** 🌐 LayerZero Cross-Chain Implementation - $20,000 prize pool
+
+**What We Built:**
+
+USDX implements a comprehensive cross-chain stablecoin protocol using **LayerZero OVault** for unified yield generation across multiple chains:
+
+- ✅ **Hub-and-Spoke Architecture** - Ethereum hub with collateral and yield, spoke chains for minting
+- ✅ **LayerZero OVault Integration** - Cross-chain yield vault using OVault standard
+- ✅ **USDXShareOFTAdapter** - Share OFT adapter on hub chain (lockbox model)
+- ✅ **USDXShareOFT** - Share OFT representation on spoke chains
+- ✅ **USDXVaultComposerSync** - Cross-chain orchestrator for deposit/redeem operations
+- ✅ **USDXToken (OFT)** - USDX token with LayerZero cross-chain transfers
+- ✅ **Multi-Chain Support** - Deployed across Ethereum, Polygon, Arbitrum, Optimism, and more
+
+**About the LayerZero Prize:**
+
+The LayerZero prize focuses on building innovative cross-chain applications using LayerZero's omnichain infrastructure. USDX leverages LayerZero OVault to create a unified yield-bearing stablecoin that works seamlessly across chains while maintaining a single collateral source and yield generation on the hub chain.
+
+**Prize Requirements:**
+- Build cross-chain applications using LayerZero protocol
+- Implement innovative use cases for omnichain infrastructure
+- Demonstrate seamless cross-chain user experiences
+
+#### Circle USDC Bridge Kit & ARC Prize
+
+We are targeting the **Circle USDC Bridge Kit and ARC** prize for cross-chain USDC experience at ETHGlobal Buenos Aires 2025.
+
+**Prize Category:** 💵 Circle USDC Bridge Kit & ARC - Cross-Chain USDC Experience
+
+**What We Built:**
+
+USDX integrates **Circle Bridge Kit** (built on CCTP) to enable seamless, fee-free USDC bridging:
+
+- ✅ **Bridge Kit Integration** - Seamless USDC transfers from spoke chains to hub chain
+- ✅ **Fee-Free Bridging** - Users can bridge USDC without fees to mint USDX
+- ✅ **Cross-Chain Deposit Flow** - Users deposit USDC from any spoke chain → Ethereum hub
+- ✅ **Frontend Integration** - Complete Bridge Kit SDK integration in USDX frontend
+- ✅ **Multi-Chain Support** - Supports Ethereum, Base, Arbitrum, Optimism testnets and mainnets
+- ✅ **User Experience** - Frictionless cross-chain experience for minting USDX
+
+**About the Circle Prize:**
+
+The Circle USDC Bridge Kit prize focuses on building innovative cross-chain USDC experiences using Circle's Bridge Kit and CCTP (Cross-Chain Transfer Protocol). USDX leverages Bridge Kit to allow users to seamlessly bridge USDC from any spoke chain to the Ethereum hub chain to mint USDX, eliminating friction in the cross-chain stablecoin minting process.
+
+**Prize Requirements:**
+- Build cross-chain USDC experiences using Bridge Kit/CCTP
+- Implement seamless user flows for USDC bridging
+- Demonstrate innovative use cases for cross-chain USDC
+
 ## Ledger Clear Signing Prize Submission
 
 We submitted an implementation for the **Ledger Clear Signing (ERC-7730)** prize at ETHGlobal Buenos Aires 2025.
