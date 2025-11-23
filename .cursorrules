@@ -75,6 +75,63 @@
 - **Test Tailwind classes** - Verify class names exist before using them
 - **Professional borders** - Modern design uses subtle borders (1-2px) or shadows, not thick borders everywhere
 
+### Deployment & Build Configuration - CRITICAL
+- **NEVER modify deployment configs (amplify.yml, vercel.json) without testing the EXACT build flow**
+- **For monorepo + Amplify/Vercel deployments:**
+  - Understand where node_modules is installed (workspace root vs individual packages)
+  - Ensure runtime dependencies (like 'next') are accessible in the deployment directory
+  - Test the complete build flow: install → build → verify artifacts
+  - For workspaces, dependencies may be hoisted to parent - handle accordingly
+
+- **Amplify Monorepo Setup - OPTIMIZED SOLUTION:**
+  - **Generate app-specific package-lock.json** to avoid installing ALL workspace dependencies
+  - Set `appRoot` to the workspace root (e.g., `usdx`)
+  - In preBuild: Run `cd frontend && npm ci` (installs to parent), then copy to app directory
+  - Use `cp -r node_modules frontend/node_modules` (NOT cp -rL, NOT symlinks)
+  - Set `baseDirectory` in artifacts to the app subdirectory (e.g., `frontend`)
+  - Include: `.next/**/*`, `node_modules/**/*`, `package.json`, `package-lock.json`, `next.config.js`, `public/**/*`
+  - **WHY THIS WORKS:**
+    - Frontend-specific package-lock.json ensures ONLY frontend dependencies are installed (709MB vs 1.9GB)
+    - Workspace hoisting installs to parent node_modules, but we copy to make artifacts self-contained
+    - `cp -r` preserves internal symlinks while making directory portable
+    - No duplicate React instances because we copy the entire structure as-is
+  - **Generate frontend-specific package-lock.json:**
+    ```bash
+    cd /workspace && npm install --prefix usdx/frontend --package-lock-only
+    git add usdx/frontend/package-lock.json
+    ```
+
+- **Testing Deployment Configs (MANDATORY BEFORE COMMITTING):**
+  ```bash
+  # Test EXACT Amplify build flow:
+  cd /workspace/usdx
+  rm -rf frontend/.next frontend/node_modules node_modules
+  cd frontend && npm ci                     # Install frontend-only deps (699MB)
+  cd .. && cp -r node_modules frontend/node_modules  # Copy to frontend (709MB)
+  cd frontend && npm run build              # Build
+  ls -la node_modules/next                  # Verify 'next' exists
+  node -e "console.log(require.resolve('next'))"  # Verify resolution
+  du -sh .next node_modules                 # Verify sizes (84MB + 709MB)
+  ```
+
+- **Deployment Config Review Checklist:**
+  1. Does frontend have its own package-lock.json? (CRITICAL for size optimization)
+  2. Is appRoot set to workspace root (where workspace hoisting occurs)?
+  3. Is `cd frontend && npm ci` used (not just `npm ci` from root)?
+  4. Is `cp -r node_modules frontend/node_modules` in preBuild phase?
+  5. Does baseDirectory point to the app directory?
+  6. Does artifacts include both `package.json` AND `package-lock.json`?
+  7. Have I tested the EXACT commands and verified node_modules is ~700MB, not 1.9GB?
+  8. Does `require.resolve('next')` work from the app directory?
+
+- **Common Mistakes to AVOID:**
+  - ❌ Installing all workspace deps - Creates 1.9GB node_modules (contracts + backend + frontend)
+  - ❌ Missing frontend/package-lock.json - Will install all workspace dependencies
+  - ❌ Using symlinks (`ln -s`) - Amplify may not follow them in artifacts
+  - ❌ Using `cp -rL` (follow symlinks) - Breaks on circular refs in node_modules
+  - ❌ Using `../node_modules/**/*` in artifacts - Path resolution issues
+  - ❌ Not verifying node_modules size after install
+
 ### Self-Assessment Checklist
 Before committing, ask:
 1. **Have I run all tests locally and verified they pass?** (CRITICAL - never skip this)
@@ -91,3 +148,4 @@ Before committing, ask:
 12. **Would a professional designer approve this?** (for UI changes)
 13. **Is there a consistent color palette (max 2-3 colors)?** (for UI changes)
 14. **Did I establish clear visual hierarchy?** (for UI changes)
+15. **Have I tested the EXACT deployment build flow locally?** (for amplify.yml/vercel.json changes)
