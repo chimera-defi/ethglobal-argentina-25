@@ -116,6 +116,7 @@ export function getBridgeKitBlockchain(chainId: number): Blockchain | null {
     // Mainnets
     1: Blockchain.Ethereum, // Ethereum Mainnet
     8453: Blockchain.Base, // Base Mainnet
+    137: Blockchain.Polygon, // Polygon Mainnet
     42161: Blockchain.Arbitrum, // Arbitrum Mainnet
     10: Blockchain.Optimism, // Optimism Mainnet
   };
