@@ -22,9 +22,9 @@ export const CHAINS = {
     rpcUrl: process.env.NEXT_PUBLIC_SPOKE_RPC_URL || 'https://sepolia.base.org',
     currency: 'ETH',
     blockExplorer: 'https://sepolia-explorer.base.org',
-    // Localhost fallback for development
+    // Localhost fallback for development (forks Base Mainnet)
     localhost: {
-      id: 137,
+      id: 8453, // Base Mainnet (matches start-multi-chain.sh fork)
       rpcUrl: 'http://localhost:8546',
       blockExplorer: 'http://localhost:8546',
     },

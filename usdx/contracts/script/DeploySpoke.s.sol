@@ -61,7 +61,8 @@ contract DeploySpoke is Script {
         // Configuration - Update these with actual addresses
         address LZ_ENDPOINT = address(0); // TODO: Set LayerZero endpoint address
         uint32 HUB_CHAIN_ID = 30101; // Ethereum endpoint ID
-        uint32 LOCAL_EID = chainId == 137 ? 30109 : 30110; // Polygon or Mumbai
+        uint256 chainId = block.chainid;
+        uint32 LOCAL_EID = chainId == 137 ? 30109 : 30110; // Polygon (30109) or Mumbai/Base Sepolia (30110)
         
         // Check if LayerZero is supported (Arc doesn't support LayerZero)
         bool isLayerZeroSupported = (chainId != 5042002);

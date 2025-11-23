@@ -35,7 +35,7 @@ contract DeploySpokeOnly is Script {
             "USDX Vault Shares",
             "USDX-SHARES",
             LZ_ENDPOINT, // TODO: Set actual LayerZero endpoint
-            30110, // Base Sepolia endpoint ID (update for your chain)
+            30110, // Base Sepolia endpoint ID (30110) - used for localhost Base Mainnet fork
             deployer
         );
         console2.log("USDXShareOFT:", address(shareOFT));
@@ -66,9 +66,10 @@ contract DeploySpokeOnly is Script {
         // Save deployment info
         console2.log("");
         console2.log("=== Spoke Chain Deployment Complete ===");
-        console2.log("Network: Base Mainnet (Spoke)");
+        console2.log("Network: Base Mainnet Fork (Spoke)");
         console2.log("RPC: http://localhost:8546");
         console2.log("Chain ID:", block.chainid);
+        console2.log("Note: Localhost forks Base Mainnet but uses Base Sepolia LayerZero endpoint ID");
         console2.log("");
         console2.log("Contracts:");
         console2.log("  SpokeUSDX:", address(spokeUSDX));
