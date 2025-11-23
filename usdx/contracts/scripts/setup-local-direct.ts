@@ -53,38 +53,92 @@ async function main() {
   
   console.log("\nDeploying contracts...\n");
   
-  // Deploy mock contracts sequentially using factory.deploy() which handles nonces properly
+  // Helper function to advance chain after transaction
+  const advanceChain = async () => {
+    await provider.send("evm_mine", []);
+  };
+  
+  // Deploy contracts using getDeployTransaction and manual nonce management
+  // This ensures we have full control over transaction sending
+  let currentNonce = await provider.getTransactionCount(deployer.address, "latest");
+  
+  const deployContract = async (factory: ethers.ContractFactory, ...args: any[]) => {
+    // Use tracked nonce
+    const nonce = currentNonce;
+    
+    // Get deployment transaction (this doesn't send it)
+    const deployTx = await factory.getDeployTransaction(...args);
+    
+    // Create a new transaction object with explicit nonce
+    const txWithNonce = {
+      ...deployTx,
+      nonce: nonce,
+    };
+    
+    // Send transaction with explicit nonce
+    const txResponse = await deployer.sendTransaction(txWithNonce);
+    
+    // Wait for receipt - this ensures transaction is mined
+    const receipt = await txResponse.wait();
+    
+    // Advance chain to ensure state is updated
+    await advanceChain();
+    
+    // Get the nonce from the block AFTER the transaction was mined
+    // Use receipt.blockNumber + 1 to ensure we're querying after the transaction
+    const queryBlock = receipt.blockNumber + 1;
+    const chainNonce = await provider.getTransactionCount(deployer.address, queryBlock);
+    
+    // Update our tracked nonce to match chain state
+    currentNonce = chainNonce;
+    
+    // Get contract address from receipt
+    if (!receipt.contractAddress) {
+      throw new Error("Contract deployment failed - no contract address in receipt");
+    }
+    return new ethers.Contract(receipt.contractAddress, factory.interface, deployer);
+  };
+  
+  // Helper to send a transaction with proper nonce management
+  const sendTx = async (contract: ethers.Contract, method: string, ...args: any[]) => {
+    // Use our tracked nonce
+    const nonce = currentNonce;
+    const tx = await contract[method].populateTransaction(...args);
+    tx.nonce = nonce;
+    const txResponse = await deployer.sendTransaction(tx);
+    const receipt = await txResponse.wait();
+    await advanceChain();
+    // Update nonce from chain state
+    const queryBlock = receipt.blockNumber + 1;
+    currentNonce = await provider.getTransactionCount(deployer.address, queryBlock);
+    return receipt;
+  };
+  
+  // Deploy mock contracts sequentially
   const MockUSDCFactory = new ethers.ContractFactory(MockUSDC.abi, MockUSDC.bytecode, deployer);
-  const mockUSDCContract = await MockUSDCFactory.deploy();
-  await mockUSDCContract.waitForDeployment();
-  const mockUSDCAddress = await mockUSDCContract.getAddress();
-  const mockUSDC = new ethers.Contract(mockUSDCAddress, MockUSDC.abi, deployer);
+  const mockUSDC = await deployContract(MockUSDCFactory);
+  const mockUSDCAddress = await mockUSDC.getAddress();
   console.log("✓ MockUSDC deployed:", mockUSDCAddress);
   
   const MockYearnVaultFactory = new ethers.ContractFactory(MockYearnVault.abi, MockYearnVault.bytecode, deployer);
-  const mockYearnVaultContract = await MockYearnVaultFactory.deploy(mockUSDCAddress);
-  await mockYearnVaultContract.waitForDeployment();
-  const mockYearnVaultAddress = await mockYearnVaultContract.getAddress();
-  const mockYearnVault = new ethers.Contract(mockYearnVaultAddress, MockYearnVault.abi, deployer);
+  const mockYearnVault = await deployContract(MockYearnVaultFactory, mockUSDCAddress);
+  const mockYearnVaultAddress = await mockYearnVault.getAddress();
   console.log("✓ MockYearnVault deployed:", mockYearnVaultAddress);
   
   const MockLayerZeroFactory = new ethers.ContractFactory(MockLayerZeroEndpoint.abi, MockLayerZeroEndpoint.bytecode, deployer);
-  const mockLayerZeroContract = await MockLayerZeroFactory.deploy(30101);
-  await mockLayerZeroContract.waitForDeployment();
-  const mockLayerZeroAddress = await mockLayerZeroContract.getAddress();
-  const mockLayerZero = new ethers.Contract(mockLayerZeroAddress, MockLayerZeroEndpoint.abi, deployer);
+  const mockLayerZero = await deployContract(MockLayerZeroFactory, 30101);
+  const mockLayerZeroAddress = await mockLayerZero.getAddress();
   console.log("✓ MockLayerZeroEndpoint deployed:", mockLayerZeroAddress);
   
   // Deploy USDX contracts
   const USDXTokenFactory = new ethers.ContractFactory(USDXToken.abi, USDXToken.bytecode, deployer);
-  const usdxTokenContract = await USDXTokenFactory.deploy(deployer.address);
-  await usdxTokenContract.waitForDeployment();
-  const usdxTokenAddress = await usdxTokenContract.getAddress();
-  const usdxToken = new ethers.Contract(usdxTokenAddress, USDXToken.abi, deployer);
+  const usdxToken = await deployContract(USDXTokenFactory, deployer.address);
+  const usdxTokenAddress = await usdxToken.getAddress();
   console.log("✓ USDXToken deployed:", usdxTokenAddress);
   
   const USDXVaultFactory = new ethers.ContractFactory(USDXVault.abi, USDXVault.bytecode, deployer);
-  const usdxVaultContract = await USDXVaultFactory.deploy(
+  const usdxVault = await deployContract(
+    USDXVaultFactory,
     mockUSDCAddress,
     usdxTokenAddress,
     deployer.address, // treasury
@@ -93,9 +147,7 @@ async function main() {
     "0x0000000000000000000000000000000000000000", // shareOFTAdapter
     "0x0000000000000000000000000000000000000000"  // vaultWrapper
   );
-  await usdxVaultContract.waitForDeployment();
-  const usdxVaultAddress = await usdxVaultContract.getAddress();
-  const usdxVault = new ethers.Contract(usdxVaultAddress, USDXVault.abi, deployer);
+  const usdxVaultAddress = await usdxVault.getAddress();
   console.log("✓ USDXVault deployed:", usdxVaultAddress);
   
   // Set up permissions
@@ -103,16 +155,16 @@ async function main() {
   const MINTER_ROLE = ethers.keccak256(ethers.toUtf8Bytes("MINTER_ROLE"));
   const BURNER_ROLE = ethers.keccak256(ethers.toUtf8Bytes("BURNER_ROLE"));
   
-  await usdxToken.grantRole(MINTER_ROLE, usdxVaultAddress);
+  await sendTx(usdxToken, "grantRole", MINTER_ROLE, usdxVaultAddress);
   console.log("✓ Granted MINTER_ROLE to vault");
   
-  await usdxToken.grantRole(BURNER_ROLE, usdxVaultAddress);
+  await sendTx(usdxToken, "grantRole", BURNER_ROLE, usdxVaultAddress);
   console.log("✓ Granted BURNER_ROLE to vault");
   
-  await usdxToken.setLayerZeroEndpoint(mockLayerZeroAddress, 30101);
+  await sendTx(usdxToken, "setLayerZeroEndpoint", mockLayerZeroAddress, 30101);
   console.log("✓ Set LayerZero endpoint");
   
-  await usdxVault.setYearnVault(mockYearnVaultAddress);
+  await sendTx(usdxVault, "setYearnVault", mockYearnVaultAddress);
   console.log("✓ Set Yearn vault");
   
   // Fund user account
@@ -120,14 +172,15 @@ async function main() {
   
   // Send ETH
   await provider.send("hardhat_setBalance", [user.address, ethers.toBeHex(ethers.parseEther("10"))]);
+  await advanceChain();
   console.log("✓ Sent 10 ETH to user");
   
   // Mint USDC
-  await mockUSDC.mint(user.address, ethers.parseUnits("100000", 6));
+  await sendTx(mockUSDC, "mint", user.address, ethers.parseUnits("100000", 6));
   console.log("✓ Minted 100,000 USDC to user");
   
   // Mint USDX
-  await usdxToken.mint(user.address, ethers.parseUnits("50000", 6));
+  await sendTx(usdxToken, "mint", user.address, ethers.parseUnits("50000", 6));
   console.log("✓ Minted 50,000 USDX to user");
   
   // Get balances
