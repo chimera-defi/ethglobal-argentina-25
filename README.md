@@ -68,6 +68,8 @@ USDX integrates **Circle Bridge Kit** (built on CCTP) to enable seamless, fee-fr
 
 We are targeting the **Ledger Clear Signing (ERC-7730)** prize at ETHGlobal Buenos Aires 2025.
 
+**PR:** [feat: Implement uniswap v4 router across chains (#1977)](https://github.com/LedgerHQ/clear-signing-erc7730-registry/pull/1977)
+
 **Prize Category:** 📝 Ledger Clear Signing (ERC-7730)
 
 **What We Built:**
