@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useBridgeKit, TransferStatus } from '@/hooks/useBridgeKit';
-import { parseAmount, formatAmount, CONTRACTS } from '@/config/contracts';
+import { parseAmount, CONTRACTS } from '@/config/contracts';
 import { CHAINS, SPOKE, SPOKE_CHAINS } from '@/config/chains';
 import { motion } from 'framer-motion';
 import { Network, Loader2, Info, ArrowRightLeft } from 'lucide-react';
