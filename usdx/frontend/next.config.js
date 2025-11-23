@@ -8,7 +8,14 @@ const nextConfig = {
       fs: false,
       net: false,
       tls: false,
+      crypto: false,
+      stream: false,
+      http: false,
+      https: false,
+      zlib: false,
+      util: false,
     };
+    config.externals.push('pino-pretty', 'lokijs', 'encoding');
     return config;
   },
 };
