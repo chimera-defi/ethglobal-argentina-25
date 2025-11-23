@@ -4,3 +4,6 @@
 [submodule "usdx/contracts/lib/hyperlane-monorepo"]
 	path = usdx/contracts/lib/hyperlane-monorepo
 	url = https://github.com/hyperlane-xyz/hyperlane-monorepo
+[submodule "usdx/contracts/lib/LayerZero-v2"]
+	path = usdx/contracts/lib/LayerZero-v2
+	url = https://github.com/LayerZero-Labs/layerzero-contracts
