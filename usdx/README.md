@@ -9,11 +9,15 @@
 **One command for complete E2E demonstration:**
 
 ```bash
-./run-demo.sh              # Full demo: chains + deploy + test (~2 min)
-./run-demo.sh --quick      # Quick: just test with mocks (~10 sec)
+./run-demo.sh              # Full demo: chains + deploy + 2 tests (~3 min)
+./run-demo.sh --quick      # Quick: just tests with mocks (~10 sec)
 ```
 
-**Shows**: Deposit → Cross-Chain Bridge → Mint USDX → Transfer → Burn → Redeem  
+**Two test flows:**
+1. **Direct Cross-Chain USDX** ⭐ - Mint on Ethereum → Send to Base → Use anywhere
+2. **OVault Collateralized** - Advanced flow with yield-bearing shares
+
+**Key Feature**: Mint USDX once, use it on any chain. No complex bridging!  
 **[Demo Guide →](./docs/e2e-demo-guide.md)**
 
 ---

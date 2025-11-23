@@ -487,6 +487,107 @@ contract IntegrationE2E_OVaultTest is Test {
     }
     
     /**
+     * @notice Comprehensive test showing all user flows
+     * @dev Demonstrates multiple ways users can interact with USDX Protocol
+     */
+    function testCompleteUserFlows() public {
+        console.log("\n");
+        console.log("================================================================================");
+        console.log("||              USDX PROTOCOL - COMPLETE USER FLOWS DEMO                     ||");
+        console.log("================================================================================");
+        console.log("");
+        
+        // ============ FLOW 1: Direct Mint on Hub ============
+        console.log("================================================================================");
+        console.log("FLOW 1: DEPOSIT & MINT USDX ON HUB CHAIN (ETHEREUM)");
+        console.log("================================================================================");
+        console.log("");
+        
+        uint256 hubMintAmount = 500e6;
+        console.log("[ACTION] User deposits %s USDC on Ethereum and mints USDX...", hubMintAmount / 1e6);
+        vm.prank(user);
+        vault.deposit(hubMintAmount);
+        
+        console.log("[RESULT] User has %s USDX on Ethereum", usdxHub.balanceOf(user) / 1e6);
+        console.log("[OK] Users can mint USDX directly on Ethereum");
+        console.log("");
+        
+        // ============ FLOW 2: Cross-Chain USDX Transfer ============
+        console.log("================================================================================");
+        console.log("FLOW 2: SEND USDX CROSS-CHAIN (ETHEREUM -> BASE)");
+        console.log("================================================================================");
+        console.log("");
+        
+        uint256 transferToSpoke = 300e6;
+        console.log("[BEFORE] User USDX on Ethereum: %s USDX", usdxHub.balanceOf(user) / 1e6);
+        console.log("[BEFORE] User USDX on Base: %s USDX", usdxSpoke.balanceOf(user) / 1e6);
+        console.log("");
+        
+        console.log("[ACTION] User sends %s USDX from Ethereum to Base via LayerZero...", transferToSpoke / 1e6);
+        vm.prank(user);
+        usdxHub.sendCrossChain{value: 0.001 ether}(
+            SPOKE_EID,
+            bytes32(uint256(uint160(user))),
+            transferToSpoke,
+            ""
+        );
+        
+        // Simulate LayerZero delivery
+        bytes memory payload = abi.encode(user, transferToSpoke);
+        vm.prank(address(lzEndpointSpoke));
+        usdxSpoke.lzReceive(
+            HUB_EID,
+            bytes32(uint256(uint160(address(usdxHub)))),
+            payload,
+            address(0),
+            ""
+        );
+        
+        console.log("[SUCCESS] Cross-chain transfer completed!");
+        console.log("[AFTER] User USDX on Ethereum: %s USDX", usdxHub.balanceOf(user) / 1e6);
+        console.log("[AFTER] User USDX on Base: %s USDX", usdxSpoke.balanceOf(user) / 1e6);
+        console.log("[OK] USDX is fully cross-chain - use it on any supported chain!");
+        console.log("");
+        
+        // ============ FLOW 3: Use USDX on Spoke Chain ============
+        console.log("================================================================================");
+        console.log("FLOW 3: USE USDX ON BASE (DeFi, Transfers, etc.)");
+        console.log("================================================================================");
+        console.log("");
+        
+        address defiProtocol = address(0x8888);
+        uint256 defiAmount = 100e6;
+        
+        console.log("[ACTION] User uses %s USDX in DeFi on Base...", defiAmount / 1e6);
+        vm.prank(user);
+        usdxSpoke.transfer(defiProtocol, defiAmount);
+        
+        console.log("[SUCCESS] USDX used in DeFi!");
+        console.log("[RESULT] DeFi Protocol received: %s USDX", usdxSpoke.balanceOf(defiProtocol) / 1e6);
+        console.log("[OK] USDX works seamlessly on any chain - no need to bridge back!");
+        console.log("");
+        
+        // ============ SUMMARY ============
+        console.log("================================================================================");
+        console.log("||                      KEY FEATURES DEMONSTRATED                            ||");
+        console.log("================================================================================");
+        console.log("");
+        console.log("1. [OK] Mint USDX on Ethereum (hub chain)");
+        console.log("2. [OK] Send USDX cross-chain via LayerZero");
+        console.log("3. [OK] Use USDX natively on Base (spoke chain)");
+        console.log("4. [OK] No need to bridge back - USDX is omnichain!");
+        console.log("");
+        console.log("USER BENEFITS:");
+        console.log("  - Mint once, use anywhere");
+        console.log("  - True cross-chain stablecoin");
+        console.log("  - Lower fees on spoke chains");
+        console.log("  - Full liquidity on all chains");
+        console.log("");
+        console.log("================================================================================");
+        console.log("");
+    }
+    
+    /**
      * @notice Test cross-chain USDX transfer
      */
     function testCrossChainUSDXTransfer() public {

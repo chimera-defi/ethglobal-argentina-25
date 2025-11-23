@@ -29,37 +29,48 @@
 
 ---
 
-## The E2E Flow
+## What It Demonstrates
 
-The test demonstrates a complete user journey:
+The demo runs **two comprehensive E2E tests** showing different user flows:
+
+### Test 1: OVault Flow (Collateralized Minting)
 
 **Phase 1: Deposit on Ethereum**
 - User deposits 1,000 USDC
 - Receives 1,000 USDX tokens (1:1)
 - Gets vault wrapper shares for yield
 
-**Phase 2: Cross-Chain Bridge**
+**Phase 2: Cross-Chain Share Bridge**
 - Locks shares in OFT adapter
-- Bridges to Base via LayerZero
+- Bridges shares to Base via LayerZero
 - Shares available on destination chain
 
-**Phase 3: Mint on Base**
+**Phase 3: Collateralized Mint on Base**
 - Mints 500 USDX using shares as collateral
 - Shares burned proportionally
 - USDX ready for DeFi on Base
 
-**Phase 4: Use USDX**
-- Transfers 250 USDX to another user
-- Demonstrates full liquidity
+**Phase 4-6: Use, Burn, Redeem**
+- Transfer USDX, burn, redeem shares
+- Full capital recovery with yield
 
-**Phase 5: Burn**
-- Burns 250 USDX
-- Frees up collateral
+### Test 2: Direct USDX Cross-Chain Flow (Simpler!)
 
-**Phase 6: Redeem**
-- Bridges shares back to Ethereum
-- Redeems for USDC (with yield)
-- Full capital recovery
+**Flow 1: Mint on Hub**
+- User deposits USDC on Ethereum
+- Mints USDX directly (1:1)
+
+**Flow 2: Send USDX Cross-Chain**
+- User sends USDX from Ethereum to Base
+- Instant cross-chain transfer via LayerZero
+- USDX burns on source, mints on destination
+
+**Flow 3: Use USDX on Any Chain**
+- Use USDX natively on Base for DeFi
+- No need to bridge back!
+- True omnichain stablecoin
+
+**Key Insight**: Users can mint USDX once and use it on any supported chain. No need for complex share bridging for simple transfers!
 
 ---
 
@@ -122,28 +133,42 @@ forge test --match-test testCompleteE2EFlow -vvvv  # Extra verbose
 ## For Presentations
 
 ### Investors
-- Focus on: Cross-chain capability, capital efficiency, yield generation
-- Show: Complete flow in ~2 minutes
-- Highlight: Full capital recovery demonstrated
+**Emphasize the omnichain value proposition:**
+- "Users mint USDX once on Ethereum, use it on any chain"
+- "True cross-chain stablecoin - no complex bridging needed"
+- "Lower fees on L2s while maintaining Ethereum security"
+- Show Test 2 first (simpler, more impressive)
 
-### Technical
-- Focus on: LayerZero integration, OFT standard, ERC4626 vaults
-- Show: Code structure and contract interactions
-- Highlight: Trustless cross-chain messaging
+### Technical Audiences
+**Show both architectural patterns:**
+- Test 1: Collateralized minting via OVault (advanced users)
+- Test 2: Direct USDX cross-chain transfer (simple users)
+- Highlight: LayerZero OFT standard, burn-and-mint pattern
+- Discuss: Trade-offs between collateralized vs direct minting
 
 ### Users
-- Focus on: Simple 3-step process (Deposit → Use → Redeem)
-- Show: Easy transfers and full liquidity
-- Highlight: Continuous yield while using USDX
+**Keep it simple:**
+- "Deposit USDC once on Ethereum"
+- "Send your USDX to Base with one click"
+- "Use USDX in Base DeFi at lower fees"
+- Show Test 2 - it's the user-friendly flow
 
 ---
 
 ## Implementation Details
 
 **Test File:** `contracts/test/forge/IntegrationE2E_OVault.t.sol`
-- Enhanced with comprehensive console logging
-- 6 phases with before/after states
-- Professional formatted output
+
+**Test 1: `testCompleteE2EFlow`**
+- Full OVault collateralized flow
+- 6 phases showing deposit → share bridge → mint → use → burn → redeem
+- Demonstrates advanced yield-bearing vault integration
+
+**Test 2: `testCompleteUserFlows`** ⭐ **Recommended for demos**
+- Simpler, more intuitive flow
+- Shows direct cross-chain USDX transfer
+- 3 flows: Mint → Send Cross-Chain → Use Anywhere
+- Better for explaining core value proposition
 
 **Configuration:** `contracts/foundry.toml`
 - `via_ir = true` (required for complex logging)

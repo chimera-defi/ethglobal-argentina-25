@@ -29,7 +29,7 @@ fi
 
 if [ "$QUICK_MODE" = true ]; then
     # Quick mode: Just run the test with mocks (no chains)
-    echo -e "${BLUE}Quick Mode: Running E2E test with mocks (no live chains)${NC}"
+    echo -e "${BLUE}Quick Mode: Running E2E tests with mocks (no live chains)${NC}"
     echo ""
     
     cd contracts
@@ -42,7 +42,14 @@ if [ "$QUICK_MODE" = true ]; then
         export PATH="$HOME/.foundry/bin:$PATH"
     fi
     
+    echo -e "${GREEN}Running complete OVault flow (deposit → bridge → mint)...${NC}"
+    echo ""
     forge test --match-test testCompleteE2EFlow -vv
+    
+    echo ""
+    echo -e "${GREEN}Running cross-chain USDX transfer flow...${NC}"
+    echo ""
+    forge test --match-test testCompleteUserFlows -vv
     
 else
     # Full mode: Start chains, deploy, and test
@@ -74,13 +81,24 @@ else
         exit 1
     fi
     
-    # Run E2E test
+    # Run E2E tests
     echo ""
-    echo -e "${GREEN}Running E2E integration test...${NC}"
+    echo -e "${GREEN}Running E2E integration tests...${NC}"
     echo ""
     cd contracts
+    
+    echo -e "${BLUE}Test 1: Complete OVault Flow${NC}"
     if ! forge test --match-test testCompleteE2EFlow -vv; then
-        echo -e "${RED}Test failed${NC}"
+        echo -e "${RED}Test 1 failed${NC}"
+        cd ..
+        ./stop-multi-chain.sh
+        exit 1
+    fi
+    
+    echo ""
+    echo -e "${BLUE}Test 2: Cross-Chain USDX Transfer${NC}"
+    if ! forge test --match-test testCompleteUserFlows -vv; then
+        echo -e "${RED}Test 2 failed${NC}"
         cd ..
         ./stop-multi-chain.sh
         exit 1
