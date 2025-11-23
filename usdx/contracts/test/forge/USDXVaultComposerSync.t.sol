@@ -111,8 +111,8 @@ contract USDXVaultComposerSyncTest is Test {
         // Verify assets were deposited - shares are locked in adapter immediately
         // Check adapter's locked shares mapping
         assertGt(shareOFTAdapter.lockedShares(address(composer)), 0, "Composer should have locked shares in adapter");
-        // Also check adapter's OFT token balance (representative tokens)
-        assertGt(shareOFTAdapter.balanceOf(address(composer)), 0, "Composer should have OFT tokens");
+        // Note: After send, OFT tokens are burned (this is correct - shares are now on destination chain)
+        // The locked shares remain in the adapter until unlocked
     }
     
     function testDepositRevertsIfZeroAmount() public {
@@ -166,13 +166,22 @@ contract USDXVaultComposerSyncTest is Test {
         uint256 shares = shareOFTAdapter.lockedShares(address(composer));
         assertGt(shares, 0, "Composer should have locked shares in adapter");
         
-        // Simulate cross-chain receipt: user receives adapter OFT tokens
-        // In reality, this would happen via LayerZero - shares are locked in adapter
-        // and adapter OFT tokens are minted to user on spoke chain
-        // For this test, we need to transfer adapter OFT tokens from composer to user
-        // (representing that user received them on the spoke chain)
-        vm.prank(address(composer));
-        IERC20(address(shareOFTAdapter)).transfer(user, shares);
+        // Note: After deposit, the composer's OFT tokens were burned when sending cross-chain
+        // To test redeem, we need to simulate that user has OFT tokens on the spoke chain
+        // and sends them back. For this test, we need to give user vault shares first
+        // then lock them to get OFT tokens (simulating spoke chain receipt)
+        // First, give user some vault shares by depositing directly to vault
+        vm.startPrank(user);
+        usdc.approve(address(vault), DEPOSIT_AMOUNT);
+        vault.deposit(DEPOSIT_AMOUNT, user);
+        uint256 userVaultShares = vault.balanceOf(user);
+        // Now lock these shares to get OFT tokens (simulating spoke chain receipt)
+        IERC20(address(vault)).approve(address(shareOFTAdapter), userVaultShares);
+        shareOFTAdapter.lockShares(userVaultShares);
+        vm.stopPrank();
+        
+        // Use the user's OFT tokens for redeem (not the composer's shares)
+        shares = shareOFTAdapter.balanceOf(user);
         
         // Now redeem - user transfers adapter OFT tokens to composer, which unlocks shares
         // Use a different timestamp to avoid operation ID collision

@@ -658,9 +658,9 @@ contract IntegrationE2E_OVaultTest is Test {
      * The composer is designed to be called by the vault, not directly by users, so direct testing
      * is less meaningful than the full integration test.
      */
-    function testDepositViaComposer() public {
+    function testDepositViaComposer() public pure {
         // Skipping - covered by comprehensive multi-chain test
         // See: IntegrationE2E_MultiChain.sol::testMultiChainOVaultComposerFlow()
-        assertTrue(true, "Covered by multi-chain integration test");
+        // This test is intentionally empty as the functionality is tested in IntegrationE2E_MultiChain.t.sol
     }
 }

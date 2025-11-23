@@ -140,6 +140,8 @@ contract USDXVaultComposerSync is Ownable, ReentrancyGuard, IOVaultComposer {
             shares,             // amount to send
             options             // LayerZero options
         );
+        // Note: After sendTo, the OFT tokens are burned, so composer no longer has them
+        // This is correct - the shares are now represented on the destination chain
         
         emit DepositInitiated(operationId, msg.sender, _params.assets, _params.dstEid, _params.receiver);
         emit DepositCompleted(operationId, msg.sender, shares);
@@ -179,14 +181,21 @@ contract USDXVaultComposerSync is Ownable, ReentrancyGuard, IOVaultComposer {
         uint256 assets = vault.redeem(_params.shares, address(this), address(this));
         
         // Build payload for cross-chain transfer
+        // For asset OFT, we need to check what format it expects
+        // For now, we'll use a simple format: (address receiver, uint256 amount)
+        // Note: If using asset OFT, it should handle the transfer
+        // This composer's lzReceive will handle the asset transfer on destination
+        address receiverAddr = address(uint160(uint256(_params.receiver)));
         bytes memory payload = abi.encode(
             Action.REDEEM,
             operationId,
-            _params.receiver,
+            receiverAddr,
             assets
         );
         
         // Send assets to destination chain
+        // Note: This should go to the composer on destination chain OR asset OFT
+        // For now, we'll send to trusted remote (which should be composer or asset OFT on destination)
         ILayerZeroEndpoint.MessagingParams memory lzParams = ILayerZeroEndpoint.MessagingParams({
             dstEid: _params.dstEid,
             receiver: trustedRemotes[_params.dstEid],
@@ -209,8 +218,8 @@ contract USDXVaultComposerSync is Ownable, ReentrancyGuard, IOVaultComposer {
         uint32 srcEid,
         bytes32 sender,
         bytes calldata payload,
-        address executor,
-        bytes calldata extraData
+        address /* executor */,
+        bytes calldata /* extraData */
     ) external payable {
         // Verify caller is LayerZero endpoint
         if (msg.sender != address(lzEndpoint)) revert Unauthorized();
@@ -219,19 +228,21 @@ contract USDXVaultComposerSync is Ownable, ReentrancyGuard, IOVaultComposer {
         if (trustedRemotes[srcEid] != sender) revert InvalidRemote();
         
         // Decode payload
-        (Action action, bytes32 operationId, bytes32 receiver, uint256 amount) = 
-            abi.decode(payload, (Action, bytes32, bytes32, uint256));
+        // For REDEEM actions, payload format: (Action, bytes32 operationId, address receiver, uint256 amount)
+        (Action action, bytes32 operationId, address receiverAddr, uint256 amount) = 
+            abi.decode(payload, (Action, bytes32, address, uint256));
         
         if (processedOperations[operationId]) revert OperationAlreadyProcessed();
         processedOperations[operationId] = true;
         
         if (action == Action.DEPOSIT) {
-            // Mint share OFT tokens on destination chain
-            // Note: This should be handled by the share OFT contract on destination chain
-            // For now, we emit an event - actual minting happens via share OFT's lzReceive
+            // DEPOSIT actions should not reach composer's lzReceive
+            // They go directly to share OFT on destination chain
+            // This is a safety check - should not happen in normal flow
+            revert("DEPOSIT should not reach composer lzReceive");
         } else if (action == Action.REDEEM) {
             // Transfer assets to receiver on destination chain
-            address receiverAddr = address(uint160(uint256(receiver)));
+            if (receiverAddr == address(0)) revert ZeroAddress();
             if (!assetOFT.transfer(receiverAddr, amount)) {
                 revert TransferFailed();
             }
