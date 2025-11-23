@@ -529,49 +529,57 @@ export default function Home() {
                 : 'Connect your wallet to see balances, deposit USDC, and withdraw'}
             </p>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* 1. Balances at the top */}
           <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
+            className="mb-8"
           >
             <BalanceCard key={refreshKey} address={address} />
           </motion.div>
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.6 }}
-            className="space-y-6"
-          >
-            <DepositFlow signer={signer} onSuccess={handleSuccess} />
-            <WithdrawFlow signer={signer} onSuccess={handleSuccess} />
-          </motion.div>
-          </div>
-          
-          {/* Spoke Mint Section - Mint USDX on spoke chains */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-            className="mt-8"
-          >
-            <SpokeMintFlow 
-              signer={signer}
-              userAddress={address} 
-              onSuccess={handleSuccess} 
-            />
-          </motion.div>
 
-          {/* Bridge Kit Section - Prominently displayed for cross-chain USDC transfers */}
+          {/* 2. Bridge USDC via Bridge Kit */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="mt-8"
+            transition={{ delay: 0.6 }}
+            className="mb-8"
           >
             <BridgeKitFlow 
               userAddress={address} 
               currentChainId={chainId} 
+              onSuccess={handleSuccess} 
+            />
+          </motion.div>
+
+          {/* 3. Deposit and Withdraw USDC boxes in line */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.7 }}
+            >
+              <DepositFlow signer={signer} onSuccess={handleSuccess} />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.8 }}
+            >
+              <WithdrawFlow signer={signer} onSuccess={handleSuccess} />
+            </motion.div>
+          </div>
+          
+          {/* 4. Mint USDX on SpokeChain */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9 }}
+          >
+            <SpokeMintFlow 
+              signer={signer}
+              userAddress={address} 
               onSuccess={handleSuccess} 
             />
           </motion.div>
