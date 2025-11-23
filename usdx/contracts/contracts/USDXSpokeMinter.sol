@@ -194,6 +194,7 @@ contract USDXSpokeMinter is AccessControl, Pausable, ReentrancyGuard {
      * @notice Burns USDX on spoke chain
      * @param amount Amount of USDX to burn
      * @dev Reduces user's minted balance, allowing them to mint more if desired
+     *      For Arc chain: Restores verified position when burning (frees up minting capacity)
      */
     function burn(uint256 amount) external nonReentrant whenNotPaused {
         if (amount == 0) revert ZeroAmount();
@@ -202,6 +203,12 @@ contract USDXSpokeMinter is AccessControl, Pausable, ReentrancyGuard {
         // Update tracking
         mintedPerUser[msg.sender] -= amount;
         totalMinted -= amount;
+        
+        // For Arc chain: Restore verified position when burning
+        // This allows users to mint again up to their verified position
+        if (address(shareOFT) == address(0)) {
+            verifiedHubPositions[msg.sender] += amount;
+        }
         
         // Burn USDX
         usdxToken.burnFrom(msg.sender, amount);

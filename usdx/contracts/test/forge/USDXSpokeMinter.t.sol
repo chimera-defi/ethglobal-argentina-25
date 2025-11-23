@@ -464,4 +464,32 @@ contract USDXSpokeMinterArcTest is Test {
         // On Arc chain, getUserOVaultShares should return 0
         assertEq(minter.getUserOVaultShares(user1), 0);
     }
+    
+    function testArcBurnRestoresPosition() public {
+        uint256 verifiedPosition = 1000 * 10**6;
+        uint256 mintAmount = 500 * 10**6;
+        uint256 burnAmount = 300 * 10**6;
+        
+        // Oracle updates verified hub position
+        vm.prank(oracle);
+        minter.updateHubPosition(user1, verifiedPosition);
+        
+        // User mints USDX
+        vm.prank(user1);
+        minter.mint(mintAmount);
+        
+        // Verify position decreased
+        assertEq(minter.getVerifiedHubPosition(user1), verifiedPosition - mintAmount);
+        assertEq(minter.getAvailableMintAmount(user1), verifiedPosition - mintAmount);
+        
+        // User burns some USDX
+        vm.prank(user1);
+        usdx.approve(address(minter), burnAmount);
+        minter.burn(burnAmount);
+        
+        // Verify position restored
+        assertEq(minter.getVerifiedHubPosition(user1), verifiedPosition - mintAmount + burnAmount);
+        assertEq(minter.getAvailableMintAmount(user1), verifiedPosition - mintAmount + burnAmount);
+        assertEq(minter.getMintedAmount(user1), mintAmount - burnAmount);
+    }
 }
