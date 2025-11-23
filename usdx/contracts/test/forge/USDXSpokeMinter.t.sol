@@ -475,8 +475,9 @@ contract USDXSpokeMinterArcTest is Test {
         minter.updateHubPosition(user1, verifiedPosition);
         
         // User mints USDX
-        vm.prank(user1);
+        vm.startPrank(user1);
         minter.mint(mintAmount);
+        vm.stopPrank();
         
         // Verify mint succeeded
         assertEq(usdx.balanceOf(user1), mintAmount, "User should have USDX tokens");
@@ -485,9 +486,10 @@ contract USDXSpokeMinterArcTest is Test {
         assertEq(minter.getAvailableMintAmount(user1), verifiedPosition - mintAmount, "Available should decrease");
         
         // User burns some USDX
-        vm.prank(user1);
+        vm.startPrank(user1);
         usdx.approve(address(minter), burnAmount);
         minter.burn(burnAmount);
+        vm.stopPrank();
         
         // Verify position restored
         assertEq(minter.getVerifiedHubPosition(user1), verifiedPosition - mintAmount + burnAmount, "Position should be restored");
