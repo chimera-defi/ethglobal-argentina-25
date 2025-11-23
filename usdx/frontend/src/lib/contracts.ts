@@ -1,14 +1,31 @@
 import { ethers } from 'ethers';
-import { CONTRACTS } from '@/config/contracts';
+import { CONTRACTS, getUSDCAddressForChain } from '@/config/contracts';
 import USDXVaultABI from '@/abis/USDXVault.json';
 import USDXTokenABI from '@/abis/USDXToken.json';
 import USDXSpokeMinterABI from '@/abis/USDXSpokeMinter.json';
 import MockUSDCABI from '@/abis/MockUSDC.json';
 
-// Get USDC contract instance
-export function getUSDCContract(signerOrProvider: ethers.Signer | ethers.Provider): ethers.Contract {
+/**
+ * Get USDC contract instance for a specific chain
+ * @param signerOrProvider - Ethers signer or provider
+ * @param chainId - Optional chain ID. If provided, uses chain-specific USDC address. If not, uses default mock USDC.
+ * @returns USDC contract instance
+ */
+export function getUSDCContract(
+  signerOrProvider: ethers.Signer | ethers.Provider, 
+  chainId?: number
+): ethers.Contract {
+  let usdcAddress: string = CONTRACTS.MOCK_USDC; // Default fallback
+  
+  if (chainId) {
+    const chainUSDCAddress = getUSDCAddressForChain(chainId);
+    if (chainUSDCAddress) {
+      usdcAddress = chainUSDCAddress;
+    }
+  }
+  
   return new ethers.Contract(
-    CONTRACTS.MOCK_USDC,
+    usdcAddress,
     MockUSDCABI as any,
     signerOrProvider
   );

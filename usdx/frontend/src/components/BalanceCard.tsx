@@ -9,11 +9,11 @@ interface BalanceCardProps {
   address: string | null;
 }
 
-const balanceItems = [
+const getBalanceItems = (chainName: string) => [
   {
     key: 'usdc',
     label: 'USDC',
-    description: 'USDC balance on this chain',
+    description: `USDC balance on ${chainName}`,
     icon: Coins,
     bgGradient: 'from-blue-500 to-cyan-500',
     bgLight: 'bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20',
@@ -47,6 +47,8 @@ const balanceItems = [
 
 export function BalanceCard({ address }: BalanceCardProps) {
   const { usdcBalance, hubUsdxBalance, spokeUsdxBalance, isLoading, currentChainName, chainId } = useBalances(address);
+  
+  const balanceItems = getBalanceItems(currentChainName);
 
   const getBalance = (key: string): bigint => {
     switch (key) {

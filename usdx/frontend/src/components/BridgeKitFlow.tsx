@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useBridgeKit, TransferStatus } from '@/hooks/useBridgeKit';
-import { parseAmount, CONTRACTS } from '@/config/contracts';
+import { useBalances } from '@/hooks/useBalances';
+import { parseAmount, formatAmount, CONTRACTS } from '@/config/contracts';
 import { CHAINS, SPOKE_CHAINS, isSpokeChain, isHubChain, isMainnetChain, isTestnetChain } from '@/config/chains';
 import { motion } from 'framer-motion';
-import { Network, Loader2, Info, ArrowRightLeft, AlertTriangle } from 'lucide-react';
+import { Network, Loader2, Info, ArrowRightLeft, AlertTriangle, Wallet } from 'lucide-react';
 
 interface BridgeKitFlowProps {
   userAddress: string | null;
@@ -20,6 +21,7 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
   const [isBridging, setIsBridging] = useState(false);
   
   const { bridgeUSDC, transferStatus, error, reset } = useBridgeKit();
+  const { usdcBalance } = useBalances(userAddress);
 
   // Set default chains based on current chain
   useEffect(() => {
@@ -90,6 +92,14 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
   // Check if bridging from mainnet to testnet (risky operation)
   const isMainnetToTestnet = sourceChainId && destinationChainId && 
     isMainnetChain(sourceChainId) && isTestnetChain(destinationChainId);
+
+  // Handle Max button click - use USDC balance from current chain
+  const handleMaxClick = () => {
+    if (usdcBalance) {
+      const maxAmount = formatAmount(usdcBalance, 6);
+      setAmount(maxAmount);
+    }
+  };
 
   if (!userAddress) {
     return (
@@ -177,17 +187,33 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
 
         {/* Amount Input */}
         <div>
-          <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">Amount (USDC)</label>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            placeholder="0.00"
-            className="input w-full"
-            disabled={isBridging || !sourceChainId || !destinationChainId}
-            step="0.000001"
-            min="0"
-          />
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300">Amount (USDC)</label>
+            <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+              <Wallet className="h-3 w-3" />
+              <span>Balance: {formatAmount(usdcBalance, 6)} USDC</span>
+            </div>
+          </div>
+          <div className="relative">
+            <input
+              type="number"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              placeholder="0.00"
+              className="input w-full pr-20"
+              disabled={isBridging || !sourceChainId || !destinationChainId}
+              step="0.000001"
+              min="0"
+            />
+            <button
+              type="button"
+              onClick={handleMaxClick}
+              disabled={isBridging || !sourceChainId || !destinationChainId || usdcBalance === BigInt(0)}
+              className="absolute right-2 top-1/2 -translate-y-1/2 px-3 py-1 text-xs font-semibold bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg hover:from-blue-600 hover:to-purple-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            >
+              MAX
+            </button>
+          </div>
         </div>
 
         {/* Bridge Button */}
