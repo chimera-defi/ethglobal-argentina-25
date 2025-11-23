@@ -3,9 +3,9 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
 import { getUSDCContract, getHubVaultContract, waitForTransaction } from '@/lib/contracts';
-import { parseAmount, CONTRACTS } from '@/config/contracts';
+import { parseAmount, formatAmount, CONTRACTS } from '@/config/contracts';
 import { useToast } from '@/hooks/useToast';
-import { ArrowDownCircle, Loader2, Info, Coins } from 'lucide-react';
+import { ArrowDownCircle, Loader2, CheckCircle2, Info, Coins } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface DepositFlowProps {

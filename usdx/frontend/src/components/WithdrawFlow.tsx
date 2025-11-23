@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
 import { getHubUSDXContract, getHubVaultContract, waitForTransaction } from '@/lib/contracts';
-import { parseAmount, CONTRACTS } from '@/config/contracts';
+import { parseAmount, formatAmount, CONTRACTS } from '@/config/contracts';
 import { useToast } from '@/hooks/useToast';
 import { ArrowUpCircle, Loader2, Info, CircleDollarSign, Flame } from 'lucide-react';
 import { motion } from 'framer-motion';

@@ -18,15 +18,7 @@ import {
   ArrowRight,
   Moon,
   Sun,
-  AlertCircle,
-  Lock,
-  Repeat,
-  Wallet,
-  ChevronRight,
-  CheckCircle2,
-  Layers,
-  CircleDollarSign,
-  Sparkles
+  AlertCircle
 } from 'lucide-react';
 
 export default function Home() {
@@ -56,79 +48,28 @@ export default function Home() {
 
   const stats = [
     {
-      icon: TrendingUp,
-      label: 'APY',
-      value: '4.2%',
-      description: 'Current Yield Rate',
-      gradient: 'from-emerald-500 via-green-500 to-teal-500',
-      textColor: 'text-emerald-600 dark:text-emerald-400',
-      bgLight: 'bg-emerald-50 dark:bg-emerald-900/10',
-    },
-    {
-      icon: CircleDollarSign,
-      label: 'TVL',
-      value: '$12.4M',
-      description: 'Total Value Locked',
-      gradient: 'from-blue-500 via-cyan-500 to-sky-500',
-      textColor: 'text-blue-600 dark:text-blue-400',
-      bgLight: 'bg-blue-50 dark:bg-blue-900/10',
-    },
-    {
       icon: Shield,
-      label: 'Collateral',
-      value: '100%',
+      label: 'Collateral Ratio',
+      value: '1:1',
       description: 'Fully backed by USDC',
-      gradient: 'from-purple-500 via-violet-500 to-fuchsia-500',
-      textColor: 'text-purple-600 dark:text-purple-400',
-      bgLight: 'bg-purple-50 dark:bg-purple-900/10',
-    },
-    {
-      icon: Network,
-      label: 'Chains',
-      value: '2+',
-      description: 'Multi-chain Support',
-      gradient: 'from-orange-500 via-amber-500 to-yellow-500',
-      textColor: 'text-orange-600 dark:text-orange-400',
-      bgLight: 'bg-orange-50 dark:bg-orange-900/10',
-    },
-  ];
-
-  const features = [
-    {
-      icon: Shield,
-      title: '1:1 USDC Backing',
-      description: 'Every USDX is fully backed by USDC deposited into audited smart contracts.',
       gradient: 'from-blue-500 to-cyan-500',
+      textColor: 'text-blue-600 dark:text-blue-400',
     },
     {
       icon: TrendingUp,
-      title: 'Automatic Yield',
-      description: 'Earn yield automatically through Yearn Finance\'s battle-tested vaults.',
-      gradient: 'from-emerald-500 to-green-500',
+      label: 'Yield Source',
+      value: 'Yearn',
+      description: 'V3 USDC Vault',
+      gradient: 'from-purple-500 to-pink-500',
+      textColor: 'text-purple-600 dark:text-purple-400',
     },
     {
       icon: Network,
-      title: 'Cross-Chain',
-      description: 'Use USDX across multiple chains with LayerZero OFT technology.',
-      gradient: 'from-purple-500 to-pink-500',
-    },
-    {
-      icon: Lock,
-      title: 'Non-Custodial',
-      description: 'You maintain full control of your assets through smart contracts.',
-      gradient: 'from-orange-500 to-amber-500',
-    },
-    {
-      icon: Zap,
-      title: 'Instant Minting',
-      description: 'Mint and redeem USDX instantly with no delays or waiting periods.',
-      gradient: 'from-rose-500 to-red-500',
-    },
-    {
-      icon: Sparkles,
-      title: 'Transparent',
-      description: 'All transactions and yields are fully transparent and auditable on-chain.',
-      gradient: 'from-indigo-500 to-blue-500',
+      label: 'Chains Supported',
+      value: '2+',
+      description: 'Ethereum + Polygon',
+      gradient: 'from-green-500 to-emerald-500',
+      textColor: 'text-green-600 dark:text-green-400',
     },
   ];
 
@@ -163,10 +104,9 @@ export default function Home() {
     <main className="min-h-screen relative overflow-hidden">
       {/* Animated background gradient */}
       <div className="fixed inset-0 -z-10">
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-gray-950 dark:via-blue-950/40 dark:to-purple-950/40" />
-        <div className="absolute top-0 left-1/3 w-[500px] h-[500px] bg-blue-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }} />
-        <div className="absolute bottom-0 right-1/3 w-[500px] h-[500px] bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s', animationDelay: '2s' }} />
-        <div className="absolute top-1/2 left-1/2 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '5s', animationDelay: '1s' }} />
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-blue-900/20 dark:to-purple-900/20" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '3s' }} />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-400/20 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '3s', animationDelay: '1s' }} />
       </div>
 
       {/* Header */}
@@ -250,12 +190,12 @@ export default function Home() {
           </motion.div>
         </motion.div>
 
-        {/* Stats Grid */}
+        {/* Stats */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-20"
+          className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16"
         >
           {stats.map((stat, index) => {
             const Icon = stat.icon;
@@ -265,230 +205,24 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + index * 0.1 }}
-                whileHover={{ scale: 1.03, y: -4 }}
-                className={`relative overflow-hidden rounded-2xl p-6 border-2 ${stat.bgLight} border-gray-200/50 dark:border-gray-700/50 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300`}
+                whileHover={{ scale: 1.05, y: -5 }}
+                className="card text-center p-6 hover:scale-105 transition-transform duration-300"
               >
-                <div className="relative z-10">
-                  <div className={`inline-flex p-3 bg-gradient-to-br ${stat.gradient} rounded-xl mb-3 shadow-md`}>
-                    <Icon className="h-5 w-5 text-white" />
-                  </div>
-                  <p className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1">
-                    {stat.label}
-                  </p>
-                  <p className={`text-3xl font-black ${stat.textColor} mb-1`}>
-                    {stat.value}
-                  </p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">
-                    {stat.description}
-                  </p>
+                <div className={`inline-flex p-3 bg-gradient-to-br ${stat.gradient} rounded-xl mb-4 shadow-lg`}>
+                  <Icon className="h-6 w-6 text-white" />
                 </div>
-                {/* Decorative gradient overlay */}
-                <div className={`absolute -right-8 -bottom-8 w-32 h-32 bg-gradient-to-br ${stat.gradient} opacity-5 rounded-full`} />
+                <p className="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">{stat.label}</p>
+                <p className={`text-4xl font-bold ${stat.textColor} mb-1`}>
+                  {stat.value}
+                </p>
+                <p className="text-xs text-gray-500 dark:text-gray-400">{stat.description}</p>
               </motion.div>
             );
           })}
         </motion.div>
 
-        {/* Protocol Flow Diagram */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mb-20"
-        >
-          <div className="text-center mb-12">
-            <motion.h2
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="text-4xl font-black mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
-            >
-              How USDX Works
-            </motion.h2>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
-              className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
-            >
-              A visual guide to the USDX protocol flow
-            </motion.p>
-          </div>
-
-          <div className="card max-w-6xl mx-auto p-8 md:p-12">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              {/* Step 1: Deposit */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.6 }}
-                className="relative"
-              >
-                <div className="relative z-10">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center shadow-xl">
-                    <Wallet className="h-8 w-8 text-white" />
-                  </div>
-                  <div className="text-center mb-3">
-                    <div className="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-2">
-                      <span className="text-xs font-bold text-blue-700 dark:text-blue-300">STEP 1</span>
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Deposit USDC</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Users deposit USDC into the USDX Vault contract
-                    </p>
-                  </div>
-                </div>
-                {/* Arrow */}
-                <div className="hidden md:block absolute top-8 -right-3 z-0">
-                  <ChevronRight className="h-6 w-6 text-gray-300 dark:text-gray-600" />
-                </div>
-              </motion.div>
-
-              {/* Step 2: Yearn Deposit */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.7 }}
-                className="relative"
-              >
-                <div className="relative z-10">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-emerald-500 to-green-500 rounded-2xl flex items-center justify-center shadow-xl">
-                    <TrendingUp className="h-8 w-8 text-white" />
-                  </div>
-                  <div className="text-center mb-3">
-                    <div className="inline-block px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 rounded-full mb-2">
-                      <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300">STEP 2</span>
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Earn Yield</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Vault deposits USDC into Yearn Finance to generate yield
-                    </p>
-                  </div>
-                </div>
-                {/* Arrow */}
-                <div className="hidden md:block absolute top-8 -right-3 z-0">
-                  <ChevronRight className="h-6 w-6 text-gray-300 dark:text-gray-600" />
-                </div>
-              </motion.div>
-
-              {/* Step 3: Mint USDX */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.8 }}
-                className="relative"
-              >
-                <div className="relative z-10">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center shadow-xl">
-                    <Coins className="h-8 w-8 text-white" />
-                  </div>
-                  <div className="text-center mb-3">
-                    <div className="inline-block px-3 py-1 bg-purple-100 dark:bg-purple-900/30 rounded-full mb-2">
-                      <span className="text-xs font-bold text-purple-700 dark:text-purple-300">STEP 3</span>
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Mint USDX</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Receive USDX tokens 1:1 with your deposited USDC
-                    </p>
-                  </div>
-                </div>
-                {/* Arrow */}
-                <div className="hidden md:block absolute top-8 -right-3 z-0">
-                  <ChevronRight className="h-6 w-6 text-gray-300 dark:text-gray-600" />
-                </div>
-              </motion.div>
-
-              {/* Step 4: Use Cross-Chain */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.9 }}
-                className="relative"
-              >
-                <div className="relative z-10">
-                  <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-orange-500 to-amber-500 rounded-2xl flex items-center justify-center shadow-xl">
-                    <Network className="h-8 w-8 text-white" />
-                  </div>
-                  <div className="text-center mb-3">
-                    <div className="inline-block px-3 py-1 bg-orange-100 dark:bg-orange-900/30 rounded-full mb-2">
-                      <span className="text-xs font-bold text-orange-700 dark:text-orange-300">STEP 4</span>
-                    </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Cross-Chain</h3>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Bridge and use USDX across multiple blockchain networks
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* Additional info */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.0 }}
-              className="mt-8 p-6 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 dark:from-blue-900/10 dark:via-purple-900/10 dark:to-pink-900/10 rounded-xl border-2 border-blue-200/50 dark:border-blue-800/50"
-            >
-              <div className="flex items-start gap-3">
-                <Sparkles className="h-6 w-6 text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" />
-                <div>
-                  <h4 className="font-bold text-gray-900 dark:text-white mb-2">The Complete Cycle</h4>
-                  <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                    Your USDC remains securely locked in Yearn vaults earning yield continuously. 
-                    USDX represents your share of the vault, which increases in value over time as yield accrues. 
-                    You can redeem USDX for USDC (plus earned yield) at any time, or use it across multiple chains via LayerZero OFT.
-                  </p>
-                </div>
-              </div>
-            </motion.div>
-          </div>
-        </motion.div>
-
-        {/* Features Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mb-20"
-        >
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-black mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-              Why Choose USDX?
-            </h2>
-            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Built with security, transparency, and user experience in mind
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feature, index) => {
-              const Icon = feature.icon;
-              return (
-                <motion.div
-                  key={feature.title}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 + index * 0.1 }}
-                  whileHover={{ scale: 1.03, y: -5 }}
-                  className="card group"
-                >
-                  <div className={`inline-flex p-4 bg-gradient-to-br ${feature.gradient} rounded-xl mb-4 shadow-lg group-hover:shadow-xl transition-shadow duration-300`}>
-                    <Icon className="h-6 w-6 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">
-                    {feature.title}
-                  </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
-                    {feature.description}
-                  </p>
-                </motion.div>
-              );
-            })}
-          </div>
-        </motion.div>
-
         {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -507,50 +241,40 @@ export default function Home() {
           </motion.div>
         </div>
 
-        {/* Quick Start Guide */}
+        {/* Getting Started Section */}
         {!isConnected && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="mb-20"
+            className="card max-w-5xl mx-auto mb-8"
           >
-            <div className="text-center mb-12">
-              <h2 className="text-4xl font-black mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Get Started in 4 Steps
-              </h2>
-              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-                Connect your wallet and start earning yield in minutes
-              </p>
-            </div>
-
-            <div className="max-w-5xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <h3 className="text-3xl font-bold mb-8 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent text-center">Getting Started</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {steps.map((step, index) => {
                 const Icon = step.icon;
                 return (
                   <motion.div
                     key={step.number}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.8 + index * 0.1 }}
-                    whileHover={{ y: -5 }}
-                    className="relative group"
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.7 + index * 0.1 }}
+                    whileHover={{ scale: 1.02 }}
+                    className="p-6 rounded-xl bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-800 dark:to-blue-900/20 border border-gray-200 dark:border-gray-700"
                   >
-                    <div className="card p-6 h-full flex flex-col items-center text-center">
-                      <div className="relative mb-4">
-                        <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
-                          <span className="text-white font-black text-xl">{step.number}</span>
-                        </div>
-                        <div className="absolute -top-2 -right-2 w-6 h-6 bg-gradient-to-br from-emerald-500 to-green-500 rounded-full flex items-center justify-center shadow-md">
-                          <Icon className="h-3 w-3 text-white" />
-                        </div>
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-md">
+                        <span className="text-white font-bold text-lg">{step.number}</span>
                       </div>
-                      <h4 className="font-bold text-base text-gray-900 dark:text-white mb-2">
-                        {step.title}
-                      </h4>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 leading-relaxed">
-                        {step.description}
-                      </p>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-bold text-lg text-gray-900 dark:text-gray-100">{step.title}</h4>
+                          <Icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                        </div>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+                          {step.description}
+                        </p>
+                      </div>
                     </div>
                   </motion.div>
                 );
@@ -559,52 +283,37 @@ export default function Home() {
           </motion.div>
         )}
 
-        {/* Developer Info */}
+        {/* Warning for Local Network */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.9 }}
-          className="max-w-4xl mx-auto"
+          transition={{ delay: 0.8 }}
+          className="card max-w-5xl mx-auto bg-gradient-to-br from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border-yellow-200 dark:border-yellow-800"
         >
-          <div className="card bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 dark:from-amber-900/10 dark:via-yellow-900/10 dark:to-orange-900/10 border-2 border-amber-200/50 dark:border-amber-800/50">
-            <div className="flex items-start gap-4">
-              <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
-                  <AlertCircle className="h-6 w-6 text-white" />
-                </div>
-              </div>
-              <div className="flex-1">
-                <h4 className="font-black text-lg mb-2 text-amber-900 dark:text-amber-300 flex items-center gap-2">
-                  <Zap className="h-5 w-5" />
-                  Local Development Mode
-                </h4>
-                <p className="text-sm text-amber-800 dark:text-amber-400 mb-4 leading-relaxed">
-                  Currently connected to a forked Ethereum mainnet on{' '}
-                  <code className="bg-amber-100 dark:bg-amber-900/50 px-2 py-1 rounded font-mono font-bold">
-                    localhost:8545
+          <div className="flex items-start gap-4">
+            <AlertCircle className="h-6 w-6 text-yellow-600 dark:text-yellow-400 flex-shrink-0 mt-1" />
+            <div className="flex-1">
+              <h4 className="font-bold mb-2 text-yellow-800 dark:text-yellow-300">⚠️ Local Development Mode</h4>
+              <p className="text-sm text-yellow-700 dark:text-yellow-400 mb-3">
+                This app is connected to a forked Ethereum mainnet running on{' '}
+                <code className="bg-yellow-100 dark:bg-yellow-900/50 px-2 py-1 rounded font-mono text-xs">
+                  localhost:8545
+                </code>
+                . Make sure Anvil is running with the deployed contracts.
+              </p>
+              <div className="mt-3 text-xs text-yellow-600 dark:text-yellow-500 space-y-1 font-mono">
+                <p>
+                  • Start Anvil:{' '}
+                  <code className="bg-yellow-100 dark:bg-yellow-900/50 px-2 py-1 rounded">
+                    anvil --fork-url YOUR_RPC
                   </code>
-                  . Ensure Anvil is running with deployed contracts before interacting.
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div className="flex items-start gap-2 p-3 bg-white/50 dark:bg-gray-900/30 rounded-lg">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-xs font-bold text-gray-900 dark:text-white mb-1">Start Anvil</p>
-                      <code className="text-xs text-gray-700 dark:text-gray-300 font-mono">
-                        anvil --fork-url YOUR_RPC
-                      </code>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-2 p-3 bg-white/50 dark:bg-gray-900/30 rounded-lg">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <p className="text-xs font-bold text-gray-900 dark:text-white mb-1">Deploy Contracts</p>
-                      <code className="text-xs text-gray-700 dark:text-gray-300 font-mono break-all">
-                        forge script DeployForked.s.sol
-                      </code>
-                    </div>
-                  </div>
-                </div>
+                <p>
+                  • Deploy:{' '}
+                  <code className="bg-yellow-100 dark:bg-yellow-900/50 px-2 py-1 rounded">
+                    forge script script/DeployForked.s.sol --broadcast
+                  </code>
+                </p>
               </div>
             </div>
           </div>
@@ -616,55 +325,18 @@ export default function Home() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
-        className="relative border-t border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl mt-24"
+        className="border-t border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl mt-20"
       >
-        <div className="container mx-auto px-4 py-12">
-          <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="flex items-center gap-3 mb-4"
-            >
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                <Coins className="h-6 w-6 text-white" />
-              </div>
-              <div className="text-left">
-                <h3 className="text-xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  USDX Protocol
-                </h3>
-                <p className="text-xs text-gray-600 dark:text-gray-400 font-semibold">
-                  Cross-Chain Yield Stablecoin
-                </p>
-              </div>
-            </motion.div>
-            
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 max-w-xl leading-relaxed">
-              A next-generation stablecoin protocol that combines USDC backing with automatic yield generation 
-              and seamless cross-chain functionality.
+        <div className="container mx-auto px-4 py-8 text-center">
+          <div className="flex items-center justify-center gap-2 mb-2">
+            <Coins className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+            <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              USDX Protocol - Cross-Chain Yield-Bearing Stablecoin
             </p>
-
-            <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-500 dark:text-gray-500">
-              <div className="flex items-center gap-1.5">
-                <Shield className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
-                <span>Yearn Finance</span>
-              </div>
-              <span>•</span>
-              <div className="flex items-center gap-1.5">
-                <Network className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
-                <span>LayerZero OFT</span>
-              </div>
-              <span>•</span>
-              <div className="flex items-center gap-1.5">
-                <Layers className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span>Circle Bridge Kit</span>
-              </div>
-            </div>
-
-            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-800 w-full">
-              <p className="text-xs text-gray-500 dark:text-gray-500">
-                Built with Next.js, ethers.js, and Tailwind CSS
-              </p>
-            </div>
           </div>
+          <p className="text-xs text-gray-500 dark:text-gray-400">
+            Built with ethers.js, Next.js, Tailwind CSS, and Circle Bridge Kit
+          </p>
         </div>
       </motion.footer>
     </main>
