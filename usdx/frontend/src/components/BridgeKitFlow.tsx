@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useBridgeKit, TransferStatus } from '@/hooks/useBridgeKit';
-import { parseAmount, formatAmount, CONTRACTS } from '@/config/contracts';
-import { CHAINS, SPOKE } from '@/config/chains';
+import { parseAmount, CONTRACTS } from '@/config/contracts';
+import { CHAINS, SPOKE_CHAINS, isSpokeChain, isHubChain } from '@/config/chains';
+import { motion } from 'framer-motion';
+import { Network, Loader2, Info, ArrowRightLeft } from 'lucide-react';
 
 interface BridgeKitFlowProps {
   userAddress: string | null;
@@ -22,13 +24,13 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
   // Set default chains based on current chain
   useEffect(() => {
     if (currentChainId) {
-      // If on spoke chain, bridge to hub
-      if (currentChainId === SPOKE.id || currentChainId === CHAINS.SPOKE_BASE.id || currentChainId === CHAINS.SPOKE_POLYGON.id || currentChainId === CHAINS.SPOKE_ARC.id) {
+      if (isSpokeChain(currentChainId)) {
+        // If on spoke chain, bridge to hub
         setSourceChainId(currentChainId);
         setDestinationChainId(CHAINS.HUB.id);
-      } else {
-        // If on hub chain, allow bridging from spoke
-        setSourceChainId(SPOKE.id);
+      } else if (isHubChain(currentChainId)) {
+        // If on hub chain, default to bridging from first spoke chain
+        setSourceChainId(SPOKE_CHAINS[0]?.id || null);
         setDestinationChainId(CHAINS.HUB.id);
       }
     }
@@ -42,6 +44,12 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
 
     try {
       const parsedAmount = parseAmount(amount);
+      
+      if (parsedAmount <= 0) {
+        setIsBridging(false);
+        return;
+      }
+      
       const amountString = parsedAmount.toString();
 
       await bridgeUSDC({
@@ -62,6 +70,7 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
     } catch (err: any) {
       console.error('Bridge failed:', err);
       setIsBridging(false);
+      // Error is already handled by useBridgeKit hook and displayed via error state
     }
   };
 
@@ -80,17 +89,45 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
 
   if (!userAddress) {
     return (
-      <div className="card">
-        <h2 className="text-xl font-bold mb-4">Bridge USDC</h2>
-        <p className="text-gray-500">Connect your wallet to bridge USDC</p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="card"
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl">
+            <Network className="h-6 w-6 text-white" />
+          </div>
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Bridge USDC</h2>
+        </div>
+        <div className="flex flex-col items-center justify-center py-8 text-center">
+          <div className="p-4 bg-gray-100 dark:bg-gray-800 rounded-full mb-4">
+            <Network className="h-8 w-8 text-gray-400" />
+          </div>
+          <p className="text-gray-500 dark:text-gray-400 font-medium">
+            Connect your wallet to bridge USDC
+          </p>
+        </div>
+      </motion.div>
     );
   }
 
   return (
-    <div className="card">
-      <h2 className="text-xl font-bold mb-4">Bridge USDC to Hub Chain</h2>
-      <p className="text-sm text-gray-600 mb-4">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="card"
+    >
+      <div className="flex items-center gap-3 mb-4">
+        <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl shadow-lg">
+          <ArrowRightLeft className="h-6 w-6 text-white" />
+        </div>
+        <div>
+          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Bridge USDC</h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Cross-chain via Circle Bridge Kit (CCTP)</p>
+        </div>
+      </div>
+      <p className="text-sm text-gray-600 dark:text-gray-400 mb-6">
         Bridge USDC from a spoke chain to the hub chain using Circle Bridge Kit (CCTP).
         The bridged USDC will be sent directly to the USDX Vault.
       </p>
@@ -99,34 +136,42 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
         {/* Chain Selection */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium mb-2">From Chain</label>
+            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">From Chain</label>
             <select
               value={sourceChainId || ''}
               onChange={(e) => setSourceChainId(Number(e.target.value))}
               className="input w-full"
               disabled={isBridging}
             >
-              <option value={SPOKE.id}>Spoke Chain (Base Sepolia)</option>
-              <option value={CHAINS.HUB.id}>Hub Chain (Ethereum Sepolia)</option>
+              {SPOKE_CHAINS.map((chain) => (
+                <option key={chain.id} value={chain.id}>
+                  {chain.name}
+                </option>
+              ))}
+              <option value={CHAINS.HUB.id}>{CHAINS.HUB.name}</option>
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">To Chain</label>
+            <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">To Chain</label>
             <select
               value={destinationChainId || ''}
               onChange={(e) => setDestinationChainId(Number(e.target.value))}
               className="input w-full"
               disabled={isBridging}
             >
-              <option value={CHAINS.HUB.id}>Hub Chain (Ethereum Sepolia)</option>
-              <option value={SPOKE.id}>Spoke Chain (Base Sepolia)</option>
+              <option value={CHAINS.HUB.id}>{CHAINS.HUB.name}</option>
+              {SPOKE_CHAINS.map((chain) => (
+                <option key={chain.id} value={chain.id}>
+                  {chain.name}
+                </option>
+              ))}
             </select>
           </div>
         </div>
 
         {/* Amount Input */}
         <div>
-          <label className="block text-sm font-medium mb-2">Amount (USDC)</label>
+          <label className="block text-sm font-semibold mb-2 text-gray-700 dark:text-gray-300">Amount (USDC)</label>
           <input
             type="number"
             value={amount}
@@ -140,7 +185,9 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
         </div>
 
         {/* Bridge Button */}
-        <button
+        <motion.button
+          whileHover={{ scale: isBridging || !amount || !sourceChainId || !destinationChainId || sourceChainId === destinationChainId ? 1 : 1.02 }}
+          whileTap={{ scale: isBridging || !amount || !sourceChainId || !destinationChainId || sourceChainId === destinationChainId ? 1 : 0.98 }}
           onClick={handleBridge}
           disabled={
             !amount ||
@@ -149,53 +196,90 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
             !destinationChainId ||
             sourceChainId === destinationChainId
           }
-          className="btn btn-primary w-full"
+          className="btn bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 hover:shadow-lg shadow-sm w-full text-base py-4"
         >
-          {isBridging && transferStatus !== 'idle' && getStatusMessage(transferStatus)}
-          {!isBridging && 'Bridge USDC'}
-        </button>
+          {isBridging && transferStatus !== 'idle' && (
+            <>
+              <Loader2 className="h-5 w-5 animate-spin" />
+              {getStatusMessage(transferStatus)}
+            </>
+          )}
+          {!isBridging && (
+            <>
+              <ArrowRightLeft className="h-5 w-5" />
+              Bridge USDC
+            </>
+          )}
+        </motion.button>
 
         {/* Status Display */}
         {transferStatus !== 'idle' && (
-          <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="p-5 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-xl border border-blue-200 dark:border-blue-800"
+          >
             <div className="flex items-center gap-2 mb-2">
-              <div className={`w-2 h-2 rounded-full ${
+              <div className={`w-3 h-3 rounded-full ${
                 transferStatus === 'success' ? 'bg-green-500' :
                 transferStatus === 'error' ? 'bg-red-500' :
                 'bg-blue-500 animate-pulse'
               }`}></div>
-              <p className="text-sm font-medium">{getStatusMessage(transferStatus)}</p>
+              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100">{getStatusMessage(transferStatus)}</p>
             </div>
             {transferStatus === 'pending' && (
-              <p className="text-xs text-gray-600 mt-2">
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
                 This may take a few minutes. Please wait...
               </p>
             )}
-          </div>
+          </motion.div>
         )}
 
         {/* Error Display */}
         {error && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
-            <p className="text-sm text-red-600">{error}</p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl"
+          >
+            <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+          </motion.div>
         )}
 
         {/* Info Box */}
-        <div className="p-4 bg-blue-50 rounded-lg">
-          <h3 className="font-medium mb-2">How it works:</h3>
-          <ol className="text-sm text-gray-700 space-y-1 list-decimal list-inside">
-            <li>Bridge USDC from spoke chain to hub chain using Circle CCTP</li>
-            <li>USDC arrives at the USDX Vault on hub chain</li>
-            <li>Deposit the bridged USDC to mint USDX</li>
-            <li>Your position syncs to spoke chains automatically</li>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="p-5 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 rounded-xl border border-purple-200 dark:border-purple-800"
+        >
+          <div className="flex items-start gap-3 mb-3">
+            <Info className="h-5 w-5 text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" />
+            <h3 className="font-semibold text-gray-900 dark:text-gray-100">How it works:</h3>
+          </div>
+          <ol className="text-sm text-gray-700 dark:text-gray-300 space-y-2 ml-8">
+            <li className="flex items-start gap-2">
+              <span className="font-bold text-purple-600 dark:text-purple-400">1.</span>
+              <span>Bridge USDC from spoke chain to hub chain using Circle CCTP</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="font-bold text-purple-600 dark:text-purple-400">2.</span>
+              <span>USDC arrives at the USDX Vault on hub chain</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="font-bold text-purple-600 dark:text-purple-400">3.</span>
+              <span>Deposit the bridged USDC to mint USDX</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="font-bold text-purple-600 dark:text-purple-400">4.</span>
+              <span>Your position syncs to spoke chains automatically</span>
+            </li>
           </ol>
-          <p className="text-xs text-gray-600 mt-2">
+          <p className="text-xs text-gray-600 dark:text-gray-400 mt-3 pt-3 border-t border-purple-200 dark:border-purple-800">
             ⚠️ Note: Bridge Kit integration requires viem/wagmi. For full functionality,
             consider migrating to wagmi hooks or using viem directly.
           </p>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
