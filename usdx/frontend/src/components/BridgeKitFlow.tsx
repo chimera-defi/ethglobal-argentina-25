@@ -149,6 +149,7 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
                 </option>
               ))}
               <option value={CHAINS.HUB.id}>{CHAINS.HUB.name}</option>
+              <option value={CHAINS.ETHEREUM_MAINNET.id}>{CHAINS.ETHEREUM_MAINNET.name}</option>
             </select>
           </div>
           <div>
@@ -160,6 +161,7 @@ export function BridgeKitFlow({ userAddress, currentChainId, onSuccess }: Bridge
               disabled={isBridging}
             >
               <option value={CHAINS.HUB.id}>{CHAINS.HUB.name}</option>
+              <option value={CHAINS.ETHEREUM_MAINNET.id}>{CHAINS.ETHEREUM_MAINNET.name}</option>
               {SPOKE_CHAINS.map((chain) => (
                 <option key={chain.id} value={chain.id}>
                   {chain.name}

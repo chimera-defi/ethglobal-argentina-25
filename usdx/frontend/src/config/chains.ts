@@ -55,6 +55,19 @@ export const CHAINS = {
       blockExplorer: 'http://localhost:8547',
     },
   },
+  ETHEREUM_MAINNET: {
+    id: 1, // Ethereum Mainnet (Bridge Kit supported)
+    name: 'Ethereum Mainnet',
+    rpcUrl: process.env.NEXT_PUBLIC_ETHEREUM_MAINNET_RPC_URL || 'https://eth.llamarpc.com',
+    currency: 'ETH',
+    blockExplorer: 'https://etherscan.io',
+    // Localhost fallback for development
+    localhost: {
+      id: 1,
+      rpcUrl: 'http://localhost:8545',
+      blockExplorer: 'http://localhost:8545',
+    },
+  },
 } as const;
 
 // Legacy support - map old SPOKE to SPOKE_BASE
@@ -93,8 +106,12 @@ export const BRIDGE_KIT_CHAINS = {
     name: 'Arc Testnet',
     rpcUrl: 'https://rpc.testnet.arc.network',
   },
-  // Mainnets (commented for now)
-  // mainnet: { id: 1, name: 'Ethereum Mainnet', rpcUrl: '...' },
+  // Mainnets
+  ethereumMainnet: {
+    id: 1,
+    name: 'Ethereum Mainnet',
+    rpcUrl: process.env.NEXT_PUBLIC_ETHEREUM_MAINNET_RPC_URL || 'https://eth.llamarpc.com',
+  },
   // base: { id: 8453, name: 'Base', rpcUrl: '...' },
   // arbitrum: { id: 42161, name: 'Arbitrum', rpcUrl: '...' },
   // optimism: { id: 10, name: 'Optimism', rpcUrl: '...' },
@@ -114,6 +131,7 @@ export function getChainById(chainId: number): ChainType | null {
   if (chainId === CHAINS.SPOKE_BASE.id) return 'SPOKE_BASE';
   if (chainId === CHAINS.SPOKE_POLYGON.id) return 'SPOKE_POLYGON';
   if (chainId === CHAINS.SPOKE_ARC.id) return 'SPOKE_ARC';
+  if (chainId === CHAINS.ETHEREUM_MAINNET.id) return 'ETHEREUM_MAINNET';
   return null;
 }
 
