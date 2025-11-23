@@ -64,31 +64,25 @@ USDX integrates **Circle Bridge Kit** (built on CCTP) to enable seamless, fee-fr
 - ✅ Implement seamless user flows for USDC bridging - **YES**: Fee-free, seamless bridging flow integrated into USDX frontend
 - ✅ Demonstrate innovative use cases for cross-chain USDC - **YES**: Using bridged USDC to mint yield-bearing stablecoin (USDX) across chains
 
-## Ledger Clear Signing Prize Submission
+#### Ledger Clear Signing Prize
 
-We submitted an implementation for the **Ledger Clear Signing (ERC-7730)** prize at ETHGlobal Buenos Aires 2025.
-
-### Submission Details
+We are targeting the **Ledger Clear Signing (ERC-7730)** prize at ETHGlobal Buenos Aires 2025.
 
 **PR:** [feat: Implement uniswap v4 router across chains (#1977)](https://github.com/LedgerHQ/clear-signing-erc7730-registry/pull/1977)
 
-**Prize Category:** 📝 CLEAR SIGNING (ERC-7730) - $4,000 prize pool ($2,500 for 1st place, $1,500 for 2nd place)
+**Prize Category:** 📝 Ledger Clear Signing (ERC-7730)
 
-### What We Built
+**What We Built:**
 
-We implemented clear signing support for **Uniswap Universal Router** across multiple chains, enabling human-readable transaction signing on Ledger devices. This allows users to see exactly what their transaction will do before signing, improving security and user experience.
+We implemented clear signing support for **Uniswap Universal Router** across multiple chains, enabling human-readable transaction signing on Ledger devices:
 
-**Key Features:**
-- ✅ Added Uniswap Universal Router calldata parsing
-- ✅ Updated Uniswap UniversalRouter ABI and display formats
-- ✅ Corrected Uniswap Universal Router contract addresses across chains
-- ✅ Multi-chain support for Uniswap Universal Router
+- ✅ **Uniswap Universal Router Calldata Parsing** - Added parsing support for Universal Router transactions
+- ✅ **ABI and Display Formats** - Updated Uniswap UniversalRouter ABI and display formats
+- ✅ **Multi-Chain Contract Addresses** - Corrected Uniswap Universal Router contract addresses across chains
+- ✅ **Multi-Chain Support** - Clear signing support for Uniswap Universal Router across multiple chains
+- ✅ **Human-Readable Transactions** - Users can see exactly what their transaction will do before signing
 
-### About the Ledger Prize
-
-The Ledger Clear Signing prize focuses on building **Clear Signing experiences** using ERC-7730 descriptors. Clear signing transforms complex blockchain transactions into human-readable formats, enabling users to understand exactly what they're signing on their Ledger hardware wallets. This is crucial for security and user trust in DeFi applications.
-
-**Prize Requirements:**
-- Build Clear Signing experiences or Device Management Kit integrations
-- Implement ERC-7730 descriptors for human-readable transaction signing
-- Enable users to see transaction details in a clear, understandable format before signing
+**Prize Requirements Checklist:**
+- ✅ Build Clear Signing experiences using ERC-7730 descriptors - **YES**: Implemented ERC-7730 descriptors for Uniswap Universal Router transactions
+- ✅ Implement human-readable transaction signing - **YES**: Clear signing transforms complex transactions into human-readable formats
+- ✅ Enable users to see transaction details before signing - **YES**: Users can see exactly what their transaction will do on Ledger devices
