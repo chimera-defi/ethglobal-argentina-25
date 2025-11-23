@@ -1,36 +1,19 @@
 version: 1
 applications:
-  - appRoot: usdx
+  - appRoot: usdx/frontend
     frontend:
       phases:
         preBuild:
           commands:
-            - npm ci
+            - npm --prefix .. ci
         build:
           commands:
-            - npm run build:frontend
+            - npm --prefix .. run build:frontend
       artifacts:
-        baseDirectory: frontend/.next
+        baseDirectory: .next
         files:
           - '**/*'
       cache:
         paths:
-          - node_modules/**/*
-          - frontend/.next/cache/**/*
-    - appRoot: usdx/frontend
-      frontend:
-        phases:
-          preBuild:
-            commands:
-              - npm --prefix .. ci # install from workspace root to honor root package-lock
-          build:
-            commands:
-              - npm --prefix .. run build:frontend
-        artifacts:
-          baseDirectory: .next
-          files:
-            - '**/*'
-        cache:
-          paths:
-            - ../node_modules/**/*
-            - .next/cache/**/*
+          - ../node_modules/**/*
+          - .next/cache/**/*
