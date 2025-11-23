@@ -6,6 +6,7 @@ import { BalanceCard } from '@/components/BalanceCard';
 import { DepositFlow } from '@/components/DepositFlow';
 import { WithdrawFlow } from '@/components/WithdrawFlow';
 import { BridgeKitFlow } from '@/components/BridgeKitFlow';
+import { SpokeMintFlow } from '@/components/SpokeMintFlow';
 import { ToastContainer } from '@/components/Toast';
 import { useToast } from '@/hooks/useToast';
 import { useState, useEffect } from 'react';
@@ -547,11 +548,25 @@ export default function Home() {
           </motion.div>
           </div>
           
-          {/* Bridge Kit Section - Prominently displayed for cross-chain USDC transfers */}
+          {/* Spoke Mint Section - Mint USDX on spoke chains */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
+            className="mt-8"
+          >
+            <SpokeMintFlow 
+              signer={signer}
+              userAddress={address} 
+              onSuccess={handleSuccess} 
+            />
+          </motion.div>
+
+          {/* Bridge Kit Section - Prominently displayed for cross-chain USDC transfers */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
             className="mt-8"
           >
             <BridgeKitFlow 
