@@ -1,22 +1,24 @@
 version: 1
-frontend:
-  phases:
-    preBuild:
-      commands:
-        - cd usdx/frontend && npm ci
-    build:
-      commands:
-        - cd usdx/frontend && npm run build
-  artifacts:
-    baseDirectory: usdx/frontend
-    files:
-      - '.next/**/*'
-      - 'node_modules/**/*'
-      - 'package.json'
-      - 'package-lock.json'
-      - 'next.config.js'
-      - 'public/**/*'
-  cache:
-    paths:
-      - usdx/frontend/node_modules/**/*
-      - usdx/frontend/.next/cache/**/*
+applications:
+  - appRoot: usdx
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm install
+        build:
+          commands:
+            - cd frontend && npm run build
+      artifacts:
+        baseDirectory: frontend
+        files:
+          - '.next/**/*'
+          - '../node_modules/**/*'
+          - 'package.json'
+          - 'package-lock.json'
+          - 'next.config.js'
+          - 'public/**/*'
+      cache:
+        paths:
+          - 'node_modules/**/*'
+          - 'frontend/.next/cache/**/*'
