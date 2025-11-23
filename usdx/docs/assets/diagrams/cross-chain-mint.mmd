@@ -1,0 +1,12 @@
+flowchart LR
+    subgraph "Chain B (Source - Ethereum)"
+        yearn["Yearn USDC Vault\nYield accrues"]
+    end
+
+    subgraph "Chain A (User wants USDX)"
+        user["User"] --> position["Holds OVault/Yield Routes position"]
+        position --> request["2. mintUSDXFromOVault(shares, sourceChain)"]
+        request --> verify["OVault verifies source position"]
+        verify --> mint["USDXToken mints USDX"]
+        mint --> receive["User receives USDX"]
+    end

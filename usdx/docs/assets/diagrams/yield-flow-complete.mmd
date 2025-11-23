@@ -1,0 +1,11 @@
+flowchart TB
+    spokeA["Spoke Chain A"] --> bridge["1. Bridge USDC to Hub via Bridge Kit"]
+    bridge --> hubArrival["2. USDC arrives on Hub (Ethereum)"]
+    hubArrival --> deposit["3. depositUSDC(amount) into USDXVault"]
+    deposit --> ovault["4. OVault / Yield Routes"]
+    ovault --> yearn["5. Yearn USDC Vault\nYield accrues"]
+    yearn --> position["6. User holds OVault position"]
+    position --> mint["7. User mints USDX on Spoke Chain B"]
+    mint --> minter["USDXSpokeMinter verifies hub position"]
+    minter --> usdxtoken["USDXToken (Spoke B)"]
+    usdxtoken --> userB["User receives USDX on Spoke B"]

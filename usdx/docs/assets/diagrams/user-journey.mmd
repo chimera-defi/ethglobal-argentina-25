@@ -1,0 +1,6 @@
+flowchart TB
+    step1["Step 1: Bridge USDC (Spoke → Hub)"] --> step2["Step 2: Deposit into USDXVault (Hub)"]
+    step2 --> step3["Step 3: Mint USDX on Spoke Chain"]
+    step3 --> step4["Step 4: Use USDX on Spoke"]
+    step4 --> step5["Step 5: Cross-chain USDX transfer"]
+    step5 --> step6["Step 6: Redeem & bridge back USDC"]

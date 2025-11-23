@@ -1,0 +1,9 @@
+flowchart TB
+    user["User Request"] --> router["CrossChainBridge determines route"]
+    router --> lz["LayerZero (Primary)"]
+    router --> hyperlane["Hyperlane (Secondary)"]
+    router --> fallback["Fallback Logic"]
+    lz --> race["First successful message"]
+    hyperlane --> race
+    fallback --> race
+    race --> dest["Destination Chain"]

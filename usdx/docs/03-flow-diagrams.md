@@ -1,5 +1,21 @@
 # USDX Flow Diagrams
 
+## Downloadable Diagram Assets
+
+High-resolution SVG exports for every diagram in this document (plus the main USDX architecture view from the README) now live in `docs/assets/diagrams/`:
+
+- [LayerZero Architecture](./assets/diagrams/layerzero-architecture.svg)
+- [Hub-and-Spoke Deposit Flow](./assets/diagrams/deposit-flow-spoke-to-hub.svg)
+- [Hub-to-Spoke Mint Flow](./assets/diagrams/mint-flow-hub-to-spoke.svg)
+- [Cross-Chain Transfer (LayerZero)](./assets/diagrams/cross-chain-transfer-layerzero.svg)
+- [Cross-Chain Transfer (Hyperlane)](./assets/diagrams/cross-chain-transfer-hyperlane.svg)
+- [Bridge Kit Flow – Frontend](./assets/diagrams/bridge-kit-frontend.svg)
+- [Bridge Kit Flow – Backend](./assets/diagrams/bridge-kit-backend.svg)
+- [Complete Yield Flow](./assets/diagrams/yield-flow-complete.svg)
+- [Cross-Chain Mint Flow](./assets/diagrams/cross-chain-mint.svg)
+- [Dual Bridge Strategy](./assets/diagrams/dual-bridge-strategy.svg)
+- [End-to-End User Journey](./assets/diagrams/user-journey.svg)
+
 ## 1. Hub-and-Spoke Deposit Flow
 
 ### Spoke Chain → Hub Chain (USDC Deposit)

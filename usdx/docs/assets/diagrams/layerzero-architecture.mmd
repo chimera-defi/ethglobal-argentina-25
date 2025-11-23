@@ -1,0 +1,37 @@
+flowchart TB
+    subgraph "Hub Chain (Ethereum)"
+        subgraph "Collateral & Yield Generation"
+            user["User USDC"] --> vault["USDXVault"]
+            vault --> wrapper["USDXYearnVaultWrapper\n(ERC-4626)"]
+            wrapper --> yearn["Yearn USDC Vault"]
+            yearn --> yield["Yield Accrues Automatically"]
+        end
+
+        subgraph "LayerZero OVault Components"
+            adapter["USDXShareOFTAdapter\n(Lockbox Model)"] --> composer["USDXVaultComposerSync\n(Cross-Chain Orchestrator)"]
+            composer --> tokenHub["USDXToken (OFT)"]
+        end
+    end
+
+    vault -. locks shares .-> adapter
+    adapter --> lz["LayerZero Messages"]
+
+    subgraph "Spoke Chains"
+        direction TB
+        subgraph "Polygon"
+            sharePoly["USDXShareOFT"] --> minterPoly["USDXSpokeMinter"] --> tokenPoly["USDXToken"]
+        end
+        subgraph "Arbitrum"
+            shareArb["USDXShareOFT"] --> minterArb["USDXSpokeMinter"] --> tokenArb["USDXToken"]
+        end
+        subgraph "Optimism"
+            shareOpt["USDXShareOFT"] --> minterOpt["USDXSpokeMinter"] --> tokenOpt["USDXToken"]
+        end
+    end
+
+    lz --> sharePoly
+    lz --> shareArb
+    lz --> shareOpt
+    tokenPoly --> userPoly["Users Mint USDX on Polygon"]
+    tokenArb --> userArb["Users Mint USDX on Arbitrum"]
+    tokenOpt --> userOpt["Users Mint USDX on Optimism"]
