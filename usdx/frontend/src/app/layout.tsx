@@ -5,8 +5,8 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'USDX Protocol',
-  description: 'Cross-chain yield-bearing stablecoin backed 1:1 by USDC',
+  title: 'USDX Protocol - Omnichain Vault-Backed Stablecoin',
+  description: 'USDX uses LayerZero OVAULT technology to make yield-bearing vault shares accessible from any blockchain. Earn yield on USDC across all chains.',
 };
 
 export default function RootLayout({

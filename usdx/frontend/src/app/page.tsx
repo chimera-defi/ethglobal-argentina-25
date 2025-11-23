@@ -15,12 +15,10 @@ import {
   Network, 
   Shield, 
   Zap, 
-  ArrowRight,
   Moon,
   Sun,
   AlertCircle,
   Lock,
-  Repeat,
   Wallet,
   ChevronRight,
   CheckCircle2,
@@ -97,7 +95,7 @@ export default function Home() {
     {
       icon: Network,
       title: 'LayerZero OVAULT',
-      description: 'Built on LayerZero\'s Omnichain Vault technology - deposit from any chain, earn yield, and access your shares anywhere.',
+      description: 'Built on LayerZero Omnichain Vault technology - deposit from any chain, earn yield, and access your shares anywhere.',
       gradient: 'from-purple-500 to-pink-500',
     },
     {
@@ -142,7 +140,7 @@ export default function Home() {
     {
       number: 2,
       title: 'Deposit USDC',
-      description: 'Deposit USDC - it\'s bridged to the hub chain via Circle CCTP',
+      description: 'Deposit USDC - automatically bridged to hub chain via Circle CCTP',
       icon: Coins,
     },
     {
@@ -311,7 +309,7 @@ export default function Home() {
                 <div className={`absolute -right-8 -bottom-8 w-32 h-32 bg-gradient-to-br ${stat.gradient} opacity-5 rounded-full`} />
               </motion.div>
             );
-          }          )}
+            })}
         </motion.div>
 
         {/* Section Divider */}
@@ -798,7 +796,7 @@ export default function Home() {
                     USDX Protocol
                   </h3>
                   <p className="text-xs text-gray-600 dark:text-gray-400 font-bold">
-                    Cross-Chain Yield Stablecoin
+                    Omnichain Vault-Backed Stablecoin
                   </p>
                 </div>
               </motion.div>
