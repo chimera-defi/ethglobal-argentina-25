@@ -51,7 +51,7 @@ Successfully enhanced the end-to-end integration test for the USDX Protocol smar
 ### 4. Documentation
 
 #### Quick Start Guide
-**File**: `/workspace/usdx/contracts/DEMO-QUICK-START.md`
+**File**: `/workspace/usdx/docs/DEMO-QUICK-START.md`
 
 **Contents**:
 - One-command demo execution
@@ -61,6 +61,15 @@ Successfully enhanced the end-to-end integration test for the USDX Protocol smar
 - Presentation tips
 - Technical specs
 - Troubleshooting
+
+#### Main Demo Guide
+**File**: `/workspace/usdx/docs/DEMO-README.md`
+
+**Contents**:
+- Quick start instructions
+- Two demo options (complete vs quick test)
+- Detailed phase breakdowns
+- Troubleshooting and advanced usage
 
 #### Comprehensive Demo Guide
 **File**: `/workspace/usdx/docs/integration-test-demo.md`
@@ -234,18 +243,23 @@ PHASE 1: DEPOSIT USDC ON HUB CHAIN (ETHEREUM)
 
 ```
 /workspace/usdx/
+├── run-complete-demo.sh                     [NEW]
 ├── contracts/
 │   ├── test/
 │   │   └── forge/
 │   │       ├── IntegrationE2E_OVault.t.sol  [ENHANCED]
 │   │       └── IntegrationOVault.t.sol
+│   ├── script/
+│   │   └── E2EDemo.s.sol                    [NEW]
 │   ├── foundry.toml                         [UPDATED]
 │   ├── run-demo.sh                          [NEW]
-│   ├── DEMO-QUICK-START.md                  [NEW]
 │   └── README.md                            [UPDATED]
 └── docs/
+    ├── DEMO-README.md                       [NEW]
+    ├── DEMO-QUICK-START.md                  [NEW]
     ├── integration-test-demo.md             [NEW]
-    └── DEMO-IMPLEMENTATION-SUMMARY.md       [NEW]
+    ├── DEMO-IMPLEMENTATION-SUMMARY.md       [NEW]
+    └── COMPLETE-DEMO-IMPLEMENTATION.md      [NEW]
 ```
 
 ## Testing Verification

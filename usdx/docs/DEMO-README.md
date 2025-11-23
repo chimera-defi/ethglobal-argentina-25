@@ -324,7 +324,7 @@ forge script script/E2EDemo.s.sol:E2EDemo \
 
 ## 📚 Related Documentation
 
-- **Quick Start**: `contracts/DEMO-QUICK-START.md`
+- **Quick Start**: `docs/DEMO-QUICK-START.md`
 - **Full Guide**: `docs/integration-test-demo.md`
 - **Implementation**: `docs/DEMO-IMPLEMENTATION-SUMMARY.md`
 - **Deployment**: `contracts/DEPLOYMENT-GUIDE.md`

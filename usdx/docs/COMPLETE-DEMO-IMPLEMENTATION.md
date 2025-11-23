@@ -94,8 +94,8 @@ forge script script/E2EDemo.s.sol:E2EDemo \
 
 ### 5. Comprehensive Documentation
 
-#### Main Demo Guide (`DEMO-README.md`)
-- **Location**: `/workspace/usdx/DEMO-README.md`
+#### Main Demo Guide (`docs/DEMO-README.md`)
+- **Location**: `/workspace/usdx/docs/DEMO-README.md`
 - **Contents**:
   - Quick start instructions
   - Two demo options (complete vs quick test)
@@ -106,8 +106,8 @@ forge script script/E2EDemo.s.sol:E2EDemo \
   - Troubleshooting guide
   - Advanced usage
 
-#### Quick Reference (`contracts/DEMO-QUICK-START.md`)
-- **Location**: `/workspace/usdx/contracts/DEMO-QUICK-START.md`
+#### Quick Reference (`docs/DEMO-QUICK-START.md`)
+- **Location**: `/workspace/usdx/docs/DEMO-QUICK-START.md`
 - **Contents**:
   - One-command demo
   - Alternative commands
@@ -256,12 +256,10 @@ cd ..
 ├── run-complete-demo.sh              [NEW] Main demo script
 ├── start-multi-chain.sh              [EXISTING] Chain setup
 ├── stop-multi-chain.sh               [EXISTING] Cleanup
-├── DEMO-README.md                    [NEW] Complete demo guide
 ├── README.md                         [UPDATED] Added demo section
 │
 ├── contracts/
 │   ├── run-demo.sh                   [NEW] Quick test script
-│   ├── DEMO-QUICK-START.md           [NEW] Quick reference
 │   │
 │   ├── test/forge/
 │   │   └── IntegrationE2E_OVault.t.sol  [ENHANCED] Verbose test
@@ -272,6 +270,8 @@ cd ..
 │       └── DeploySpokeOnly.s.sol     [EXISTING] Spoke deployment
 │
 └── docs/
+    ├── DEMO-README.md                [NEW] Complete demo guide
+    ├── DEMO-QUICK-START.md           [NEW] Quick reference
     ├── integration-test-demo.md      [NEW] Technical guide
     ├── DEMO-IMPLEMENTATION-SUMMARY.md [NEW] Original summary
     └── COMPLETE-DEMO-IMPLEMENTATION.md [NEW] This document
@@ -435,7 +435,7 @@ forge test --match-test testCompleteE2EFlow -vvvv  # Extra verbose
 ```
 
 ### Getting Help
-1. Check `DEMO-README.md` for troubleshooting section
+1. Check `docs/DEMO-README.md` for troubleshooting section
 2. Review logs in `logs/` directory
 3. Run with extra verbosity: `-vvvv`
 4. Verify Foundry installation: `forge --version`

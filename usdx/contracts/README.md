@@ -16,7 +16,7 @@ This runs a complete end-to-end test showing:
 - ✅ Burn and redeem with yield
 
 **Demo Duration**: ~10 seconds | **Output**: Beautiful verbose logging  
-**Documentation**: See [DEMO-QUICK-START.md](./DEMO-QUICK-START.md) or [Integration Test Demo Guide](../docs/integration-test-demo.md)
+**Documentation**: See [DEMO-QUICK-START.md](../docs/DEMO-QUICK-START.md) or [Integration Test Demo Guide](../docs/integration-test-demo.md)
 
 ---
 

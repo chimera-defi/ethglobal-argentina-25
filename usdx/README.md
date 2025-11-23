@@ -19,7 +19,7 @@
 4. 🔄 Runs complete E2E flow with verbose logging
 
 **Shows**: Deposit → Cross-Chain Bridge → Mint USDX → Transfer → Burn → Redeem  
-**Duration**: ~2 minutes | **[Full Demo Guide →](./DEMO-README.md)**
+**Duration**: ~2 minutes | **[Full Demo Guide →](./docs/DEMO-README.md)**
 
 ---
 
