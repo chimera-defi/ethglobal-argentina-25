@@ -83,46 +83,54 @@
   - Test the complete build flow: install → build → verify artifacts
   - For workspaces, dependencies may be hoisted to parent - handle accordingly
 
-- **Amplify Monorepo Setup - FINAL BULLETPROOF SOLUTION:**
-  - Set `appRoot` to the workspace root where node_modules is installed (e.g., `usdx`)
-  - In preBuild: Install dependencies with `npm ci`, then COPY node_modules to app directory
+- **Amplify Monorepo Setup - OPTIMIZED SOLUTION:**
+  - **Generate app-specific package-lock.json** to avoid installing ALL workspace dependencies
+  - Set `appRoot` to the workspace root (e.g., `usdx`)
+  - In preBuild: Run `cd frontend && npm ci` (installs to parent), then copy to app directory
   - Use `cp -r node_modules frontend/node_modules` (NOT cp -rL, NOT symlinks)
   - Set `baseDirectory` in artifacts to the app subdirectory (e.g., `frontend`)
-  - Include ALL artifacts: `.next/**/*`, `node_modules/**/*`, `package.json`, `next.config.js`, `public/**/*`
+  - Include: `.next/**/*`, `node_modules/**/*`, `package.json`, `package-lock.json`, `next.config.js`, `public/**/*`
   - **WHY THIS WORKS:**
-    - Amplify artifacts must be self-contained (symlinks may not resolve correctly)
-    - `cp -r` preserves internal symlinks within node_modules while making it portable
-    - Node.js can resolve dependencies from the copied node_modules directory
+    - Frontend-specific package-lock.json ensures ONLY frontend dependencies are installed (709MB vs 1.9GB)
+    - Workspace hoisting installs to parent node_modules, but we copy to make artifacts self-contained
+    - `cp -r` preserves internal symlinks while making directory portable
     - No duplicate React instances because we copy the entire structure as-is
+  - **Generate frontend-specific package-lock.json:**
+    ```bash
+    cd /workspace && npm install --prefix usdx/frontend --package-lock-only
+    git add usdx/frontend/package-lock.json
+    ```
 
 - **Testing Deployment Configs (MANDATORY BEFORE COMMITTING):**
   ```bash
   # Test EXACT Amplify build flow:
   cd /workspace/usdx
   rm -rf frontend/.next frontend/node_modules node_modules
-  npm ci                                    # Install in parent (workspace root)
-  cp -r node_modules frontend/node_modules  # Copy to frontend
-  cd frontend && npm run build              # Build from frontend directory
+  cd frontend && npm ci                     # Install frontend-only deps (699MB)
+  cd .. && cp -r node_modules frontend/node_modules  # Copy to frontend (709MB)
+  cd frontend && npm run build              # Build
   ls -la node_modules/next                  # Verify 'next' exists
-  node -e "console.log(require.resolve('next'))"  # Verify Node can resolve it
+  node -e "console.log(require.resolve('next'))"  # Verify resolution
+  du -sh .next node_modules                 # Verify sizes (84MB + 709MB)
   ```
 
 - **Deployment Config Review Checklist:**
-  1. Is appRoot set to where node_modules actually installs?
-  2. Is `cp -r node_modules frontend/node_modules` in preBuild phase?
-  3. Does baseDirectory point to the correct app directory?
-  4. Are ALL runtime dependencies copied to the app directory?
-  5. Does the artifacts section include `node_modules/**/*`?
-  6. Have I tested the EXACT commands in amplify.yml locally?
-  7. Does `require.resolve('next')` work from the app directory after copy?
-  8. Does the build complete without errors after the copy?
+  1. Does frontend have its own package-lock.json? (CRITICAL for size optimization)
+  2. Is appRoot set to workspace root (where workspace hoisting occurs)?
+  3. Is `cd frontend && npm ci` used (not just `npm ci` from root)?
+  4. Is `cp -r node_modules frontend/node_modules` in preBuild phase?
+  5. Does baseDirectory point to the app directory?
+  6. Does artifacts include both `package.json` AND `package-lock.json`?
+  7. Have I tested the EXACT commands and verified node_modules is ~700MB, not 1.9GB?
+  8. Does `require.resolve('next')` work from the app directory?
 
 - **Common Mistakes to AVOID:**
+  - ❌ Installing all workspace deps - Creates 1.9GB node_modules (contracts + backend + frontend)
+  - ❌ Missing frontend/package-lock.json - Will install all workspace dependencies
   - ❌ Using symlinks (`ln -s`) - Amplify may not follow them in artifacts
   - ❌ Using `cp -rL` (follow symlinks) - Breaks on circular refs in node_modules
   - ❌ Using `../node_modules/**/*` in artifacts - Path resolution issues
-  - ❌ Setting appRoot to frontend when workspace installs in parent
-  - ❌ Not testing the complete build flow before committing
+  - ❌ Not verifying node_modules size after install
 
 ### Self-Assessment Checklist
 Before committing, ask:

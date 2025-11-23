@@ -5,7 +5,7 @@ applications:
       phases:
         preBuild:
           commands:
-            - npm ci
+            - cd frontend && npm ci
             - cp -r node_modules frontend/node_modules
         build:
           commands:
@@ -16,6 +16,7 @@ applications:
           - '.next/**/*'
           - 'node_modules/**/*'
           - 'package.json'
+          - 'package-lock.json'
           - 'next.config.js'
           - 'public/**/*'
       cache:
