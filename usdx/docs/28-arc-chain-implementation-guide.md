@@ -411,6 +411,9 @@ contract DeployArcSpoke is Script {
 - **Deployment Script**: `usdx/contracts/script/DeploySpoke.s.sol`
 - **Spoke Minter**: `usdx/contracts/USDXSpokeMinter.sol`
 
+### Detailed Guides
+- **Arc → Ethereum Bridge Flow**: `30-arc-to-ethereum-usdc-bridge-flow.md` - **COMPREHENSIVE GUIDE** for implementing USDC bridge from Arc to Ethereum Mainnet using Bridge Kit, including complete code examples and step-by-step instructions
+
 ---
 
 **Last Updated**: January 2025  

@@ -37,7 +37,15 @@ This document provides a summary of the research and planning work done to add C
    - Solution options with code examples
    - Risk assessment
 
-5. **This Summary**: `27-arc-chain-integration-summary.md`
+5. **Bridge Flow Guide**: `30-arc-to-ethereum-usdc-bridge-flow.md` ⭐ **NEW**
+   - **COMPREHENSIVE GUIDE** for Arc → Ethereum USDC bridge using Bridge Kit
+   - Complete code examples for frontend integration
+   - Step-by-step user flow implementation
+   - Bridge Kit API usage details
+   - Vault deposit integration
+   - Error handling and testing checklist
+
+6. **This Summary**: `27-arc-chain-integration-summary.md`
    - Quick reference
    - Handoff information
 

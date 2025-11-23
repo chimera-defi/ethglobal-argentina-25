@@ -99,11 +99,16 @@ LayerZero does not support Arc, so:
 
 ### Workaround
 - Users bridge USDC to hub via Bridge Kit
-- Users mint USDX on Arc (after contract modification)
-- Users burn USDX on Arc to redeem
-- Users bridge USDC back to Arc via Bridge Kit
+- Users deposit USDC into USDXVault on Ethereum Mainnet
+- Users receive USDX minted 1:1 on Ethereum Mainnet
+- Users can bridge USDC back to Arc via Bridge Kit if needed
 
-**Flow**: USDC ↔ Arc (via Bridge Kit), USDX stays on Arc
+**Flow**: 
+1. Arc → Ethereum: Bridge USDC via Bridge Kit
+2. Ethereum: Deposit USDC → Mint USDX via USDXVault
+3. (Optional) Ethereum → Arc: Bridge USDC back via Bridge Kit
+
+**See**: `30-arc-to-ethereum-usdc-bridge-flow.md` for detailed implementation guide
 
 ## Critical Finding #3: Bridge Kit Chain Identifier Unknown
 
