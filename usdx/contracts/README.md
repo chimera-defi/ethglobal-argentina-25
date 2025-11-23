@@ -13,11 +13,13 @@ curl -L https://foundry.paradigm.xyz | bash
 foundryup
 ```
 
-### 2. Install Hardhat
+### 2. Install Hardhat3
 
 ```bash
 npm install
 ```
+
+**Note**: This project uses Hardhat3 (v3.0.15) alongside Foundry. See [Hardhat3 Integration Guide](../docs/hardhat3-integration-guide.md) for details.
 
 ### 3. Configure Environment
 
@@ -44,8 +46,18 @@ forge remappings > remappings.txt
 # Test Foundry
 forge test
 
-# Test Hardhat
+# Test Hardhat3
+npm run test
+# or
 npx hardhat test
+
+# Test Foundry
+npm run test:foundry
+# or
+forge test
+
+# Test both
+npm run test:all
 
 # Test mainnet forking
 forge test --fork-url $MAINNET_RPC_URL
@@ -66,13 +78,15 @@ contracts/
 │   │   └── HyperlaneAdapter.sol
 │   └── interfaces/
 ├── test/
-│   ├── forge/              # Foundry tests
-│   └── hardhat/            # Hardhat tests
+│   ├── forge/              # Foundry tests (*.t.sol)
+│   └── hardhat/            # Hardhat3 tests (*.test.sol)
+├── ignition/
+│   └── modules/            # Hardhat Ignition deployment modules (*.ts)
 ├── script/
 │   ├── deploy/             # Deployment scripts
 │   └── fork/               # Fork test scripts
-├── foundry.toml
-├── hardhat.config.ts
+├── foundry.toml            # Foundry configuration
+├── hardhat.config.ts      # Hardhat3 configuration
 └── package.json
 ```
 
@@ -137,11 +151,19 @@ forge test --gas-report        # Gas report
 forge coverage                 # Coverage report
 forge script script/Deploy.s.sol --rpc-url $RPC --broadcast
 
-# Hardhat
-npx hardhat compile            # Compile contracts
-npx hardhat test               # Run tests
-npx hardhat test --network hardhat  # Fork tests
-npx hardhat run script/deploy.ts --network sepolia
+# Hardhat3
+npm run compile                # Compile contracts
+npm run test                   # Run Hardhat3 tests
+npm run test:fork              # Fork tests
+npm run verify                 # Verify contracts
+
+# Hardhat Ignition (deployment)
+npx hardhat ignition deploy ignition/modules/DeployHub.ts --network sepolia
+
+# Foundry
+npm run compile:foundry        # Compile contracts
+npm run test:foundry           # Run Foundry tests
+forge script script/DeployHub.s.sol --rpc-url $SEPOLIA_RPC_URL --broadcast
 ```
 
 ## Testing Strategy

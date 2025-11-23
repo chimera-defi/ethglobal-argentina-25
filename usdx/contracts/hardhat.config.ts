@@ -1,9 +1,9 @@
 import { HardhatUserConfig } from "hardhat/config";
-import "@nomicfoundation/hardhat-toolbox";
+import "@nomicfoundation/hardhat-ethers";
+import "@nomicfoundation/hardhat-ignition";
+import "@nomicfoundation/hardhat-ignition-ethers";
 import "@nomicfoundation/hardhat-verify";
-import "hardhat-gas-reporter";
-import "solidity-coverage";
-import * as dotenv from "dotenv";
+import dotenv from "dotenv";
 
 dotenv.config();
 
@@ -16,57 +16,79 @@ const config: HardhatUserConfig = {
         runs: 200,
       },
       viaIR: false,
+      evmVersion: "cancun",
     },
+  },
+  remappings: {
+    "@openzeppelin/": "lib/openzeppelin-contracts/",
+    "@layerzero/": "lib/layerzero-contracts/",
+    "@hyperlane/": "lib/hyperlane-monorepo/",
   },
   paths: {
     sources: "./contracts",
-    tests: "./test",
+    tests: "./test/hardhat",
     cache: "./cache",
     artifacts: "./artifacts",
   },
   networks: {
     hardhat: {
-      forking: {
-        url: process.env.MAINNET_RPC_URL || "",
-        enabled: !!process.env.MAINNET_RPC_URL,
-        blockNumber: undefined, // Use latest block
-      },
+      type: "edr-simulated",
+      ...(process.env.MAINNET_RPC_URL && {
+        forking: {
+          url: process.env.MAINNET_RPC_URL,
+          enabled: true,
+        },
+      }),
       chainId: 31337,
     },
-    mainnet: {
-      url: process.env.MAINNET_RPC_URL || "",
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-      chainId: 1,
-    },
-    sepolia: {
-      url: process.env.SEPOLIA_RPC_URL || "",
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-      chainId: 11155111,
-    },
-    polygon: {
-      url: process.env.POLYGON_RPC_URL || "",
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-      chainId: 137,
-    },
-    arbitrum: {
-      url: process.env.ARBITRUM_RPC_URL || "",
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-      chainId: 42161,
-    },
-    optimism: {
-      url: process.env.OPTIMISM_RPC_URL || "",
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-      chainId: 10,
-    },
-    base: {
-      url: process.env.BASE_RPC_URL || "",
-      accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
-      chainId: 8453,
-    },
-  },
-  gasReporter: {
-    enabled: process.env.REPORT_GAS !== undefined,
-    currency: "USD",
+    ...(process.env.MAINNET_RPC_URL && {
+      mainnet: {
+        type: "http",
+        url: process.env.MAINNET_RPC_URL,
+        accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+        chainId: 1,
+      },
+    }),
+    ...(process.env.SEPOLIA_RPC_URL && {
+      sepolia: {
+        type: "http",
+        url: process.env.SEPOLIA_RPC_URL,
+        accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+        chainId: 11155111,
+      },
+    }),
+    ...(process.env.POLYGON_RPC_URL && {
+      polygon: {
+        type: "http",
+        url: process.env.POLYGON_RPC_URL,
+        accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+        chainId: 137,
+      },
+    }),
+    ...(process.env.ARBITRUM_RPC_URL && {
+      arbitrum: {
+        type: "http",
+        url: process.env.ARBITRUM_RPC_URL,
+        accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+        chainId: 42161,
+      },
+    }),
+    ...(process.env.OPTIMISM_RPC_URL && {
+      optimism: {
+        type: "http",
+        url: process.env.OPTIMISM_RPC_URL,
+        accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+        chainId: 10,
+      },
+    }),
+    ...(process.env.BASE_RPC_URL && {
+      base: {
+        type: "http",
+        url: process.env.BASE_RPC_URL,
+        accounts: process.env.PRIVATE_KEY ? [process.env.PRIVATE_KEY] : [],
+        chainId: 8453,
+      },
+    }),
   },
   etherscan: {
     apiKey: {
@@ -78,8 +100,12 @@ const config: HardhatUserConfig = {
       base: process.env.BASESCAN_API_KEY || "",
     },
   },
-  mocha: {
-    timeout: 40000,
+  ignition: {
+    strategyConfig: {
+      create2: {
+        salt: process.env.DEPLOYMENT_SALT || "usdx-deployment-salt",
+      },
+    },
   },
 };
 
