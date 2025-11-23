@@ -15,9 +15,10 @@ export const CHAINS = {
       blockExplorer: 'http://localhost:8545',
     },
   },
-  SPOKE: {
-    id: 84532, // Base Sepolia testnet (Bridge Kit supported)
-    name: 'USDX Spoke (Base Sepolia)',
+  // Spoke chains - users can mint USDX on these chains using hub positions
+  SPOKE_BASE: {
+    id: 84532, // Base Sepolia testnet (Bridge Kit + LayerZero supported)
+    name: 'Base Sepolia',
     rpcUrl: process.env.NEXT_PUBLIC_SPOKE_RPC_URL || 'https://sepolia.base.org',
     currency: 'ETH',
     blockExplorer: 'https://sepolia-explorer.base.org',
@@ -28,7 +29,7 @@ export const CHAINS = {
       blockExplorer: 'http://localhost:8546',
     },
   },
-  ARC: {
+  SPOKE_ARC: {
     id: 5042002, // Arc Testnet (Bridge Kit supported, LayerZero NOT supported)
     name: 'Arc Testnet',
     rpcUrl: process.env.NEXT_PUBLIC_ARC_RPC_URL || 'https://rpc.testnet.arc.network',
@@ -42,6 +43,9 @@ export const CHAINS = {
     },
   },
 } as const;
+
+// Legacy support - map old SPOKE to SPOKE_BASE
+export const SPOKE = CHAINS.SPOKE_BASE;
 
 // Bridge Kit supported chains
 export const BRIDGE_KIT_CHAINS = {
@@ -80,10 +84,16 @@ export const BRIDGE_KIT_CHAINS = {
 
 export type ChainType = keyof typeof CHAINS;
 
+// All spoke chains - add new spoke chains here
+export const SPOKE_CHAINS = [
+  CHAINS.SPOKE_BASE,
+  CHAINS.SPOKE_ARC,
+] as const;
+
 export function getChainById(chainId: number): ChainType | null {
   if (chainId === CHAINS.HUB.id) return 'HUB';
-  if (chainId === CHAINS.SPOKE.id) return 'SPOKE';
-  if (chainId === CHAINS.ARC.id) return 'ARC';
+  if (chainId === CHAINS.SPOKE_BASE.id) return 'SPOKE_BASE';
+  if (chainId === CHAINS.SPOKE_ARC.id) return 'SPOKE_ARC';
   return null;
 }
 
@@ -92,5 +102,5 @@ export function isHubChain(chainId: number): boolean {
 }
 
 export function isSpokeChain(chainId: number): boolean {
-  return chainId === CHAINS.SPOKE.id || chainId === CHAINS.ARC.id;
+  return SPOKE_CHAINS.some(spoke => spoke.id === chainId);
 }
