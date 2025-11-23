@@ -17,19 +17,20 @@ applications:
         paths:
           - node_modules/**/*
           - frontend/.next/cache/**/*
-  - appRoot: usdx/frontend
-    frontend:
-      phases:
-        preBuild:
-          commands:
-            - cd .. && npm ci
-        build:
-          commands:
-            - cd .. && npm run build:frontend
-      artifacts:
-        baseDirectory: .next
-        files:
-          - '**/*'
-      cache:
-        paths:
-          - .next/cache/**/*
+    - appRoot: usdx/frontend
+      frontend:
+        phases:
+          preBuild:
+            commands:
+              - npm --prefix .. ci # install from workspace root to honor root package-lock
+          build:
+            commands:
+              - npm --prefix .. run build:frontend
+        artifacts:
+          baseDirectory: .next
+          files:
+            - '**/*'
+        cache:
+          paths:
+            - ../node_modules/**/*
+            - .next/cache/**/*
