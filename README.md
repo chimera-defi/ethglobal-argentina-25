@@ -4,6 +4,8 @@
 
 **USDX** is a decentralized yield-bearing stablecoin with unified yield generation across multiple chains. USDX uses LayerZero OVault for cross-chain yield vault integration with a hub-and-spoke architecture, enabling users to mint USDX on any supported chain while maintaining a single collateral source and unified yield generation on Ethereum.
 
+USDX integrates **Circle Bridge Kit** to allow users to seamlessly and without fees bridge USDC from any of the spoke chains to the hub chain (Ethereum) to mint USDX, providing a frictionless cross-chain experience.
+
 For more information, see the **[USDX Prospectus](./usdx/docs/USDX-PROSPECTUS.md)**.
 
 ## Ledger Clear Signing Prize Submission

@@ -64,7 +64,7 @@ USDX is a **hub-and-spoke stablecoin protocol** where:
 
 ### How It Works
 
-1. **Deposit**: User bridges USDC from any chain → Ethereum hub (via Circle Bridge Kit)
+1. **Deposit**: User seamlessly bridges USDC from any spoke chain → Ethereum hub (via Circle Bridge Kit) - **no fees, seamless experience**
 2. **Yield**: USDC deposited into Yearn USDC vault (yield accrues automatically)
 3. **Mint**: User mints USDX on any spoke chain using hub position
 4. **Transfer**: USDX transfers between chains via LayerZero/Hyperlane
@@ -136,7 +136,7 @@ USDX is a **hub-and-spoke stablecoin protocol** where:
 
 ### Infrastructure Stack
 
-- **USDC Transfers**: Circle Bridge Kit (CCTP) - Spoke ↔ Hub
+- **USDC Transfers**: Circle Bridge Kit (CCTP) - Spoke ↔ Hub - **seamless, fee-free bridging** for users to deposit USDC from any spoke chain to the hub chain to mint USDX
 - **USDX Transfers**: LayerZero + Hyperlane - Spoke ↔ Spoke
 - **Yield Source**: Yearn Finance USDC Vault
 - **Cross-Chain Yield**: OVault (LayerZero) + Yield Routes (Hyperlane)
