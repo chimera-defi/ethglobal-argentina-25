@@ -16,14 +16,28 @@ This document provides a summary of the research and planning work done to add C
    - Integration requirements
    - Known gaps and questions
    - **Key Finding**: Bridge Kit supports Arc, LayerZero does NOT
+   - **Chain ID**: `5042002` ✅ **VERIFIED**
 
 2. **Task List**: `26-arc-chain-integration-tasks.md`
    - Detailed implementation tasks
    - Phase-by-phase breakdown
    - Verification steps
    - **Updated**: LayerZero limitation addressed
+   - **Critical**: USDXSpokeMinter modification required
 
-3. **This Summary**: `27-arc-chain-integration-summary.md`
+3. **Implementation Guide**: `28-arc-chain-implementation-guide.md` ⭐ **NEW**
+   - Concrete code examples with verified values
+   - Step-by-step implementation instructions
+   - Contract modification examples
+   - Testing strategies
+
+4. **Critical Findings**: `29-arc-chain-critical-findings.md` ⚠️ **NEW**
+   - USDXSpokeMinter requires modification
+   - Detailed problem analysis
+   - Solution options with code examples
+   - Risk assessment
+
+5. **This Summary**: `27-arc-chain-integration-summary.md`
    - Quick reference
    - Handoff information
 
@@ -59,12 +73,12 @@ Spoke chains are configured in:
 
 Before implementation can begin, the following must be verified:
 
-1. **Arc Chain Specifications** ⏳
-   - Chain ID (numeric) - **STILL NEEDED**
-   - Network name - ✅ Arc
+1. **Arc Chain Specifications** ✅
+   - Chain ID (numeric) - ✅ **FOUND**: `5042002` (Arc Testnet)
+   - Network name - ✅ Arc Testnet
    - RPC endpoints - ✅ Testnet endpoints found
    - Block explorer URL - ✅ `https://testnet.arcscan.app`
-   - Native currency details - **STILL NEEDED**
+   - Native currency details - ✅ **USDC** (native gas token, 6 decimals)
 
 2. **CCTP Support** ✅
    - CCTP domain ID for Arc - **STILL NEEDED**
@@ -169,11 +183,31 @@ The integration follows a modified pattern due to LayerZero limitation:
 
 ## Next Steps for Implementation Agent
 
-1. **Review Research Document**: Read `25-circle-arc-chain-research.md` thoroughly
-2. **Review Task List**: Understand all tasks in `26-arc-chain-integration-tasks.md`
-3. **Verify Information**: Confirm all required information is available
-4. **Start Implementation**: Follow task list phase by phase
-5. **Test Thoroughly**: Ensure all functionality works before completing
+### ⚠️ CRITICAL: Read These First
+1. **Read Critical Findings**: `29-arc-chain-critical-findings.md` - **MUST READ FIRST**
+   - USDXSpokeMinter requires modification
+   - Cannot deploy on Arc without changes
+
+2. **Read Implementation Guide**: `28-arc-chain-implementation-guide.md`
+   - Concrete code examples
+   - Verified chain ID and specifications
+   - Contract modification examples
+
+### Then Proceed With
+3. **Review Research Document**: `25-circle-arc-chain-research.md`
+   - All verified information
+   - Remaining gaps
+
+4. **Review Task List**: `26-arc-chain-integration-tasks.md`
+   - Phase-by-phase tasks
+   - Updated with critical findings
+
+5. **Start Implementation**: 
+   - **First**: Modify USDXSpokeMinter (see Task 3.2)
+   - **Then**: Frontend configuration
+   - **Finally**: Testing and deployment
+
+6. **Test Thoroughly**: Ensure all functionality works before completing
 
 ## Success Criteria
 
@@ -181,10 +215,12 @@ Integration is successful when:
 - ✅ Arc chain appears in frontend
 - ✅ Contracts deploy on Arc
 - ✅ Bridge Kit transfers work
-- ✅ LayerZero transfers work
-- ✅ Full user flow works
+- ⚠️ LayerZero transfers work - **SKIP** (LayerZero not supported on Arc)
+- ✅ Full user flow works (with Bridge Kit for USDC, alternative for USDX minting)
 - ✅ All tests pass
 - ✅ Documentation updated
+
+**Note**: Full cross-chain USDX transfers to/from Arc will require LayerZero support or alternative solution.
 
 ## Questions for Implementation Agent
 

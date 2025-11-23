@@ -28,11 +28,18 @@ This document contains research findings and integration requirements for adding
 
 ### Network Details
 
-#### Testnet
+#### Testnet ✅ VERIFIED
+- **Chain ID**: `5042002` ✅ **VERIFIED**
+- **Network Name**: Arc Testnet
+- **Currency**: USDC (native gas token) ✅ **VERIFIED**
+- **Currency Symbol**: USDC
+- **Currency Decimals**: 6 (USDC standard)
 - **RPC Endpoints**:
-  - `https://rpc.testnet.arc.network`
-  - `https://rpc.blockdaemon.testnet.arc.network`
-  - `https://rpc.drpc.testnet.arc.network`
+  - Primary: `https://rpc.testnet.arc.network`
+  - Alternative: `https://rpc.blockdaemon.testnet.arc.network`
+  - Alternative: `https://rpc.drpc.testnet.arc.network`
+  - Alternative: `https://rpc.quicknode.testnet.arc.network`
+- **WebSocket**: `wss://rpc.testnet.arc.network`
 - **Block Explorer**: `https://testnet.arcscan.app`
 - **Faucet**: `https://faucet.circle.com`
 
@@ -40,6 +47,7 @@ This document contains research findings and integration requirements for adding
 - **Status**: TBD - Check Arc documentation for mainnet launch
 - **RPC Endpoints**: TBD
 - **Block Explorer**: TBD
+- **Chain ID**: TBD
 
 ## Integration Requirements
 
@@ -222,25 +230,27 @@ Based on existing spoke chain implementations:
 4. ✅ **Is Arc testnet available?** - **YES** - Testnet is operational
 
 #### Still Need Answers ⏳
-1. **What is Arc's chain ID?**
-   - Need to verify from Arc documentation (`/arc/references/connect-to-arc`)
-   - Check ChainList.org if Arc is listed
+1. ✅ **What is Arc's chain ID?** - **ANSWERED**: `5042002` (Arc Testnet)
+   - ✅ Verified from Arc documentation (`/arc/references/connect-to-arc`)
 
 2. **What is Arc's CCTP domain ID?**
    - Check Circle's CCTP documentation for Arc domain ID
    - Verify in contract addresses page
+   - **Status**: CCTP contracts exist on Arc, domain ID needs verification
 
 3. **What are the CCTP contract addresses on Arc?**
    - Check `/arc/references/contract-addresses` page
-   - Verify TokenMessenger and MessageTransmitter addresses
+   - Contract addresses are documented (found addresses: `0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a`, etc.)
+   - **Action**: Extract and verify TokenMessenger and MessageTransmitter addresses
 
 4. **What is Bridge Kit's chain identifier for Arc?**
-   - Check Bridge Kit SDK documentation
-   - Likely "arc" or "arc-testnet" but needs verification
+   - Check Bridge Kit SDK documentation or source code
+   - Likely "arc", "arc-testnet", or "arc-test"
+   - **Action**: Test with Bridge Kit SDK or check SDK source
 
 5. **Is Arc mainnet available?**
    - Check Arc documentation for mainnet status
-   - Currently only testnet confirmed
+   - Currently only testnet confirmed (chain ID 5042002)
 
 ### Documentation Gaps
 - Arc chain may be too new for comprehensive documentation
@@ -305,8 +315,8 @@ Based on existing spoke chain implementations:
 - This impacts USDX cross-chain transfers
 
 ### ⏳ Still Needed
-- Chain ID
-- CCTP domain ID
-- CCTP contract addresses
-- Bridge Kit chain identifier
-- Mainnet status
+- ✅ Chain ID - **FOUND**: `5042002` (Arc Testnet)
+- CCTP domain ID - Check Circle CCTP docs
+- CCTP contract addresses - Extract from `/arc/references/contract-addresses`
+- Bridge Kit chain identifier - Verify with Bridge Kit SDK
+- Mainnet status - TBD

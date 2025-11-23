@@ -51,15 +51,15 @@ Before starting implementation, ensure:
 **Example Structure**:
 ```typescript
 ARC: {
-  id: <ARC_CHAIN_ID>, // To be determined
-  name: 'Arc',
-  rpcUrl: process.env.NEXT_PUBLIC_ARC_RPC_URL || '<DEFAULT_RPC_URL>',
-  currency: '<NATIVE_CURRENCY>', // Likely 'ETH' or 'ARC'
-  blockExplorer: '<BLOCK_EXPLORER_URL>',
+  id: 5042002, // ✅ VERIFIED: Arc Testnet chain ID
+  name: 'Arc Testnet',
+  rpcUrl: process.env.NEXT_PUBLIC_ARC_RPC_URL || 'https://rpc.testnet.arc.network',
+  currency: 'USDC', // ✅ VERIFIED: USDC is native gas token
+  blockExplorer: 'https://testnet.arcscan.app',
   localhost: {
-    id: <ARC_CHAIN_ID>,
-    rpcUrl: 'http://localhost:<PORT>',
-    blockExplorer: 'http://localhost:<PORT>',
+    id: 5042002,
+    rpcUrl: 'http://localhost:8547', // Use different port for local fork
+    blockExplorer: 'http://localhost:8547',
   },
 }
 ```
@@ -79,9 +79,12 @@ ARC: {
 ```typescript
 const chainIdMap: Record<number, string> = {
   // ... existing chains
-  <ARC_CHAIN_ID>: 'arc', // To be verified
+  5042002: 'arc-testnet', // ✅ Arc Testnet - VERIFY exact identifier with Bridge Kit SDK
+  // Possible values: 'arc', 'arc-testnet', 'arc-test'
 };
 ```
+
+**Note**: Bridge Kit chain identifier needs verification. Check Bridge Kit SDK documentation or test initialization to find exact string.
 
 **Dependencies**: Task 2.1, Bridge Kit SDK support verification
 
@@ -129,55 +132,80 @@ const chainIdMap: Record<number, string> = {
 
 **Example**:
 ```solidity
-if (chainId == <ARC_CHAIN_ID>) {
-    // Arc Mainnet
+if (chainId == 5042002) {
+    // Arc Testnet
     POSITION_ORACLE = msg.sender; // TODO: Set actual oracle address
-    LOCAL_EID = <ARC_LAYERZERO_EID>; // To be determined
+    // ⚠️ NOTE: LayerZero NOT supported on Arc
+    // LOCAL_EID = 0; // LayerZero not available
+    // USDXShareOFT will NOT be deployed on Arc
 } else if (chainId == 137) {
     // Existing Polygon configuration
     // ...
 }
 ```
 
+**⚠️ Critical**: Since LayerZero is not supported on Arc:
+- Do NOT deploy USDXShareOFT on Arc
+- Set LayerZero endpoint to `address(0)`
+- May need to modify USDXSpokeMinter to work without LayerZero
+
 **Dependencies**: Phase 1 complete, LayerZero EID verification
 
 ---
 
-#### Task 3.2: Update Contract Chain ID Handling
-**Files**:
-- `usdx/contracts/USDXSpokeMinter.sol`
-- `usdx/contracts/USDXToken.sol`
-- `usdx/contracts/USDXShareOFT.sol`
+#### Task 3.2: Modify USDXSpokeMinter for Arc ⚠️ CRITICAL
+**File**: `usdx/contracts/USDXSpokeMinter.sol`
 
-**Changes Needed**:
-- [ ] Review contracts for chain-specific logic
-- [ ] Ensure contracts handle Arc chain ID correctly
-- [ ] Update any hardcoded chain ID checks (if any)
-- [ ] Verify cross-chain message handling works with Arc
+**Critical Finding**: USDXSpokeMinter **REQUIRES** shareOFT (LayerZero) and cannot work on Arc without modification.
 
-**Note**: Most contracts should be chain-agnostic, but verify any chain-specific logic
+**Required Changes**:
+- [ ] Make shareOFT optional in constructor (allow `address(0)`)
+- [ ] Make lzEndpoint optional in constructor (allow `address(0)`)
+- [ ] Add conditional logic in `mintUSDXFromOVault()` for Arc
+- [ ] Add conditional logic in `mint()` for Arc
+- [ ] Implement alternative position verification for Arc (Bridge Kit events or oracle)
+- [ ] Update `getAvailableMintAmount()` to handle missing shareOFT
+- [ ] Update `getUserOVaultShares()` to handle missing shareOFT
 
-**Dependencies**: Task 3.1
+**Alternative Approach**:
+- [ ] Create new `ArcSpokeMinter.sol` contract specifically for Arc
+- [ ] Use Bridge Kit events for position verification
+- [ ] No LayerZero dependency
+
+**Dependencies**: Task 3.1, understanding of LayerZero limitation
+
+**See**: `28-arc-chain-implementation-guide.md` for detailed modification examples
 
 ---
 
 #### Task 3.3: Handle LayerZero Limitation ⚠️
 **Files**: Contract deployment scripts and configuration files
 
-**Critical Note**: LayerZero does NOT support Arc chain. This task requires alternative approach.
+**Critical Note**: LayerZero does NOT support Arc chain. USDXSpokeMinter requires modification.
 
-**Options to Consider**:
-- [ ] **Option A**: Skip LayerZero integration for Arc (Arc will be USDC-only spoke)
-- [ ] **Option B**: Implement alternative cross-chain solution for Arc
-- [ ] **Option C**: Wait for LayerZero to add Arc support
-- [ ] **Option D**: Use Bridge Kit for cross-chain USDX (if supported)
+**Required Actions**:
+- [ ] **Modify USDXSpokeMinter** to support optional LayerZero (see Task 3.2)
+- [ ] **Skip USDXShareOFT deployment** on Arc (LayerZero not supported)
+- [ ] **Implement alternative position verification** for Arc minting
+- [ ] **Update deployment scripts** to handle Arc differently
+
+**Deployment Changes**:
+```solidity
+if (chainId == 5042002) {
+    // Arc Testnet - NO LayerZero
+    // Do NOT deploy USDXShareOFT
+    // Deploy modified USDXSpokeMinter (or ArcSpokeMinter)
+    // Use Bridge Kit events for position verification
+}
+```
 
 **Recommended Approach**: 
-- For MVP: Skip LayerZero on Arc, use Bridge Kit for USDC transfers only
-- Arc can still function as spoke chain for USDC deposits and USDX minting
-- Cross-chain USDX transfers to/from Arc will need to wait for LayerZero support or alternative solution
+- Modify USDXSpokeMinter to make shareOFT optional
+- Use Bridge Kit events to verify USDC deposits
+- Allow minting based on bridged USDC amounts
+- Cross-chain USDX transfers remain limited until LayerZero adds Arc support
 
-**Dependencies**: Phase 1 complete, LayerZero limitation confirmed
+**Dependencies**: Task 3.2 (USDXSpokeMinter modification)
 
 ---
 
@@ -340,16 +368,16 @@ After implementation, verify:
    - [ ] Permissions are set correctly
 
 4. **Cross-Chain Operations**
-   - [ ] LayerZero messages work to/from Arc
-   - [ ] USDX can be minted on Arc using hub positions
-   - [ ] USDX can be transferred cross-chain
+   - [ ] ⚠️ LayerZero messages work to/from Arc - **SKIP** (LayerZero not supported)
+   - [ ] USDX can be minted on Arc using hub positions (via alternative method)
+   - [ ] ⚠️ USDX can be transferred cross-chain - **LIMITED** (no LayerZero, use Bridge Kit for USDC)
    - [ ] USDX can be burned on Arc
 
 5. **User Flow**
-   - [ ] User can deposit USDC on Arc → bridge to hub
-   - [ ] User can mint USDX on Arc
-   - [ ] User can transfer USDX from Arc to other chains
-   - [ ] User can burn USDX on Arc → redeem on hub
+   - [ ] User can deposit USDC on Arc → bridge to hub (via Bridge Kit) ✅
+   - [ ] User can mint USDX on Arc (using hub positions, alternative verification)
+   - [ ] ⚠️ User can transfer USDX from Arc to other chains - **LIMITED** (no LayerZero)
+   - [ ] User can burn USDX on Arc → redeem on hub (bridge USDC back)
 
 ## Known Challenges
 
