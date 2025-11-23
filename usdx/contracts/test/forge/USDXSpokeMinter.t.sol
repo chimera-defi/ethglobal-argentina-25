@@ -478,9 +478,11 @@ contract USDXSpokeMinterArcTest is Test {
         vm.prank(user1);
         minter.mint(mintAmount);
         
-        // Verify position decreased
-        assertEq(minter.getVerifiedHubPosition(user1), verifiedPosition - mintAmount);
-        assertEq(minter.getAvailableMintAmount(user1), verifiedPosition - mintAmount);
+        // Verify mint succeeded
+        assertEq(usdx.balanceOf(user1), mintAmount, "User should have USDX tokens");
+        assertEq(minter.getMintedAmount(user1), mintAmount, "Minted amount should be tracked");
+        assertEq(minter.getVerifiedHubPosition(user1), verifiedPosition - mintAmount, "Position should decrease");
+        assertEq(minter.getAvailableMintAmount(user1), verifiedPosition - mintAmount, "Available should decrease");
         
         // User burns some USDX
         vm.prank(user1);
@@ -488,8 +490,9 @@ contract USDXSpokeMinterArcTest is Test {
         minter.burn(burnAmount);
         
         // Verify position restored
-        assertEq(minter.getVerifiedHubPosition(user1), verifiedPosition - mintAmount + burnAmount);
-        assertEq(minter.getAvailableMintAmount(user1), verifiedPosition - mintAmount + burnAmount);
-        assertEq(minter.getMintedAmount(user1), mintAmount - burnAmount);
+        assertEq(minter.getVerifiedHubPosition(user1), verifiedPosition - mintAmount + burnAmount, "Position should be restored");
+        assertEq(minter.getAvailableMintAmount(user1), verifiedPosition - mintAmount + burnAmount, "Available should be restored");
+        assertEq(minter.getMintedAmount(user1), mintAmount - burnAmount, "Minted amount should decrease");
+        assertEq(usdx.balanceOf(user1), mintAmount - burnAmount, "User USDX balance should decrease");
     }
 }
