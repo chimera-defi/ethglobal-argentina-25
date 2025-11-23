@@ -23,8 +23,15 @@ echo ""
 
 # Parse arguments
 QUICK_MODE=false
+FORKED_MODE=false
+
 if [ "$1" = "--quick" ] || [ "$1" = "-q" ]; then
     QUICK_MODE=true
+elif [ "$1" = "--forked" ] || [ "$1" = "-f" ]; then
+    FORKED_MODE=true
+    echo -e "${BLUE}Forked Mode: Will use ./run-demo-forked.sh${NC}"
+    exec ./run-demo-forked.sh "$@"
+    exit $?
 fi
 
 if [ "$QUICK_MODE" = true ]; then

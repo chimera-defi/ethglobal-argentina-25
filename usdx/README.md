@@ -9,13 +9,22 @@
 **One command for complete E2E demonstration:**
 
 ```bash
-./run-demo.sh              # Full demo: chains + deploy + 2 tests (~3 min)
+./run-demo.sh              # Full demo: chains + deploy + tests (~3 min)
 ./run-demo.sh --quick      # Quick: just tests with mocks (~10 sec)
+./run-demo.sh --forked     # Forked mainnet/testnet testing
 ```
 
-**Two test flows:**
-1. **Direct Cross-Chain USDX** ⭐ - Mint on Ethereum → Send to Base → Use anywhere
-2. **OVault Collateralized** - Advanced flow with yield-bearing shares
+**Three test flows:**
+1. **Multi-Chain OVault Composer** ⭐ NEW - 1 Hub + 3 Spokes (Polygon, Base, Arbitrum)
+2. **Complete OVault Flow** - Deposit USDC → Bridge shares → Mint USDX
+3. **Cross-Chain USDX Transfer** - Mint on Ethereum → Send to Base
+
+**For Forked Mainnet Testing:**
+```bash
+export ETH_RPC_URL="https://eth-mainnet.g.alchemy.com/v2/YOUR_KEY"
+export POLYGON_RPC_URL="https://polygon-mainnet.g.alchemy.com/v2/YOUR_KEY"
+./run-demo.sh --forked     # Test with real forked networks
+```
 
 **Key Feature**: Mint USDX once, use it on any chain. No complex bridging!  
 **[Demo Guide →](./docs/e2e-demo-guide.md)**
