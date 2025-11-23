@@ -5,15 +5,14 @@
  * These functions wrap the Bridge Kit API for easier use in React components.
  */
 
-import { BridgeKit } from '@circle-fin/bridge-kit';
-import type { BridgeResult } from '@circle-fin/bridge-kit';
-import { ViemAdapter } from '@circle-fin/adapter-viem-v2';
-import { createPublicClient, createWalletClient, custom, http } from 'viem';
+import { BridgeKit, Blockchain } from '@circle-fin/bridge-kit';
+import type { BridgeResult, AdapterContext } from '@circle-fin/bridge-kit';
+import { createAdapterFromProvider } from '@circle-fin/adapter-viem-v2';
+import type { ViemAdapter } from '@circle-fin/adapter-viem-v2';
 
 /**
  * Create a Bridge Kit adapter from the browser wallet
- * Uses ViemAdapter which connects to the user's wallet (MetaMask, etc.)
- * ViemAdapter requires a public client and a wallet client
+ * Uses the official createAdapterFromProvider function from @circle-fin/adapter-viem-v2
  */
 export async function createBridgeKitAdapter(): Promise<ViemAdapter> {
   // Check if window.ethereum is available (MetaMask, etc.)
@@ -21,29 +20,12 @@ export async function createBridgeKitAdapter(): Promise<ViemAdapter> {
     throw new Error('No wallet found. Please install MetaMask or another Web3 wallet.');
   }
 
-  // Create a public client for the current chain
-  const publicClient = createPublicClient({
-    transport: http(),
+  // Create adapter from browser provider
+  // Default capabilities are user-controlled (addresses forbidden for security)
+  // Type assertion is needed because window.ethereum type is slightly different
+  const adapter = await createAdapterFromProvider({
+    provider: window.ethereum as any,
   });
-
-  // Create a wallet client from window.ethereum
-  const walletClient = createWalletClient({
-    transport: custom(window.ethereum),
-  });
-
-  // ViemAdapter requires ViemAdapterOptions and AdapterCapabilities
-  // addressContext indicates who controls the address - "user-controlled" for user's wallet
-  const adapter = new ViemAdapter(
-    {
-      getPublicClient: () => publicClient,
-      getWalletClient: () => walletClient,
-    },
-    {
-      addressContext: 'user-controlled' as const,
-      // Bridge Kit will auto-detect supported chains from the adapter
-      supportedChains: [] as never[], // Empty array - Bridge Kit will detect chains automatically
-    }
-  );
   
   return adapter;
 }
@@ -64,7 +46,7 @@ export function createBridgeKit(): BridgeKit {
  * @param sourceChainId - Source chain ID (e.g., 11155111 for Sepolia)
  * @param destinationChainId - Destination chain ID (e.g., 84532 for Base Sepolia)
  * @param amount - Amount in USDC (6 decimals, e.g., "1000000" for 1 USDC)
- * @param recipientAddress - Optional recipient address (defaults to source adapter address)
+ * @param recipientAddress - Optional recipient address (defaults to user's address on destination)
  * @returns Promise<BridgeResult>
  */
 export async function bridgeUSDC(
@@ -76,52 +58,65 @@ export async function bridgeUSDC(
   amount: string,
   recipientAddress?: string
 ): Promise<BridgeResult> {
-  // Get Bridge Kit chain IDs
-  const sourceChainIdStr = getBridgeKitChainId(sourceChainId);
-  const destChainIdStr = getBridgeKitChainId(destinationChainId);
+  // Get Bridge Kit chain identifiers
+  const sourceBlockchain = getBridgeKitBlockchain(sourceChainId);
+  const destBlockchain = getBridgeKitBlockchain(destinationChainId);
 
-  if (!sourceChainIdStr || !destChainIdStr) {
+  if (!sourceBlockchain || !destBlockchain) {
     throw new Error(`Unsupported chain: ${sourceChainId} or ${destinationChainId}`);
   }
 
-  // Use recipient address from adapter if not provided
-  // getAddress() requires a chain definition, not just a chain ID
-  // For now, require recipientAddress to be provided
-  if (!recipientAddress) {
-    throw new Error('Recipient address is required for bridge transfers');
-  }
-  const recipient = recipientAddress;
+  // Create adapter contexts for source and destination
+  const fromContext: AdapterContext = {
+    adapter: sourceAdapter,
+    chain: sourceBlockchain,
+  };
 
-  // Execute bridge transfer
-  // Note: This is a placeholder implementation
-  // The actual Bridge Kit API needs to be verified from their documentation
-  // For now, throw an error indicating this needs proper Bridge Kit integration
-  throw new Error(
-    'Bridge Kit integration not fully implemented. ' +
-    'Please refer to Circle Bridge Kit documentation for the correct API usage.'
-  );
+  // Destination context - with optional custom recipient
+  // When recipientAddress is provided, it extends AdapterContext with that field
+  const toContext: AdapterContext | (AdapterContext & { recipientAddress: string }) = recipientAddress 
+    ? {
+        adapter: destinationAdapter,
+        chain: destBlockchain,
+        recipientAddress: recipientAddress,
+      }
+    : {
+        adapter: destinationAdapter,
+        chain: destBlockchain,
+      };
+
+  // Execute bridge transfer using the correct BridgeKit API
+  const result = await bridgeKit.bridge({
+    from: fromContext,
+    to: toContext,
+    amount: amount,
+    token: 'USDC',
+    config: {}, // Use default config (standard speed)
+  });
+
+  return result;
 }
 
 /**
- * Convert numeric chain ID to Bridge Kit chain ID string
- * Bridge Kit uses string identifiers like 'ethereum-sepolia', 'base-sepolia', etc.
+ * Convert numeric chain ID to Bridge Kit Blockchain enum value
+ * Bridge Kit uses Blockchain enum for chain identification
  * 
  * @param chainId - Numeric chain ID
- * @returns Bridge Kit chain ID string or null if unsupported
+ * @returns Blockchain enum value or null if unsupported
  */
-export function getBridgeKitChainId(chainId: number): string | null {
-  // Map chain IDs to Bridge Kit identifiers
-  const chainIdMap: Record<number, string> = {
+export function getBridgeKitBlockchain(chainId: number): Blockchain | null {
+  // Map chain IDs to Blockchain enum values
+  const chainIdMap: Record<number, Blockchain> = {
     // Testnets
-    11155111: 'ethereum-sepolia', // Ethereum Sepolia
-    84532: 'base-sepolia', // Base Sepolia
-    421614: 'arbitrum-sepolia', // Arbitrum Sepolia
-    11155420: 'optimism-sepolia', // Optimism Sepolia
-    // Mainnets (commented for now)
-    // 1: 'ethereum',
-    // 8453: 'base',
-    // 42161: 'arbitrum',
-    // 10: 'optimism',
+    11155111: Blockchain.Ethereum_Sepolia, // Ethereum Sepolia
+    84532: Blockchain.Base_Sepolia, // Base Sepolia
+    421614: Blockchain.Arbitrum_Sepolia, // Arbitrum Sepolia
+    11155420: Blockchain.Optimism_Sepolia, // Optimism Sepolia
+    // Mainnets
+    1: Blockchain.Ethereum, // Ethereum Mainnet
+    8453: Blockchain.Base, // Base Mainnet
+    42161: Blockchain.Arbitrum, // Arbitrum Mainnet
+    10: Blockchain.Optimism, // Optimism Mainnet
   };
 
   return chainIdMap[chainId] || null;

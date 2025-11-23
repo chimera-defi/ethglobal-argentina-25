@@ -13,7 +13,7 @@ import {
   createBridgeKitAdapter,
   createBridgeKit,
   bridgeUSDC as bridgeUSDCUtil,
-  getBridgeKitChainId,
+  getBridgeKitBlockchain,
 } from '@/lib/bridgeKit';
 
 export type TransferStatus = 'idle' | 'pending' | 'success' | 'error';
@@ -101,10 +101,10 @@ export function useBridgeKit(): UseBridgeKitReturn {
       }
 
       // Verify chain support
-      const sourceChainIdStr = getBridgeKitChainId(sourceChainId);
-      const destChainIdStr = getBridgeKitChainId(destinationChainId);
+      const sourceBlockchain = getBridgeKitBlockchain(sourceChainId);
+      const destBlockchain = getBridgeKitBlockchain(destinationChainId);
 
-      if (!sourceChainIdStr || !destChainIdStr) {
+      if (!sourceBlockchain || !destBlockchain) {
         throw new Error(`Unsupported chain: ${sourceChainId} or ${destinationChainId}`);
       }
 
@@ -131,11 +131,24 @@ export function useBridgeKit(): UseBridgeKitReturn {
         onStatusUpdate?.('success');
       } else if (result.state === 'error') {
         setTransferStatus('error');
-        // Check result.steps for detailed error information
-        const errorDetails = result.steps?.find(step => step.state === 'error');
-        const errorMessage = errorDetails 
-          ? `Bridge transfer failed: ${errorDetails.name || 'Unknown error'}`
-          : 'Bridge transfer failed. Check result.steps for details.';
+        // Comprehensive error handling based on result.steps
+        const errorSteps = result.steps?.filter(step => step.state === 'error') || [];
+        let errorMessage = 'Bridge transfer failed';
+        
+        if (errorSteps.length > 0) {
+          // Get the first error step for the message
+          const firstError = errorSteps[0];
+          const stepName = firstError.name || 'Unknown step';
+          errorMessage = `Bridge failed at ${stepName}`;
+          
+          // Add transaction hash if available
+          if (firstError.txHash) {
+            errorMessage += ` (tx: ${firstError.txHash.slice(0, 10)}...)`;
+          }
+        } else {
+          errorMessage = 'Bridge transfer failed. Please try again.';
+        }
+        
         setError(errorMessage);
         onStatusUpdate?.('error');
       } else {
