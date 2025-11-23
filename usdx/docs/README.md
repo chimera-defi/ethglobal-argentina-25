@@ -30,9 +30,8 @@ All USDX protocol documentation is organized here.
 
 ### Current Status & Reviews
 
-15. **[REVIEW-SUMMARY.md](./REVIEW-SUMMARY.md)** - ⭐ **Latest Review** - Layer Zero integration verification (2025-11-23)
-16. **[LAYERZERO-ARCHITECTURE-REVIEW.md](./LAYERZERO-ARCHITECTURE-REVIEW.md)** - Complete technical architecture review
-17. **[layerzero/CURRENT-STATUS.md](./layerzero/CURRENT-STATUS.md)** - Current implementation status and next steps
+15. **[REVIEW-SUMMARY.md](./REVIEW-SUMMARY.md)** - ⭐ **Latest Review** - Complete Layer Zero integration review and verification (2025-11-23)
+16. **[layerzero/CURRENT-STATUS.md](./layerzero/CURRENT-STATUS.md)** - Current implementation status and next steps
 
 ### Implementation Guides
 
@@ -48,26 +47,22 @@ All USDX protocol documentation is organized here.
 24. **[SELF-ASSESSMENT.md](./SELF-ASSESSMENT.md)** - Honest assessment of work completed
 25. **[07-circle-cctp-research.md](./07-circle-cctp-research.md)** - Circle CCTP research (reference - Bridge Kit recommended)
 
+### Deployment & Operations
+
+- **[VERCEL-DEPLOYMENT-GUIDE.md](./VERCEL-DEPLOYMENT-GUIDE.md)** - ✅ **Vercel Deployment Guide** - Complete deployment setup and troubleshooting
+- **[TESTING-AND-DEMO-GUIDE.md](./TESTING-AND-DEMO-GUIDE.md)** - Testing and demo guide
+- **[MULTI-CHAIN-LOCAL-SETUP.md](./MULTI-CHAIN-LOCAL-SETUP.md)** - Local multi-chain development setup
+
 ### Bridge Kit Documentation
 
 - **[BRIDGE-KIT-GUIDE.md](./BRIDGE-KIT-GUIDE.md)** - ✅ **Current implementation guide** (use this!)
-- **[BRIDGE-KIT-IMPLEMENTATION-FINAL.md](./BRIDGE-KIT-IMPLEMENTATION-FINAL.md)** - Technical implementation details
-- **[BRIDGE-KIT-FINAL-SUMMARY.md](./BRIDGE-KIT-FINAL-SUMMARY.md)** - Executive summary report
-- **[archive/](./archive/)** - Older BridgeKit docs (historical reference only)
+- **[archive/](./archive/)** - Archived BridgeKit and other documentation (historical reference only)
 
-### Legacy/Archive Documents
+### Archived Documentation
 
-*Note: The following documents have been consolidated but are kept for reference:*
-- `11-circle-bridge-kit-research.md` → Consolidated into `BRIDGE-KIT-GUIDE.md`
-- `12-bridge-kit-integration-summary.md` → Consolidated into `BRIDGE-KIT-GUIDE.md`
-- `17-bridge-kit-documentation-research.md` → Consolidated into `BRIDGE-KIT-GUIDE.md`
-- `18-bridge-kit-verified-findings.md` → Consolidated into `BRIDGE-KIT-GUIDE.md`
-- `BRIDGE-KIT-REVIEW-*` (5 files) → Moved to `archive/` folder
-- `09-hyperlane-research.md` → Consolidated into `RESEARCH-hyperlane.md`
-- `14-hyperlane-yield-routes-research.md` → Consolidated into `RESEARCH-hyperlane.md`
-- `19-hyperlane-deep-research.md` → Consolidated into `RESEARCH-hyperlane.md`
-- `15-architecture-simplification-summary.md` → Merged into `02-architecture.md`
-- `16-hub-spoke-architecture.md` → Merged into `02-architecture.md`
+- **[archive/README.md](./archive/README.md)** - Archived documentation index
+- All duplicate, superseded, and historical documentation has been moved to `archive/` folder
+- See archive README for details on what was consolidated
 
 ## Quick Navigation
 
