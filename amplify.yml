@@ -10,10 +10,10 @@ applications:
           commands:
             - npm run build
       artifacts:
-        baseDirectory: frontend
+        baseDirectory: .
         files:
           - '.next/**/*'
-          - '../node_modules/**/*'
+          - 'node_modules/**/*'
           - 'package.json'
           - 'package-lock.json'
           - 'next.config.js'
@@ -21,4 +21,4 @@ applications:
       cache:
         paths:
           - 'node_modules/**/*'
-          - 'frontend/.next/cache/**/*'
+          - '.next/cache/**/*'
