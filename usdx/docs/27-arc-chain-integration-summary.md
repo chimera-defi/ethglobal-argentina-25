@@ -12,14 +12,16 @@ This document provides a summary of the research and planning work done to add C
 ## Key Documents
 
 1. **Research Document**: `25-circle-arc-chain-research.md`
-   - Comprehensive research findings
+   - Comprehensive research findings ✅ **UPDATED**
    - Integration requirements
    - Known gaps and questions
+   - **Key Finding**: Bridge Kit supports Arc, LayerZero does NOT
 
 2. **Task List**: `26-arc-chain-integration-tasks.md`
    - Detailed implementation tasks
    - Phase-by-phase breakdown
    - Verification steps
+   - **Updated**: LayerZero limitation addressed
 
 3. **This Summary**: `27-arc-chain-integration-summary.md`
    - Quick reference
@@ -57,28 +59,29 @@ Spoke chains are configured in:
 
 Before implementation can begin, the following must be verified:
 
-1. **Arc Chain Specifications**
-   - Chain ID (numeric)
-   - Network name
-   - RPC endpoints (mainnet and testnet)
-   - Block explorer URL
-   - Native currency details
+1. **Arc Chain Specifications** ⏳
+   - Chain ID (numeric) - **STILL NEEDED**
+   - Network name - ✅ Arc
+   - RPC endpoints - ✅ Testnet endpoints found
+   - Block explorer URL - ✅ `https://testnet.arcscan.app`
+   - Native currency details - **STILL NEEDED**
 
-2. **CCTP Support**
-   - CCTP domain ID for Arc
-   - TokenMessenger contract address
-   - MessageTransmitter contract address
-   - USDC contract address on Arc
+2. **CCTP Support** ✅
+   - CCTP domain ID for Arc - **STILL NEEDED**
+   - TokenMessenger contract address - Check `/arc/references/contract-addresses`
+   - MessageTransmitter contract address - Check `/arc/references/contract-addresses`
+   - USDC contract address on Arc - Check `/arc/references/contract-addresses`
+   - **Status**: CCTP is supported, addresses documented
 
-3. **Bridge Kit Support**
-   - Bridge Kit chain identifier string
-   - SDK support confirmation
-   - Adapter compatibility
+3. **Bridge Kit Support** ✅
+   - Bridge Kit chain identifier string - **STILL NEEDED** (likely "arc" or "arc-testnet")
+   - SDK support confirmation - ✅ **CONFIRMED: Bridge Kit supports Arc**
+   - Adapter compatibility - Should work (verify)
 
-4. **LayerZero Support**
-   - LayerZero endpoint address on Arc
-   - LayerZero endpoint ID (EID)
-   - Cross-chain path configuration
+4. **LayerZero Support** ❌
+   - **CRITICAL**: LayerZero **DOES NOT** support Arc chain
+   - **Impact**: USDX cross-chain transfers via LayerZero will NOT work
+   - **Alternative**: Need alternative solution or wait for LayerZero support
 
 ### Where to Find This Information
 
@@ -141,13 +144,21 @@ Before implementation can begin, the following must be verified:
 
 ## Integration Pattern
 
-The integration follows the same pattern as existing spoke chains:
+The integration follows a modified pattern due to LayerZero limitation:
 
 1. **Chain Configuration**: Add Arc to chain definitions
-2. **Bridge Kit**: Map Arc chain ID to Bridge Kit identifier
+2. **Bridge Kit**: Map Arc chain ID to Bridge Kit identifier ✅ Supported
 3. **Deployment**: Update deployment scripts with Arc chain ID
-4. **LayerZero**: Configure LayerZero endpoint ID for Arc
-5. **Testing**: Test full flow on Arc chain
+4. **LayerZero**: ⚠️ **SKIP** - LayerZero does not support Arc
+   - Arc will function as USDC-only spoke chain
+   - Cross-chain USDX transfers to/from Arc will need alternative solution
+5. **Testing**: Test full flow on Arc testnet
+
+### Modified Architecture for Arc
+- ✅ USDC deposits via Bridge Kit (supported)
+- ✅ USDX minting on Arc using hub positions
+- ❌ Cross-chain USDX transfers via LayerZero (not supported)
+- 🔄 Alternative: Use Bridge Kit for USDC, wait for LayerZero support for USDX transfers
 
 ## Known Challenges
 

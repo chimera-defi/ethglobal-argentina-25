@@ -7,11 +7,17 @@ This document provides a comprehensive task list for implementing Circle's Arc c
 ## Prerequisites
 
 Before starting implementation, ensure:
-- [ ] All research from `25-circle-arc-chain-research.md` is complete
+- [x] All research from `25-circle-arc-chain-research.md` is complete
 - [ ] Arc chain specifications are verified (chain ID, RPC endpoints, etc.)
 - [ ] CCTP contract addresses are confirmed
-- [ ] Bridge Kit SDK support is verified
-- [ ] LayerZero support is verified
+- [x] Bridge Kit SDK support is verified ✅ **CONFIRMED: Bridge Kit supports Arc**
+- [x] LayerZero support is verified ❌ **CONFIRMED: LayerZero does NOT support Arc**
+
+### ⚠️ Critical Limitation
+**LayerZero does NOT support Arc chain**. This means:
+- USDXShareOFT (LayerZero-based) cannot be used on Arc
+- Cross-chain USDX transfers via LayerZero will not work
+- Alternative cross-chain solution needed for USDX transfers to/from Arc
 
 ## Task Breakdown
 
@@ -155,16 +161,23 @@ if (chainId == <ARC_CHAIN_ID>) {
 
 ---
 
-#### Task 3.3: Update LayerZero Configuration
+#### Task 3.3: Handle LayerZero Limitation ⚠️
 **Files**: Contract deployment scripts and configuration files
 
-**Changes Needed**:
-- [ ] Add Arc LayerZero endpoint ID to configuration
-- [ ] Update cross-chain path mappings (Hub ↔ Arc)
-- [ ] Configure LayerZero message types for Arc
-- [ ] Verify LayerZero endpoint contract address on Arc
+**Critical Note**: LayerZero does NOT support Arc chain. This task requires alternative approach.
 
-**Dependencies**: Phase 1 complete, LayerZero support verification
+**Options to Consider**:
+- [ ] **Option A**: Skip LayerZero integration for Arc (Arc will be USDC-only spoke)
+- [ ] **Option B**: Implement alternative cross-chain solution for Arc
+- [ ] **Option C**: Wait for LayerZero to add Arc support
+- [ ] **Option D**: Use Bridge Kit for cross-chain USDX (if supported)
+
+**Recommended Approach**: 
+- For MVP: Skip LayerZero on Arc, use Bridge Kit for USDC transfers only
+- Arc can still function as spoke chain for USDC deposits and USDX minting
+- Cross-chain USDX transfers to/from Arc will need to wait for LayerZero support or alternative solution
+
+**Dependencies**: Phase 1 complete, LayerZero limitation confirmed
 
 ---
 

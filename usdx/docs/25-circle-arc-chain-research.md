@@ -7,22 +7,39 @@ This document contains research findings and integration requirements for adding
 ## Research Status
 
 **Date**: January 2025  
-**Status**: ⚠️ **IN PROGRESS** - Documentation may be limited as Arc is a new chain
+**Status**: ✅ **UPDATED** - Key information gathered from Arc documentation
 
 ## What We Know About Arc Chain
 
 ### Basic Information
-- **Name**: Arc (Circle's new chain)
-- **Type**: Blockchain network (likely EVM-compatible based on Circle's infrastructure)
-- **Status**: Newly announced/launched chain
+- **Name**: Arc (Circle's new blockchain network)
+- **Type**: EVM-compatible Layer-1 blockchain
+- **Status**: Testnet available, mainnet status TBD
 - **Developer**: Circle
+- **Documentation**: https://docs.arc.network
 
-### Assumptions (To Be Verified)
-Based on Circle's existing infrastructure patterns:
-- Arc is likely EVM-compatible (for CCTP/Bridge Kit support)
-- Arc likely supports USDC via CCTP
-- Arc likely supports Circle Bridge Kit
-- Arc likely has LayerZero support (for USDX cross-chain transfers)
+### Verified Information ✅
+- ✅ **EVM-Compatible**: Arc is an EVM-compatible blockchain
+- ✅ **Bridge Kit Support**: Circle Bridge Kit **DOES support** Arc chain
+- ❌ **LayerZero Support**: LayerZero **DOES NOT** support Arc chain (as of January 2025)
+- ✅ **CCTP Support**: Arc supports CCTP (Cross-Chain Transfer Protocol) - contract addresses documented
+- ✅ **USDC Support**: USDC is available on Arc via CCTP
+- ✅ **Testnet Available**: Arc testnet is operational
+
+### Network Details
+
+#### Testnet
+- **RPC Endpoints**:
+  - `https://rpc.testnet.arc.network`
+  - `https://rpc.blockdaemon.testnet.arc.network`
+  - `https://rpc.drpc.testnet.arc.network`
+- **Block Explorer**: `https://testnet.arcscan.app`
+- **Faucet**: `https://faucet.circle.com`
+
+#### Mainnet
+- **Status**: TBD - Check Arc documentation for mainnet launch
+- **RPC Endpoints**: TBD
+- **Block Explorer**: TBD
 
 ## Integration Requirements
 
@@ -60,30 +77,40 @@ Based on Circle's existing infrastructure patterns:
 3. Test CCTP transfer on testnet (if available)
 4. Confirm attestation API supports Arc domain
 
-### 3. Bridge Kit Support
+### 3. Bridge Kit Support ✅
 
-#### Required Information
-- [ ] **Bridge Kit Chain Identifier**: String identifier used by Bridge Kit SDK (e.g., "arc", "arc-mainnet")
-- [ ] **Bridge Kit Support**: Confirmation that Bridge Kit SDK supports Arc
-- [ ] **Adapter Support**: Confirmation that `@circle-fin/adapter-viem-v2` supports Arc
-
-#### Verification Steps
-1. Check Bridge Kit SDK documentation for supported chains
-2. Review Bridge Kit SDK source code (if available)
-3. Test Bridge Kit initialization with Arc chain
-4. Verify adapter compatibility
-
-### 4. LayerZero Support (For USDX Cross-Chain)
-
-#### Required Information
-- [ ] **LayerZero Endpoint Address**: LayerZero endpoint contract on Arc
-- [ ] **LayerZero Chain ID**: Arc's LayerZero endpoint ID (EID)
-- [ ] **LayerZero Support**: Confirmation that LayerZero supports Arc
+#### Verified Information
+- ✅ **Bridge Kit Support**: Circle Bridge Kit **DOES support** Arc chain
+- ✅ **Bridge Kit Chain Identifier**: TBD - Check Bridge Kit SDK documentation for exact identifier (likely "arc" or "arc-testnet")
+- ✅ **Adapter Support**: `@circle-fin/adapter-viem-v2` should support Arc (verify in SDK)
 
 #### Verification Steps
-1. Check LayerZero documentation for supported chains
-2. Verify LayerZero endpoint contract deployment
-3. Test LayerZero message passing to/from Arc
+1. ✅ Check Bridge Kit SDK documentation for supported chains - **CONFIRMED: Arc is supported**
+2. [ ] Review Bridge Kit SDK source code to find exact chain identifier
+3. [ ] Test Bridge Kit initialization with Arc chain
+4. [ ] Verify adapter compatibility with Arc testnet
+
+### 4. LayerZero Support ❌
+
+#### Critical Finding
+- ❌ **LayerZero Support**: LayerZero **DOES NOT** support Arc chain (as of January 2025)
+- ⚠️ **Impact**: USDX cross-chain transfers via LayerZero will **NOT** work on Arc
+- 🔄 **Alternative**: Need to use alternative cross-chain solution for USDX transfers to/from Arc
+
+#### Implications for USDX Protocol
+Since LayerZero is not supported on Arc:
+1. **USDXShareOFT** (LayerZero-based) cannot be used for Arc
+2. **Cross-chain USDX transfers** to/from Arc will need alternative mechanism
+3. **Options to consider**:
+   - Use Bridge Kit for USDC transfers (already supported)
+   - Wait for LayerZero to add Arc support
+   - Use alternative cross-chain protocol (if available)
+   - Implement Arc-specific cross-chain solution
+
+#### Verification Steps
+1. ✅ Check LayerZero documentation - **CONFIRMED: Arc not supported**
+2. [ ] Monitor LayerZero updates for Arc support
+3. [ ] Evaluate alternative cross-chain solutions for Arc
 
 ### 5. Network Configuration
 
@@ -187,23 +214,33 @@ Based on existing spoke chain implementations:
 ## Known Gaps & Questions
 
 ### Critical Questions
+
+#### Answered ✅
+1. ✅ **Does Bridge Kit support Arc?** - **YES** - Bridge Kit supports Arc
+2. ✅ **Does LayerZero support Arc?** - **NO** - LayerZero does not support Arc (as of January 2025)
+3. ✅ **Does Arc support CCTP?** - **YES** - CCTP contract addresses are documented
+4. ✅ **Is Arc testnet available?** - **YES** - Testnet is operational
+
+#### Still Need Answers ⏳
 1. **What is Arc's chain ID?**
-   - Need to verify from Circle documentation or Arc chain docs
+   - Need to verify from Arc documentation (`/arc/references/connect-to-arc`)
+   - Check ChainList.org if Arc is listed
 
-2. **Does Arc support CCTP?**
-   - Need to verify CCTP contract deployment on Arc
-   - Need to verify domain ID assignment
+2. **What is Arc's CCTP domain ID?**
+   - Check Circle's CCTP documentation for Arc domain ID
+   - Verify in contract addresses page
 
-3. **Does Bridge Kit support Arc?**
-   - Need to check Bridge Kit SDK for Arc support
-   - May need to wait for Bridge Kit update if not yet supported
+3. **What are the CCTP contract addresses on Arc?**
+   - Check `/arc/references/contract-addresses` page
+   - Verify TokenMessenger and MessageTransmitter addresses
 
-4. **Does LayerZero support Arc?**
-   - Need to verify LayerZero endpoint deployment
-   - Need to verify endpoint ID (EID)
+4. **What is Bridge Kit's chain identifier for Arc?**
+   - Check Bridge Kit SDK documentation
+   - Likely "arc" or "arc-testnet" but needs verification
 
-5. **Is Arc mainnet or testnet?**
-   - Need to determine if testnet is available for testing
+5. **Is Arc mainnet available?**
+   - Check Arc documentation for mainnet status
+   - Currently only testnet confirmed
 
 ### Documentation Gaps
 - Arc chain may be too new for comprehensive documentation
@@ -222,9 +259,18 @@ Based on existing spoke chain implementations:
 - **Main Docs**: https://layerzero.gitbook.io/docs
 - **Supported Chains**: https://layerzero.gitbook.io/docs/technical-reference/mainnet/mainnet-addresses
 
+### Arc Documentation
+- **Main Docs**: https://docs.arc.network
+- **Welcome Page**: https://docs.arc.network/arc/concepts/welcome-to-arc
+- **Connect to Arc**: https://docs.arc.network/arc/references/connect-to-arc
+- **Contract Addresses**: https://docs.arc.network/arc/references/contract-addresses
+- **Deploy on Arc**: https://docs.arc.network/arc/tutorials/deploy-on-arc
+
 ### Other Resources
 - **ChainList**: https://chainlist.org (may list Arc if it's public)
 - **Circle GitHub**: https://github.com/circlefin (may have updates)
+- **Arc Testnet Explorer**: https://testnet.arcscan.app
+- **Arc Faucet**: https://faucet.circle.com
 
 ## Next Steps
 
@@ -244,4 +290,23 @@ Based on existing spoke chain implementations:
 ---
 
 **Last Updated**: January 2025  
-**Status**: Research in progress - awaiting Circle documentation updates
+**Status**: ✅ Research updated with Arc documentation findings
+
+## Key Findings Summary
+
+### ✅ Confirmed
+- Bridge Kit supports Arc
+- CCTP is supported on Arc
+- Testnet is available
+- EVM-compatible blockchain
+
+### ❌ Limitations
+- LayerZero does NOT support Arc
+- This impacts USDX cross-chain transfers
+
+### ⏳ Still Needed
+- Chain ID
+- CCTP domain ID
+- CCTP contract addresses
+- Bridge Kit chain identifier
+- Mainnet status
