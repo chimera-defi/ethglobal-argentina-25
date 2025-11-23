@@ -15,12 +15,10 @@ import {
   Network, 
   Shield, 
   Zap, 
-  ArrowRight,
   Moon,
   Sun,
   AlertCircle,
   Lock,
-  Repeat,
   Wallet,
   ChevronRight,
   CheckCircle2,
@@ -95,39 +93,39 @@ export default function Home() {
 
   const features = [
     {
-      icon: Shield,
-      title: '1:1 USDC Backing',
-      description: 'Every USDX is fully backed by USDC deposited into audited smart contracts.',
-      gradient: 'from-blue-500 to-cyan-500',
+      icon: Network,
+      title: 'LayerZero OVAULT',
+      description: 'Built on LayerZero Omnichain Vault technology - deposit from any chain, earn yield, and access your shares anywhere.',
+      gradient: 'from-purple-500 to-pink-500',
     },
     {
       icon: TrendingUp,
-      title: 'Automatic Yield',
-      description: 'Earn yield automatically through Yearn Finance\'s battle-tested vaults.',
+      title: 'Yield from Yearn',
+      description: 'Your USDC earns yield through Yearn Finance vaults on the hub chain, with shares automatically updated across all chains.',
       gradient: 'from-emerald-500 to-green-500',
     },
     {
-      icon: Network,
-      title: 'Cross-Chain',
-      description: 'Use USDX across multiple chains with LayerZero OFT technology.',
-      gradient: 'from-purple-500 to-pink-500',
+      icon: Shield,
+      title: '100% USDC Backed',
+      description: 'All deposits are secured in audited smart contracts and held as USDC in battle-tested Yearn vaults.',
+      gradient: 'from-blue-500 to-cyan-500',
     },
     {
       icon: Lock,
       title: 'Non-Custodial',
-      description: 'You maintain full control of your assets through smart contracts.',
+      description: 'You maintain full control - your vault shares are always redeemable for the underlying USDC plus earned yield.',
       gradient: 'from-orange-500 to-amber-500',
     },
     {
       icon: Zap,
-      title: 'Instant Minting',
-      description: 'Mint and redeem USDX instantly with no delays or waiting periods.',
+      title: 'Single Transaction',
+      description: 'Deposit on one chain, receive vault shares on another - all in a single transaction with no manual bridging.',
       gradient: 'from-rose-500 to-red-500',
     },
     {
       icon: Sparkles,
-      title: 'Transparent',
-      description: 'All transactions and yields are fully transparent and auditable on-chain.',
+      title: 'Transparent & Auditable',
+      description: 'All vault operations, yields, and cross-chain transfers are fully transparent and verifiable on-chain.',
       gradient: 'from-indigo-500 to-blue-500',
     },
   ];
@@ -136,25 +134,25 @@ export default function Home() {
     {
       number: 1,
       title: 'Connect Wallet',
-      description: 'Connect MetaMask or any Web3 wallet to get started',
-      icon: Coins,
+      description: 'Connect your wallet on any supported chain',
+      icon: Wallet,
     },
     {
       number: 2,
       title: 'Deposit USDC',
-      description: 'Deposit USDC to mint USDX 1:1 on the hub chain',
-      icon: ArrowRight,
+      description: 'Deposit USDC - automatically bridged to hub chain via Circle CCTP',
+      icon: Coins,
     },
     {
       number: 3,
       title: 'Earn Yield',
-      description: 'Your USDC earns yield through Yearn automatically',
+      description: 'Your USDC enters Yearn vaults and starts earning yield',
       icon: TrendingUp,
     },
     {
       number: 4,
-      title: 'Use Cross-Chain',
-      description: 'Mint USDX on spoke chains and use anywhere',
+      title: 'Use Anywhere',
+      description: 'Access your yield-bearing shares on any chain via OVAULT',
       icon: Network,
     },
   ];
@@ -188,7 +186,7 @@ export default function Home() {
                 USDX Protocol
               </h1>
               <p className="text-xs text-gray-600 dark:text-gray-400 font-medium">
-                Cross-Chain Yield-Bearing Stablecoin
+                Omnichain Vault-Backed Stablecoin
               </p>
             </div>
           </motion.div>
@@ -220,43 +218,65 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          className="relative text-center mb-20 p-12 rounded-3xl border-4 border-blue-500 bg-gradient-to-br from-blue-50 via-cyan-50 to-indigo-50 dark:from-blue-950 dark:via-cyan-950 dark:to-indigo-950 shadow-2xl"
         >
-          <motion.div
-            initial={{ scale: 0.9 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="inline-block mb-6"
-          >
-            <div className="px-4 py-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 rounded-full border border-blue-200 dark:border-blue-800">
-              <span className="text-sm font-semibold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Yield-Bearing Stablecoin</span>
-            </div>
-          </motion.div>
-          <h2 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-            Deposit USDC, Earn Yield
-          </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed">
-            Mint USDX 1:1 backed by USDC and earn yield automatically through Yearn Finance.
-            Use your USDX seamlessly across multiple chains.
-          </p>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400"
-          >
-            <Zap className="h-4 w-4" />
-            <span>Powered by Yearn Finance & Circle Bridge Kit</span>
-          </motion.div>
+          <div className="relative z-10">
+            <motion.div
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="inline-block mb-6"
+            >
+              <div className="px-6 py-3 bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 dark:from-blue-900/30 dark:via-purple-900/30 dark:to-pink-900/30 rounded-full border-2 border-blue-200 dark:border-blue-800 shadow-lg">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                  <span className="text-sm font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">Yield-Bearing Stablecoin</span>
+                  <Sparkles className="h-4 w-4 text-pink-600 dark:text-pink-400" />
+                </div>
+              </div>
+            </motion.div>
+            <h2 className="text-5xl md:text-7xl font-black mb-6 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent leading-tight">
+              Earn Yield Across Any Chain
+            </h2>
+            <div className="h-2 w-32 mx-auto mb-8 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 rounded-full" />
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8 leading-relaxed">
+              USDX uses LayerZero OVAULT technology to make yield-bearing vault shares accessible from any chain. 
+              Deposit USDC on any chain, earn yield automatically, and use your shares anywhere.
+            </p>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="inline-flex items-center gap-3 px-6 py-3 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-2xl border-2 border-gray-200 dark:border-gray-700 shadow-xl"
+            >
+              <div className="flex items-center gap-2">
+                <div className="p-2 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg">
+                  <Zap className="h-4 w-4 text-white" />
+                </div>
+                <span className="text-sm font-semibold text-gray-700 dark:text-gray-300">Powered by</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Network className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                <span className="text-sm font-bold text-gray-900 dark:text-white">LayerZero OVAULT</span>
+              </div>
+              <span className="text-gray-400">•</span>
+              <div className="flex items-center gap-2">
+                <Layers className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                <span className="text-sm font-bold text-gray-900 dark:text-white">Circle CCTP</span>
+              </div>
+            </motion.div>
+          </div>
         </motion.div>
 
-        {/* Stats Grid */}
+        {/* Stats Grid Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-20"
+          className="mb-20 p-8 rounded-3xl border-4 border-blue-400 bg-gradient-to-br from-white via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-blue-950 dark:to-cyan-950 shadow-2xl"
         >
+          <h2 className="text-3xl font-black text-center mb-8 text-blue-600 dark:text-blue-400">Protocol Statistics</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
@@ -265,8 +285,8 @@ export default function Home() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + index * 0.1 }}
-                whileHover={{ scale: 1.03, y: -4 }}
-                className={`relative overflow-hidden rounded-2xl p-6 border-2 ${stat.bgLight} border-gray-200/50 dark:border-gray-700/50 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300`}
+                whileHover={{ scale: 1.05, y: -8 }}
+                className={`relative overflow-hidden rounded-2xl p-6 border-4 border-blue-400 dark:border-blue-600 ${stat.bgLight} shadow-xl hover:shadow-2xl hover:border-blue-500 dark:hover:border-blue-500 transition-all duration-300`}
               >
                 <div className="relative z-10">
                   <div className={`inline-flex p-3 bg-gradient-to-br ${stat.gradient} rounded-xl mb-3 shadow-md`}>
@@ -286,24 +306,26 @@ export default function Home() {
                 <div className={`absolute -right-8 -bottom-8 w-32 h-32 bg-gradient-to-br ${stat.gradient} opacity-5 rounded-full`} />
               </motion.div>
             );
-          })}
+            })}
+          </div>
         </motion.div>
 
-        {/* Protocol Flow Diagram */}
+
+        {/* Protocol Flow Diagram Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="mb-20"
+          className="mb-20 p-10 rounded-3xl border-4 border-indigo-500 bg-gradient-to-br from-indigo-50 via-blue-50 to-cyan-50 dark:from-indigo-950 dark:via-blue-950 dark:to-cyan-950 shadow-2xl"
         >
           <div className="text-center mb-12">
-            <motion.h2
+              <motion.h2
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
               className="text-4xl font-black mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent"
             >
-              How USDX Works
+              How OVAULT Technology Works
             </motion.h2>
             <motion.p
               initial={{ opacity: 0 }}
@@ -311,11 +333,11 @@ export default function Home() {
               transition={{ delay: 0.6 }}
               className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto"
             >
-              A visual guide to the USDX protocol flow
+              LayerZero OVAULT makes yield-bearing vault shares accessible across any blockchain
             </motion.p>
           </div>
 
-          <div className="card max-w-6xl mx-auto p-8 md:p-12">
+          <div className="max-w-6xl mx-auto p-8 md:p-12 rounded-2xl border-4 border-blue-300 bg-white/70 dark:bg-gray-900/70 backdrop-blur-sm shadow-xl">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
               {/* Step 1: Deposit */}
               <motion.div
@@ -332,9 +354,9 @@ export default function Home() {
                     <div className="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/30 rounded-full mb-2">
                       <span className="text-xs font-bold text-blue-700 dark:text-blue-300">STEP 1</span>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Deposit USDC</h3>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Bridge USDC</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Users deposit USDC into the USDX Vault contract
+                      USDC is bridged to the hub chain using Circle CCTP
                     </p>
                   </div>
                 </div>
@@ -359,9 +381,9 @@ export default function Home() {
                     <div className="inline-block px-3 py-1 bg-emerald-100 dark:bg-emerald-900/30 rounded-full mb-2">
                       <span className="text-xs font-bold text-emerald-700 dark:text-emerald-300">STEP 2</span>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Earn Yield</h3>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Vault Deposit</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Vault deposits USDC into Yearn Finance to generate yield
+                      OVAULT Composer deposits USDC into Yearn vault on hub chain
                     </p>
                   </div>
                 </div>
@@ -386,9 +408,9 @@ export default function Home() {
                     <div className="inline-block px-3 py-1 bg-purple-100 dark:bg-purple-900/30 rounded-full mb-2">
                       <span className="text-xs font-bold text-purple-700 dark:text-purple-300">STEP 3</span>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Mint USDX</h3>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Receive Shares</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Receive USDX tokens 1:1 with your deposited USDC
+                      ERC-4626 vault mints yield-bearing shares representing your deposit
                     </p>
                   </div>
                 </div>
@@ -413,9 +435,9 @@ export default function Home() {
                     <div className="inline-block px-3 py-1 bg-orange-100 dark:bg-orange-900/30 rounded-full mb-2">
                       <span className="text-xs font-bold text-orange-700 dark:text-orange-300">STEP 4</span>
                     </div>
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Cross-Chain</h3>
+                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">Use Anywhere</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                      Bridge and use USDX across multiple blockchain networks
+                      OVAULT sends shares to any chain - omnichain fungible tokens
                     </p>
                   </div>
                 </div>
@@ -432,11 +454,11 @@ export default function Home() {
               <div className="flex items-start gap-3">
                 <Sparkles className="h-6 w-6 text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="font-bold text-gray-900 dark:text-white mb-2">The Complete Cycle</h4>
+                  <h4 className="font-bold text-gray-900 dark:text-white mb-2">Understanding OVAULT</h4>
                   <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                    Your USDC remains securely locked in Yearn vaults earning yield continuously. 
-                    USDX represents your share of the vault, which increases in value over time as yield accrues. 
-                    You can redeem USDX for USDC (plus earned yield) at any time, or use it across multiple chains via LayerZero OFT.
+                    LayerZero OVAULT makes vault shares omnichain fungible tokens. Your USDC earns yield in Yearn vaults on the hub chain, 
+                    while your shares can move freely across any supported blockchain. The share value increases over time as yield accrues. 
+                    You can redeem shares for USDC plus yield from any chain, or transfer shares between chains instantly.
                   </p>
                 </div>
               </div>
@@ -444,19 +466,20 @@ export default function Home() {
           </div>
         </motion.div>
 
+
         {/* Features Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="mb-20"
+          className="mb-20 p-10 rounded-3xl border-4 border-cyan-500 bg-gradient-to-br from-cyan-50 via-sky-50 to-blue-50 dark:from-cyan-950 dark:via-sky-950 dark:to-blue-950 shadow-2xl"
         >
           <div className="text-center mb-12">
             <h2 className="text-4xl font-black mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
               Why Choose USDX?
             </h2>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Built with security, transparency, and user experience in mind
+              The first stablecoin built on LayerZero OVAULT - truly omnichain yield-bearing shares
             </p>
           </div>
 
@@ -469,8 +492,8 @@ export default function Home() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6 + index * 0.1 }}
-                  whileHover={{ scale: 1.03, y: -5 }}
-                  className="card group"
+                  whileHover={{ scale: 1.05, y: -8 }}
+                  className="card group border-4 border-cyan-400 dark:border-cyan-600 hover:border-cyan-500 dark:hover:border-cyan-500"
                 >
                   <div className={`inline-flex p-4 bg-gradient-to-br ${feature.gradient} rounded-xl mb-4 shadow-lg group-hover:shadow-xl transition-shadow duration-300`}>
                     <Icon className="h-6 w-6 text-white" />
@@ -487,8 +510,22 @@ export default function Home() {
           </div>
         </motion.div>
 
-        {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-20">
+        {/* Interactive Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6 }}
+          className="mb-20 p-10 rounded-3xl border-4 border-blue-600 bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950 shadow-2xl"
+        >
+          <div className="text-center mb-10">
+            <h2 className="text-4xl font-black text-blue-600 dark:text-blue-400 mb-3">
+              Start Using USDX
+            </h2>
+            <p className="text-lg text-gray-700 dark:text-gray-300">
+              Connect your wallet and interact with the protocol
+            </p>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -505,7 +542,9 @@ export default function Home() {
             <DepositFlow signer={signer} onSuccess={handleSuccess} />
             <WithdrawFlow signer={signer} onSuccess={handleSuccess} />
           </motion.div>
-        </div>
+          </div>
+        </motion.div>
+
 
         {/* Quick Start Guide */}
         {!isConnected && (
@@ -513,7 +552,7 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="mb-20"
+            className="mb-20 p-10 rounded-3xl border-4 border-sky-500 bg-gradient-to-br from-sky-50 via-blue-50 to-indigo-50 dark:from-sky-950 dark:via-blue-950 dark:to-indigo-950 shadow-2xl"
           >
             <div className="text-center mb-12">
               <h2 className="text-4xl font-black mb-4 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
@@ -533,10 +572,10 @@ export default function Home() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.8 + index * 0.1 }}
-                    whileHover={{ y: -5 }}
+                    whileHover={{ y: -8, scale: 1.03 }}
                     className="relative group"
                   >
-                    <div className="card p-6 h-full flex flex-col items-center text-center">
+                    <div className="card p-6 h-full flex flex-col items-center text-center border-4 border-sky-400 dark:border-sky-600 hover:border-sky-500 dark:hover:border-sky-500">
                       <div className="relative mb-4">
                         <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">
                           <span className="text-white font-black text-xl">{step.number}</span>
@@ -559,14 +598,15 @@ export default function Home() {
           </motion.div>
         )}
 
-        {/* Developer Info */}
+
+        {/* Developer Info Section */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.9 }}
-          className="max-w-4xl mx-auto"
+          className="max-w-4xl mx-auto p-8 rounded-3xl border-4 border-amber-500 bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 dark:from-amber-950 dark:via-yellow-950 dark:to-orange-950 shadow-2xl"
         >
-          <div className="card bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 dark:from-amber-900/10 dark:via-yellow-900/10 dark:to-orange-900/10 border-2 border-amber-200/50 dark:border-amber-800/50">
+          <div className="bg-white/50 dark:bg-gray-900/50 rounded-2xl p-6 border-2 border-amber-300 dark:border-amber-700">
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0">
                 <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
@@ -616,53 +656,76 @@ export default function Home() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
-        className="relative border-t border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl mt-24"
+        className="relative border-t-4 border-transparent bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200 dark:from-blue-900 dark:via-purple-900 dark:to-pink-900 mt-24"
       >
-        <div className="container mx-auto px-4 py-12">
-          <div className="flex flex-col items-center text-center max-w-3xl mx-auto">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="flex items-center gap-3 mb-4"
-            >
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
-                <Coins className="h-6 w-6 text-white" />
+        {/* Decorative top border gradient */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
+        
+        {/* Background with gradient */}
+        <div className="relative bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl">
+          {/* Subtle gradient overlay */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-purple-50/50 to-pink-50/50 dark:from-blue-950/30 dark:via-purple-950/30 dark:to-pink-950/30" />
+          
+          <div className="relative container mx-auto px-4 py-16">
+            <div className="flex flex-col items-center text-center max-w-4xl mx-auto">
+              {/* Logo and brand */}
+              <motion.div
+                whileHover={{ scale: 1.05, rotate: 2 }}
+                className="flex items-center gap-3 mb-6 p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border-2 border-gray-200 dark:border-gray-700"
+              >
+                <div className="w-14 h-14 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-xl flex items-center justify-center shadow-lg">
+                  <Coins className="h-8 w-8 text-white" />
+                </div>
+                <div className="text-left">
+                  <h3 className="text-2xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    USDX Protocol
+                  </h3>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 font-bold">
+                    Omnichain Vault-Backed Stablecoin
+                  </p>
+                </div>
+              </motion.div>
+              
+              <p className="text-base text-gray-600 dark:text-gray-300 mb-8 max-w-2xl leading-relaxed font-medium">
+                Built on LayerZero OVAULT technology - making yield-bearing vault shares accessible from any blockchain. 
+                Earn yield on your USDC across all chains simultaneously.
+              </p>
+
+              {/* Technology badges */}
+              <div className="flex flex-wrap items-center justify-center gap-4 mb-8">
+                <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl shadow-lg">
+                  <Network className="h-5 w-5 text-white" />
+                  <span className="text-sm font-bold text-white">LayerZero OVAULT</span>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-xl shadow-lg">
+                  <Shield className="h-5 w-5 text-white" />
+                  <span className="text-sm font-bold text-white">Yearn Vaults</span>
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-emerald-500 to-green-500 rounded-xl shadow-lg">
+                  <Layers className="h-5 w-5 text-white" />
+                  <span className="text-sm font-bold text-white">Circle CCTP</span>
+                </motion.div>
               </div>
-              <div className="text-left">
-                <h3 className="text-xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  USDX Protocol
-                </h3>
-                <p className="text-xs text-gray-600 dark:text-gray-400 font-semibold">
-                  Cross-Chain Yield Stablecoin
+
+              {/* Decorative divider */}
+              <div className="w-full max-w-md mb-8">
+                <div className="flex items-center gap-3">
+                  <div className="flex-1 h-px bg-gradient-to-r from-transparent via-blue-500 to-purple-500" />
+                  <div className="flex gap-1.5">
+                    <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                    <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" style={{ animationDelay: '0.2s' }} />
+                    <div className="w-2 h-2 rounded-full bg-pink-500 animate-pulse" style={{ animationDelay: '0.4s' }} />
+                  </div>
+                  <div className="flex-1 h-px bg-gradient-to-l from-transparent via-purple-500 to-pink-500" />
+                </div>
+              </div>
+
+              {/* Tech stack */}
+              <div className="p-4 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-850 rounded-xl border-2 border-gray-200 dark:border-gray-700">
+                <p className="text-sm text-gray-600 dark:text-gray-400 font-semibold">
+                  Built with <span className="text-purple-600 dark:text-purple-400 font-bold">LayerZero OVAULT</span>, <span className="text-blue-600 dark:text-blue-400 font-bold">Yearn Finance</span>, and <span className="text-emerald-600 dark:text-emerald-400 font-bold">Circle CCTP</span>
                 </p>
               </div>
-            </motion.div>
-            
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 max-w-xl leading-relaxed">
-              A next-generation stablecoin protocol that combines USDC backing with automatic yield generation 
-              and seamless cross-chain functionality.
-            </p>
-
-            <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-gray-500 dark:text-gray-500">
-              <div className="flex items-center gap-1.5">
-                <Shield className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
-                <span>Yearn Finance</span>
-              </div>
-              <span>•</span>
-              <div className="flex items-center gap-1.5">
-                <Network className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400" />
-                <span>LayerZero OFT</span>
-              </div>
-              <span>•</span>
-              <div className="flex items-center gap-1.5">
-                <Layers className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span>Circle Bridge Kit</span>
-              </div>
-            </div>
-
-            <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-800 w-full">
-              <p className="text-xs text-gray-500 dark:text-gray-500">
-                Built with Next.js, ethers.js, and Tailwind CSS
-              </p>
             </div>
           </div>
         </div>

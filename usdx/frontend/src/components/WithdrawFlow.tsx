@@ -178,19 +178,19 @@ export function WithdrawFlow({ signer, onSuccess }: WithdrawFlowProps) {
           <ol className="text-sm text-gray-700 dark:text-gray-300 space-y-2 ml-8">
             <li className="flex items-start gap-2">
               <span className="font-bold text-purple-600 dark:text-purple-400">1.</span>
-              <span>Approve USDX for burning by the vault</span>
+              <span>Approve USDX vault shares for redemption</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="font-bold text-purple-600 dark:text-purple-400">2.</span>
-              <span>Vault burns your USDX tokens</span>
+              <span>OVAULT redeems your shares on the hub chain</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="font-bold text-purple-600 dark:text-purple-400">3.</span>
-              <span>Vault withdraws USDC from Yearn Finance</span>
+              <span>Yearn vault withdraws the underlying USDC</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="font-bold text-purple-600 dark:text-purple-400">4.</span>
-              <span>You receive USDC + your share of accumulated yield</span>
+              <span>You receive USDC plus all accumulated yield</span>
             </li>
           </ol>
         </motion.div>

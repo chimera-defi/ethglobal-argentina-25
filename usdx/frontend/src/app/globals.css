@@ -56,7 +56,7 @@
   
   /* Card base - use Tailwind utilities for variants */
   .card {
-    @apply rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/50 backdrop-blur-sm shadow-xl p-6 transition-shadow duration-300 hover:shadow-2xl;
+    @apply rounded-2xl border-4 border-blue-300 dark:border-blue-700 bg-white dark:bg-gray-900 shadow-2xl p-6 transition-all duration-300 hover:shadow-blue-500/50 hover:shadow-2xl hover:border-blue-400 dark:hover:border-blue-600;
   }
 
   /* Input base - use Tailwind utilities for variants */

@@ -15,6 +15,11 @@
 - Prefer Tailwind's built-in utilities and classes
 - Custom CSS should be minimal and well-documented
 - Avoid creating custom classes that duplicate Tailwind functionality
+- **CRITICAL: Verify Tailwind class names exist** - Valid border widths are: border, border-2, border-4, border-8 (NOT border-3)
+- **Design with restraint** - Use 1-2 primary colors, not 6+ different border colors
+- **Modern borders** - Prefer 1-2px borders or subtle shadows over thick (4px+) borders
+- **Consistent spacing** - Define and use a spacing scale, avoid magic numbers
+- **Visual hierarchy** - One focal point per section, not everything competing for attention
 
 ### File Organization
 - **All generated documentation files must be placed in the `docs/` folder**
@@ -42,13 +47,26 @@
 - Use explicit return types when type inference is unclear
 - Test `npm run build` or `npm run type-check` before committing
 
+### Design Review Standards
+- **When user requests visual changes, clarify the goal first**
+- Ask: "Do you want more professional polish or more visual impact?"
+- **Don't overcorrect** - Subtle changes are often better than dramatic ones
+- **Establish a design system** - Pick 1-2 primary colors and stick to them
+- **Review with fresh eyes** - Step back and ask "Would I show this to a client?"
+- **Test Tailwind classes** - Verify class names exist before using them
+- **Professional borders** - Modern design uses subtle borders (1-2px) or shadows, not thick borders everywhere
+
 ### Self-Assessment Checklist
 Before committing, ask:
 1. Is all the code I added actually being used?
 2. Can I simplify this further?
 3. Am I using Tailwind utilities instead of custom CSS?
-4. Are there any unused imports or exports?
-5. Have I moved all generated docs to the docs folder?
-6. Is the code readable and maintainable?
-7. **Does `npm run build` pass without errors?**
-8. **Are all TypeScript types correct?**
+4. **Have I verified all Tailwind classes are valid?** (border-3 doesn't exist!)
+5. Are there any unused imports or exports?
+6. Have I moved all generated docs to the docs folder?
+7. Is the code readable and maintainable?
+8. **Does `npm run build` pass without errors?**
+9. **Are all TypeScript types correct?**
+10. **Would a professional designer approve this?**
+11. **Is there a consistent color palette (max 2-3 colors)?**
+12. **Did I establish clear visual hierarchy?**
