@@ -637,6 +637,57 @@ Before selecting a wallet, verify:
 - WalletConnect Documentation: https://docs.walletconnect.com/
 - EIP-6963 Specification: https://eips.ethereum.org/EIPS/eip-6963
 
+### Wallet Comparison & Ranking Websites:
+
+**Official/Community Resources:**
+1. **WalletConnect Explorer** (https://explorer.walletconnect.com/)
+   - Lists wallets that support WalletConnect
+   - Shows wallet features and supported chains
+   - Filterable by platform (mobile, desktop, web)
+   - Does NOT rank wallets, just lists them
+
+2. **Ethereum.org Wallet Finder** (https://ethereum.org/en/wallets/find-wallet/)
+   - Official Ethereum Foundation resource
+   - Filterable wallet comparison tool
+   - Shows features, security, and supported chains
+   - Does NOT rank wallets, focuses on helping users find suitable wallets
+
+3. **WalletConnect Registry** (https://walletconnect.com/registry)
+   - Official WalletConnect wallet directory
+   - Lists all WalletConnect-compatible wallets
+   - Shows integration details
+   - Does NOT provide rankings or stability metrics
+
+**Third-Party Comparison Sites:**
+4. **State of the DApps** (https://www.stateofthedapps.com/)
+   - Tracks dApps and some wallet integrations
+   - Limited wallet-specific comparison
+   - More focused on dApps than wallets
+
+5. **DappRadar** (https://dappradar.com/)
+   - Tracks dApp usage and wallet connections
+   - Shows wallet adoption metrics indirectly
+   - Does NOT have dedicated wallet comparison/ranking
+
+**Limitations of Existing Resources:**
+- ❌ **No comprehensive wallet ranking sites** - Most sites list wallets but don't rank them
+- ❌ **No stability tracking** - No sites track release frequency or API stability
+- ❌ **No developer-focused metrics** - No sites track developer adoption or GitHub statistics
+- ❌ **No code quality metrics** - No sites show issue/star ratios or code quality indicators
+- ❌ **Limited feature comparison** - Most sites show basic features but not developer-focused features
+- ❌ **No historical data** - No sites track wallet stability over time
+
+**What This Research Provides That Others Don't:**
+- ✅ **Stability metrics** - Release frequency and API stability analysis
+- ✅ **Developer-focused features** - Transaction simulation, batch transactions, etc.
+- ✅ **Code quality indicators** - GitHub statistics, issue/star ratios
+- ✅ **Developer usage data** - GitHub adoption and community metrics
+- ✅ **Stability scoring** - Quantitative stability ratings
+- ✅ **Historical analysis** - Release frequency over time
+- ✅ **Developer recommendations** - Specific advice for developer use cases
+
+**Note:** While WalletConnect Explorer and Ethereum.org Wallet Finder are excellent resources for discovering wallets, they don't provide the stability metrics, developer-focused analysis, or ranking system that this research document offers. This document fills a gap in the ecosystem by providing developer-focused stability analysis.
+
 ### Data Collection Date:
 - **GitHub Statistics**: November 2024 (verified via GitHub API)
 - **Release Frequency**: Analyzed from GitHub releases API
@@ -645,9 +696,16 @@ Before selecting a wallet, verify:
 
 ### Verification Notes:
 - All GitHub statistics (stars, issues, creation dates) were verified using the GitHub REST API
-- Release frequency data was calculated from GitHub releases API
+- Release frequency data was calculated from GitHub releases API (last 3 months: Aug-Nov 2024)
 - Issue/star ratios were calculated from verified GitHub data
 - Some wallets (TokenPocket, OKX, Phantom, Core, Safe, 1inch, Frame, Zerion) do not have publicly accessible GitHub repositories or use private repositories
+
+### Wallet Comparison Resources:
+- **WalletConnect Explorer**: https://explorer.walletconnect.com/ (lists wallets, no rankings)
+- **Ethereum.org Wallet Finder**: https://ethereum.org/en/wallets/find-wallet/ (filterable comparison, no rankings)
+- **WalletConnect Registry**: https://walletconnect.com/registry (wallet directory, no rankings)
+
+**Note:** There is currently **no comprehensive website that tracks and ranks wallets** based on stability, developer features, or code quality metrics. This research document fills that gap by providing developer-focused analysis that existing resources don't offer.
 
 ---
 
