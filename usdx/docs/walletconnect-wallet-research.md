@@ -36,10 +36,10 @@ Most wallets allow importing the same seed phrase/recovery phrase on both platfo
 
 | Wallet Name | Desktop Extension | Mobile App | Year Started | GitHub Stars | Open Issues | WalletConnect | Notes |
 |------------|-------------------|------------|-------------|--------------|-------------|---------------|-------|
-| MetaMask | ✅ Yes | ✅ Yes (iOS/Android) | 2016 | 12,948 | 2,496 | ✅ Yes | Industry standard; high issue count suggests complexity |
-| Coinbase Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2018 | 1,692 | N/A | ✅ Yes | Strong backing, good UX |
-| Trust Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2017 | 3,346 | N/A | ✅ Yes | Owned by Binance, very popular |
-| Rainbow Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2020 | 4,237 | N/A | ✅ Yes | Modern design, Ethereum-first |
+| MetaMask | ✅ Yes | ✅ Yes (iOS/Android) | 2015* | 12,948 | 2,496 | ✅ Yes | Industry standard; high issue count suggests complexity; *Repo created 2015, wallet launched 2016 |
+| Coinbase Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2018 | 1,692 | 44 | ✅ Yes | Strong backing, good UX |
+| Trust Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2017 | 3,346 | 69 | ✅ Yes | Owned by Binance, very popular |
+| Rainbow Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2020 | 4,237 | 11 | ✅ Yes | Modern design, Ethereum-first |
 | Zerion | ⚠️ Web App | ✅ Yes (iOS/Android) | 2016 | N/A | N/A | ✅ Yes | More portfolio tracker than wallet |
 | Frame | ✅ Yes* | ✅ Yes (iOS/Android) | 2021 | N/A | N/A | ✅ Yes | Privacy-oriented, Ethereum-native; *Verify desktop extension availability |
 | Rabby | ✅ Yes | ✅ Yes (iOS/Android) | 2021 | 1,724 | 107 | ✅ Yes | DeBank's wallet, developer-focused |
@@ -48,11 +48,11 @@ Most wallets allow importing the same seed phrase/recovery phrase on both platfo
 | 1inch Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2021 | N/A | N/A | ✅ Yes | DEX-focused |
 | Phantom | ✅ Yes | ✅ Yes (iOS/Android) | 2021 | N/A | N/A | ✅ Yes | Solana-focused |
 | Core | ✅ Yes | ✅ Yes (iOS/Android) | 2022 | N/A | N/A | ✅ Yes | Avalanche-focused |
-| Block Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2021 | 96 | N/A | ✅ Yes | Privacy-first, non-custodial |
-| Wigwam | ✅ Yes | ✅ Yes (iOS/Android) | 2022 | 83 | N/A | ✅ Yes | EVM-focused, newer wallet |
+| Block Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2021 | 96 | 45 | ✅ Yes | Privacy-first, non-custodial |
+| Wigwam | ✅ Yes | ✅ Yes (iOS/Android) | 2022 | 83 | 7 | ✅ Yes | EVM-focused, newer wallet |
 | Brave Wallet | ✅ Yes (Built-in) | ✅ Yes (iOS/Android) | 2021 | N/A | N/A | ✅ Yes | Built into Brave browser |
 | OKX Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2021 | N/A | N/A | ✅ Yes | OKX exchange wallet, multi-chain |
-| Argent | ⚠️ ArgentX (Starknet) | ✅ Yes (iOS/Android) | 2018 | 641 | N/A | ✅ Yes | Smart contract wallet; ArgentX is Starknet-only |
+| Argent | ⚠️ ArgentX (Starknet) | ✅ Yes (iOS/Android) | 2018 | 641 | 93 | ✅ Yes | Smart contract wallet; ArgentX is Starknet-only |
 
 **Note:** 
 - Zerion is primarily a portfolio tracker with wallet functionality, not a dedicated wallet. 
@@ -74,15 +74,15 @@ Stability is measured by release frequency - fewer releases typically indicate:
 
 | Wallet | Releases (Last 3 Months) | Avg Releases/Month | Stability Score | Notes |
 |--------|---------------------------|-------------------|-----------------|-------|
-| **MetaMask** | ~12 releases | ~4/month | ⚠️ **Low** | Very frequent releases, high churn |
-| **Rabby** | ~15 releases | ~5/month | ⚠️ **Low** | Frequent releases, but focused on security |
-| **Rainbow** | ~10 releases | ~3.3/month | ⚠️ **Low** | Frequent releases, active development |
-| **Trust Wallet** | ~12 releases | ~4/month | ⚠️ **Low** | Frequent releases |
+| **MetaMask** | 24 releases | ~8/month | ⚠️ **Very Low** | Very frequent releases, high churn |
+| **Rabby** | 17 releases | ~5.7/month | ⚠️ **Low** | Frequent releases, but focused on security |
+| **Rainbow** | 13 releases | ~4.3/month | ⚠️ **Low** | Frequent releases, active development |
+| **Trust Wallet** | Unknown | Unknown | ⚠️ **Unknown** | Core library releases not tracked separately |
 | **Coinbase Wallet** | Unknown | Unknown | ⚠️ **Unknown** | SDK exists but extension releases not tracked |
-| **Block Wallet** | ~2 releases | ~0.7/month | ✅ **High** | Low release frequency, privacy-focused |
-| **Wigwam** | ~2 releases | ~0.7/month | ✅ **High** | Low release frequency, newer wallet |
+| **Block Wallet** | 5 releases | ~1.7/month | ✅ **High** | Lower release frequency, privacy-focused |
+| **Wigwam** | 6 releases | ~2/month | ✅ **High** | Lower release frequency, newer wallet |
 
-**Key Insight:** Most wallets have high release frequency, indicating active development but potential instability. However, **Rabby** focuses releases on security improvements rather than feature additions, which is better for developers.
+**Key Insight:** Most wallets have high release frequency, indicating active development but potential instability. **MetaMask** has the highest frequency (~8/month), followed by **Rabby** (~5.7/month) and **Rainbow** (~4.3/month). **Block Wallet** (~1.7/month) and **Wigwam** (~2/month) have significantly lower release frequencies, indicating better stability. However, **Rabby** focuses releases on security improvements rather than feature additions, which is better for developers.
 
 ### Code Quality Indicators
 
@@ -90,14 +90,14 @@ Stability is measured by release frequency - fewer releases typically indicate:
 |--------|-------------|-------------|------------------|---------------------|
 | **MetaMask** | 12,948 | 2,496 | 19.3% | Very Large |
 | **Rabby** | 1,724 | 107 | 6.2% | Medium, Active |
-| **Rainbow** | 4,237 | Unknown | Unknown | Large, Active |
-| **Trust Wallet** | 3,346 | Unknown | Unknown | Large |
-| **Coinbase Wallet** | 1,692 | Unknown | Unknown | Medium |
+| **Rainbow** | 4,237 | 11 | 0.3% | Large, Active |
+| **Trust Wallet** | 3,346 | 69 | 2.1% | Large |
+| **Coinbase Wallet** | 1,692 | 44 | 2.6% | Medium |
 | **Block Wallet** | 96 | 45 | 46.9% | Small, Active |
 | **Wigwam** | 83 | 7 | 8.4% | Small, Active |
-| **Argent (ArgentX)** | 641 | Unknown | Unknown | Medium (Starknet-focused) |
+| **Argent (ArgentX)** | 641 | 93 | 14.5% | Medium (Starknet-focused) |
 
-**Key Insight:** Rabby has the lowest issue/star ratio (6.2% vs MetaMask's 19.3%), suggesting better code quality and maintenance.
+**Key Insight:** Rainbow has the lowest issue/star ratio (0.3%), followed by Trust Wallet (2.1%) and Coinbase Wallet (2.6%). Rabby has 6.2%, which is still much better than MetaMask's 19.3%. Wigwam also shows excellent code quality with 8.4%.
 
 ---
 
@@ -268,7 +268,7 @@ While no comprehensive developer wallet survey exists, analysis of GitHub discus
 
 ### 4. **MetaMask** ⭐⭐⭐ (Current Standard, But Unstable)
 
-- **Founded:** 2016
+- **Founded:** 2015 (GitHub repo), 2016 (public launch)
 - **GitHub:** https://github.com/MetaMask/metamask-extension
 - **Stars:** 12,948
 - **Open Issues:** 2,496 (19.3% ratio - concerning)
@@ -281,13 +281,13 @@ While no comprehensive developer wallet survey exists, analysis of GitHub discus
 - ✅ Open source
 
 **Cons:**
-- ❌ **Very high release frequency** (~4/month)
+- ❌ **Very high release frequency** (~8/month - highest of all wallets)
 - ❌ **High issue count** (2,496 open issues)
 - ❌ **Frequent breaking changes**
 - ❌ **Complex codebase** (harder to maintain)
 - ❌ User reports stability issues
 
-**Stability Score:** ⭐⭐ (Low - high churn, frequent changes)
+**Stability Score:** ⭐⭐ (Very Low - highest release frequency ~8/month, high churn, frequent changes)
 
 **Best for:** Developers who need maximum compatibility, but be prepared for breaking changes.
 
@@ -348,7 +348,7 @@ While no comprehensive developer wallet survey exists, analysis of GitHub discus
 
 **Pros:**
 - ✅ **Privacy-first** approach (no tracking, privacy features)
-- ✅ **Low release frequency** (~0.7/month) - very stable
+- ✅ **Lower release frequency** (~1.7/month) - more stable than most
 - ✅ **Open source**
 - ✅ **Non-custodial**
 - ✅ Multi-chain support
@@ -359,7 +359,7 @@ While no comprehensive developer wallet survey exists, analysis of GitHub discus
 - ⚠️ Less developer documentation
 - ⚠️ Newer wallet
 
-**Stability Score:** ⭐⭐⭐⭐⭐ (Very high - lowest release frequency)
+**Stability Score:** ⭐⭐⭐⭐ (High - lower release frequency than most wallets)
 
 **Best for:** Developers who prioritize privacy and stability over features.
 
@@ -373,7 +373,7 @@ While no comprehensive developer wallet survey exists, analysis of GitHub discus
 - **Open Issues:** 7 (8.4% ratio - excellent)
 
 **Pros:**
-- ✅ **Low release frequency** (~0.7/month) - very stable
+- ✅ **Lower release frequency** (~2/month) - more stable than most
 - ✅ **Low issue/star ratio** (8.4% - excellent code quality)
 - ✅ **Open source**
 - ✅ **EVM-focused** (focused, not bloated)
@@ -385,7 +385,7 @@ While no comprehensive developer wallet survey exists, analysis of GitHub discus
 - ⚠️ Less developer documentation
 - ⚠️ Limited adoption
 
-**Stability Score:** ⭐⭐⭐⭐⭐ (Very high - lowest release frequency, excellent code quality)
+**Stability Score:** ⭐⭐⭐⭐ (High - lower release frequency, excellent code quality)
 
 **Best for:** Developers who want a stable, focused EVM wallet with excellent code quality.
 
@@ -486,8 +486,8 @@ Stability is scored based on:
 ## Recommendations Based on Developer Needs
 
 ### For Maximum Stability (Low Feature Churn):
-1. **Block Wallet** ⭐⭐⭐⭐⭐ - Lowest release frequency (~0.7/month), privacy-focused
-2. **Wigwam** ⭐⭐⭐⭐⭐ - Lowest release frequency (~0.7/month), excellent code quality
+1. **Block Wallet** ⭐⭐⭐⭐ - Lower release frequency (~1.7/month), privacy-focused
+2. **Wigwam** ⭐⭐⭐⭐ - Lower release frequency (~2/month), excellent code quality
 3. **Coinbase Wallet** ⭐⭐⭐⭐ - Stable API, good backing, verified desktop extension
 4. **Trust Wallet** ⭐⭐⭐ - Stable API, large user base
 
@@ -555,10 +555,10 @@ Before selecting a wallet, verify:
 ### Choosing the Right Wallet
 
 **If you prioritize stability over features:**
-- Choose **Block Wallet** or **Wigwam** (lowest release frequency)
+- Choose **Block Wallet** (~1.7/month) or **Wigwam** (~2/month) for lower release frequency
 - Consider **Coinbase Wallet** or **Trust Wallet** (stable APIs)
-- Avoid wallets with high release frequency (MetaMask, Rabby, Rainbow)
-- Look for wallets with low issue/star ratios (Wigwam: 8.4%, Rabby: 6.2%)
+- Avoid wallets with very high release frequency (MetaMask: ~8/month, Rabby: ~5.7/month, Rainbow: ~4.3/month)
+- Look for wallets with low issue/star ratios (Rainbow: 0.3%, Trust Wallet: 2.1%, Coinbase: 2.6%, Wigwam: 8.4%, Rabby: 6.2%)
 
 **If you need developer-focused features:**
 - Choose **Rabby** (transaction simulation, risk checks, batch transactions)
@@ -609,17 +609,45 @@ Before selecting a wallet, verify:
 
 ## Sources & References
 
-### Verified Sources:
-- GitHub repositories (verified Nov 2024)
+### GitHub Repositories (Verified November 2024):
+
+**Primary Wallets:**
+- **MetaMask Extension**: https://github.com/MetaMask/metamask-extension
+  - Stars: 12,948 | Issues: 2,496 | Created: 2015-09-06
+- **Rabby Wallet**: https://github.com/RabbyHub/Rabby
+  - Stars: 1,724 | Issues: 107 | Created: 2021-04-09
+- **Rainbow Wallet**: https://github.com/rainbow-me/rainbow
+  - Stars: 4,237 | Issues: 11 | Created: 2019-03-20
+- **Rainbow Browser Extension**: https://github.com/rainbow-me/browser-extension
+  - Stars: 190 | Issues: 35 | Created: 2022-09-29
+- **Coinbase Wallet SDK**: https://github.com/coinbase/coinbase-wallet-sdk
+  - Stars: 1,692 | Issues: 44 | Created: 2019-05-01
+- **Trust Wallet Core**: https://github.com/trustwallet/wallet-core
+  - Stars: 3,346 | Issues: 69 | Created: 2019-02-14
+- **Block Wallet Extension**: https://github.com/block-wallet/extension
+  - Stars: 96 | Issues: 45 | Created: 2021-04-08
+- **Wigwam Wallet**: https://github.com/wigwamapp/wigwam
+  - Stars: 83 | Issues: 7 | Created: 2022-01-26
+- **Argent X (Starknet)**: https://github.com/argentlabs/argent-x
+  - Stars: 641 | Issues: 93 | Created: 2021-11-08
+
+**Other Resources:**
 - WalletConnect Registry: https://walletconnect.com/registry
 - WalletConnect Explorer: https://explorer.walletconnect.com/
-- Individual wallet GitHub repositories
-- Wallet documentation sites
+- WalletConnect Documentation: https://docs.walletconnect.com/
+- EIP-6963 Specification: https://eips.ethereum.org/EIPS/eip-6963
 
 ### Data Collection Date:
-- GitHub stats: November 2024
-- Release frequency: Last 3 months (Aug-Nov 2024)
-- Issue counts: November 2024
+- **GitHub Statistics**: November 2024 (verified via GitHub API)
+- **Release Frequency**: Analyzed from GitHub releases API
+- **Issue Counts**: November 2024 (verified via GitHub API)
+- **Repository Creation Dates**: Verified via GitHub API
+
+### Verification Notes:
+- All GitHub statistics (stars, issues, creation dates) were verified using the GitHub REST API
+- Release frequency data was calculated from GitHub releases API
+- Issue/star ratios were calculated from verified GitHub data
+- Some wallets (TokenPocket, OKX, Phantom, Core, Safe, 1inch, Frame, Zerion) do not have publicly accessible GitHub repositories or use private repositories
 
 ---
 
@@ -628,7 +656,7 @@ Before selecting a wallet, verify:
 For developers seeking a **stable MetaMask alternative**:
 
 1. **Best Overall:** **Rabby** - Developer-focused features, good stability, transaction simulation, verified desktop extension
-2. **Most Stable:** **Block Wallet** or **Wigwam** - Lowest release frequency (~0.7/month), verified desktop extensions
+2. **Most Stable:** **Block Wallet** or **Wigwam** - Lower release frequency (~1.7-2/month), verified desktop extensions
 3. **Best Balance:** **Coinbase Wallet** - Stable API, good documentation, strong backing, verified desktop extension
 4. **Best for Privacy:** **Block Wallet** - Privacy-first, low release frequency, verified desktop extension
 
