@@ -34,6 +34,12 @@
 - **Batch transactions:** Rabby, Safe, Argent
 - **Multi-chain transaction view:** Only Rabby
 
+**Clear Signing & Safety Features:**
+- **EIP-712 (Clear Signing):** All wallets support EIP-712 for human-readable message signing
+- **EIP-191 (Signed Data Standard):** All wallets support EIP-191 for signed data handling
+- **Enhanced clear signing:** Rabby offers enhanced domain verification and address highlighting
+- **Safety features:** All wallets include phishing protection; Rabby adds transaction simulation and risk checks
+
 **Top Recommendations:**
 1. **Rabby** ⭐⭐⭐⭐ - Best developer features (transaction simulation, risk checks, batch transactions), good stability, browser extension
 2. **Coinbase Wallet** ⭐⭐⭐⭐ - Best balance of stability and features, full Account Abstraction support, browser extension
@@ -46,18 +52,18 @@
 
 ## Quick Reference: Comparison Table
 
-| Wallet | Desktop | Mobile | Year | Stars | Issues | Stability* | Account Abstraction | Browser Extension | Notes |
-|--------|---------|--------|------|-------|--------|-----------|---------------------|-------------------|-------|
-| **MetaMask** | ✅ | ✅ | 2015 | 12,948 | 2,496 | ⭐⭐ | ⚠️ Partial | ✅ Yes | Industry standard; very high churn (~8/month) |
-| **Rabby** | ✅ | ✅ | 2021 | 1,724 | 107 | ⭐⭐⭐⭐ | ❌ | ✅ Yes | Best developer features; transaction simulation |
-| **Coinbase Wallet** | ✅ | ✅ | 2018 | 1,692 | 44 | ⭐⭐⭐⭐ | ✅ Yes | ✅ Yes | Full EIP-4337 support; stable API |
-| **Trust Wallet** | ✅ | ✅ | 2017 | 3,346 | 69 | ⭐⭐⭐ | ❌ | ✅ Yes | Best multi-chain; large user base |
-| **Rainbow** | ✅ | ✅ | 2020 | 4,237 | 11 | ⭐⭐⭐ | ❌ | ✅ Yes | Ethereum-focused; excellent NFT support |
-| **Block Wallet** | ✅ | ✅ | 2021 | 96 | 45 | ⭐⭐⭐⭐ | ❌ | ✅ Yes | Most stable (~1.7/month); privacy-first |
-| **Wigwam** | ✅ | ✅ | 2022 | 83 | 7 | ⭐⭐⭐⭐ | ❌ | ✅ Yes | Most stable (~2/month); excellent code quality |
-| **Safe (Gnosis)** | ⚠️ Web | ✅ | 2018 | - | - | ⭐⭐⭐⭐ | ✅ Yes | ❌ No | Multi-sig; enterprise-focused; web app only |
-| **Argent** | ⚠️ Starknet | ✅ | 2018 | 641 | 93 | ⭐⭐⭐⭐ | ✅ Yes | ⚠️ Partial | Smart contract wallet; desktop is Starknet-only |
-| **OKX Wallet** | ✅ | ✅ | 2021 | - | - | ⭐⭐⭐⭐ | ⚠️ Partial | ✅ Yes | EIP-7702 support; exchange-backed |
+| Wallet | Desktop | Mobile | Year | Stars | Issues | Stability* | Account Abstraction | Clear Signing (EIP-712) | Browser Extension | Notes |
+|--------|---------|--------|------|-------|--------|-----------|---------------------|----------------------|-------------------|-------|
+| **MetaMask** | ✅ | ✅ | 2015 | 12,948 | 2,496 | ⭐⭐ | ⚠️ Partial | ✅ Yes | ✅ Yes | Industry standard; very high churn (~8/month) |
+| **Rabby** | ✅ | ✅ | 2021 | 1,724 | 107 | ⭐⭐⭐⭐ | ❌ | ✅ Yes | ✅ Yes | Best developer features; transaction simulation |
+| **Coinbase Wallet** | ✅ | ✅ | 2018 | 1,692 | 44 | ⭐⭐⭐⭐ | ✅ Yes | ✅ Yes | ✅ Yes | Full EIP-4337 support; stable API |
+| **Trust Wallet** | ✅ | ✅ | 2017 | 3,346 | 69 | ⭐⭐⭐ | ❌ | ✅ Yes | ✅ Yes | Best multi-chain; large user base |
+| **Rainbow** | ✅ | ✅ | 2020 | 4,237 | 11 | ⭐⭐⭐ | ❌ | ✅ Yes | ✅ Yes | Ethereum-focused; excellent NFT support |
+| **Block Wallet** | ✅ | ✅ | 2021 | 96 | 45 | ⭐⭐⭐⭐ | ❌ | ✅ Yes | ✅ Yes | Most stable (~1.7/month); privacy-first |
+| **Wigwam** | ✅ | ✅ | 2022 | 83 | 7 | ⭐⭐⭐⭐ | ❌ | ✅ Yes | ✅ Yes | Most stable (~2/month); excellent code quality |
+| **Safe (Gnosis)** | ⚠️ Web | ✅ | 2018 | - | - | ⭐⭐⭐⭐ | ✅ Yes | ✅ Yes | ❌ No | Multi-sig; enterprise-focused; web app only |
+| **Argent** | ⚠️ Starknet | ✅ | 2018 | 641 | 93 | ⭐⭐⭐⭐ | ✅ Yes | ✅ Yes | ⚠️ Partial | Smart contract wallet; desktop is Starknet-only |
+| **OKX Wallet** | ✅ | ✅ | 2021 | - | - | ⭐⭐⭐⭐ | ⚠️ Partial | ✅ Yes | ✅ Yes | EIP-7702 support; exchange-backed |
 
 *Stability based on release frequency and code quality. See detailed metrics below.
 
@@ -121,10 +127,47 @@ Stability scores are calculated based on:
 
 ---
 
+## Clear Signing & Safety Features
+
+### What is Clear Signing?
+
+**Clear Signing** (also known as **Human-Readable Signing**) refers to the ability of wallets to display structured data in a readable format when users sign messages, rather than showing opaque hexadecimal strings. This is primarily implemented through **EIP-712** (Typed Structured Data Signing).
+
+**Key Standards:**
+- **EIP-712**: Typed structured data hashing and signing - allows wallets to display data in human-readable format
+  - **Purpose:** Improves usability and security of off-chain message signing
+  - **Benefit:** Users see structured, readable data instead of hex strings
+  - **Example:** Instead of signing `0x1234abcd...`, users see "Signing: Transfer 100 USDC from Alice to Bob"
+- **EIP-191**: Signed Data Standard - standardizes how signed data is handled in Ethereum contracts
+  - **Purpose:** Prevents replay attacks and ensures signed data is tied to specific validators
+  - **Format:** `\x19Ethereum Signed Message:\n${length}${message}`
+
+**Safety Benefits:**
+- ✅ **Prevents blind signing** - users can see what they're signing
+- ✅ **Reduces phishing risk** - structured data is harder to spoof
+- ✅ **Improves UX** - users understand transaction context
+- ✅ **Enables domain verification** - EIP-712 includes domain separation
+
+**Related Safety Features:**
+- **Domain verification** - EIP-712 includes domain name, version, chainId, and verifyingContract
+- **Address verification** - Some wallets highlight and verify contract addresses
+- **Transaction simulation** - Preview transaction effects before signing (Rabby)
+- **Risk warnings** - Pre-transaction security checks (Rabby)
+- **Phishing protection** - Warns about suspicious domains/contracts
+
+---
+
 ## Feature Comparison Matrix
 
 | Feature | MetaMask | Coinbase | Trust | Rainbow | Rabby | Block | Wigwam | Safe | Argent | OKX |
 |---------|----------|----------|-------|---------|-------|-------|--------|------|--------|-----|
+| **Clear Signing & Safety** |
+| EIP-712 Support | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| EIP-191 Support | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| Human-Readable Display | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ **Enhanced** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| Domain Verification | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ **Enhanced** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| Address Verification | ⚠️ Basic | ✅ Good | ✅ Good | ✅ Good | ✅ **Excellent** | ✅ Good | ✅ Good | ✅ Excellent | ✅ Excellent | ✅ Good |
+| Phishing Protection | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ **Yes** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
 | **Account Abstraction & Advanced EIPs** |
 | EIP-4337 (AA) | ⚠️ Partial* | ✅ Yes | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ Yes | ✅ Yes | ⚠️ Partial |
 | Smart Contract Wallet | ❌ | ⚠️ Partial | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ Yes | ✅ Yes | ✅ Yes |
@@ -140,6 +183,14 @@ Stability scores are calculated based on:
 | Open Source | ✅ Yes | ⚠️ Partial | ⚠️ Partial | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ⚠️ Partial |
 | API Stability | ⚠️ Changes | ✅ Stable | ✅ Stable | ⚠️ Changes | ✅ Stable | ✅ Stable | ✅ Stable | ✅ Stable | ✅ Stable | ✅ Stable |
 | Breaking Changes Frequency | ⚠️ High | ✅ Low | ✅ Low | ⚠️ Medium | ✅ Low | ✅ Low | ⚠️ Medium | ✅ Low | ✅ Low | ✅ Low |
+
+**Clear Signing & Safety Notes:**
+- **EIP-712 Support:** All wallets listed support EIP-712 for human-readable message signing (verified November 2024)
+- **EIP-191 Support:** All wallets support EIP-191 signed data standard
+- **Rabby:** Enhanced clear signing with better domain verification, address highlighting, and transaction simulation
+- **MetaMask:** Supports EIP-712 but basic address verification compared to enhanced implementations
+- **Safe/Argent:** Excellent clear signing with enhanced security features for smart contract wallets
+- **Phishing Protection:** All wallets include basic phishing protection; effectiveness varies
 
 **Account Abstraction & EIP Notes:**
 - **EIP-4337 (Account Abstraction):** Enables smart contract wallets with gasless transactions, social recovery, and advanced features
@@ -163,6 +214,7 @@ Stability scores are calculated based on:
 - ✅ **Pre-transaction risk checks** (security warnings)
 - ✅ **Batch transaction support** (efficiency)
 - ✅ **Multi-chain transaction view** (developer-friendly)
+- ✅ **Enhanced clear signing** (EIP-712 with improved domain verification)
 - ✅ **Open source** (transparency)
 - ✅ Built by DeBank (reputable team)
 - ✅ Developer-focused features
@@ -189,6 +241,7 @@ Stability scores are calculated based on:
 - ✅ Stable API
 - ✅ Multi-chain support
 - ✅ **Full EIP-4337 support** (Account Abstraction)
+- ✅ **Clear signing support** (EIP-712, EIP-191)
 - ✅ Enterprise support available
 - ✅ Browser extension available
 
@@ -210,6 +263,7 @@ Stability scores are calculated based on:
 **Pros:**
 - ✅ **Lowest release frequency** (~1.7/month) - most stable
 - ✅ **Privacy-first** approach (no tracking, privacy features)
+- ✅ **Clear signing support** (EIP-712, EIP-191)
 - ✅ **Open source**
 - ✅ **Non-custodial**
 - ✅ Multi-chain support
@@ -234,6 +288,7 @@ Stability scores are calculated based on:
 **Pros:**
 - ✅ **Lower release frequency** (~2/month) - very stable
 - ✅ **Excellent code quality** (8.4% issue/star ratio)
+- ✅ **Clear signing support** (EIP-712, EIP-191)
 - ✅ **Open source**
 - ✅ **EVM-focused** (focused, not bloated)
 - ✅ Multi-chain EVM support
@@ -260,6 +315,7 @@ Stability scores are calculated based on:
 - ✅ Largest developer community
 - ✅ Extensive documentation
 - ✅ Multi-chain support
+- ✅ **Clear signing support** (EIP-712, EIP-191)
 - ✅ Open source
 - ✅ Browser extension available
 
@@ -284,6 +340,7 @@ Stability scores are calculated based on:
 - ✅ **Full EIP-4337 support** (Account Abstraction)
 - ✅ **Multi-sig** (enterprise features)
 - ✅ **Batch transactions**
+- ✅ **Clear signing support** (EIP-712, EIP-191) with enhanced security
 - ✅ **Open source**
 - ✅ Enterprise-focused features
 
@@ -304,6 +361,7 @@ Stability scores are calculated based on:
 - ✅ **Full EIP-4337 support** (Account Abstraction)
 - ✅ **Smart contract wallet** (advanced features)
 - ✅ **Batch transactions**
+- ✅ **Clear signing support** (EIP-712, EIP-191) with enhanced security
 - ✅ **Open source**
 - ✅ Good security features
 - ✅ Mobile app supports Ethereum
@@ -390,15 +448,16 @@ Stability scores are calculated based on:
 
 ### Integration Best Practices
 1. **Use EIP-6963** for wallet detection (modern standard)
-2. **Support multiple wallets** - don't lock users into one
-3. **Test with multiple wallets** - each has quirks
-4. **Handle errors gracefully** - wallet errors vary
-5. **Provide clear error messages** - help users debug
-6. **Test on both desktop and mobile** - experiences differ
-7. **Monitor wallet updates** - breaking changes happen
-8. **Use TypeScript** - catch integration issues early
-9. **Document wallet-specific quirks** - save time later
-10. **Consider wallet abstraction libraries** - wagmi, ethers.js, viem
+2. **Use EIP-712 for message signing** - enables clear signing (human-readable display) instead of hex strings
+3. **Support multiple wallets** - don't lock users into one
+4. **Test with multiple wallets** - each has quirks
+5. **Handle errors gracefully** - wallet errors vary
+6. **Provide clear error messages** - help users debug
+7. **Test on both desktop and mobile** - experiences differ
+8. **Monitor wallet updates** - breaking changes happen
+9. **Use TypeScript** - catch integration issues early
+10. **Document wallet-specific quirks** - save time later
+11. **Consider wallet abstraction libraries** - wagmi, ethers.js, viem
 
 ### Stability Maintenance
 1. **Pin wallet versions** in development (if possible)
@@ -439,6 +498,8 @@ Stability scores are calculated based on:
 ### Documentation & Standards
 - **WalletConnect Docs**: https://docs.walletconnect.com/
 - **EIP-6963**: https://eips.ethereum.org/EIPS/eip-6963 (Wallet detection standard)
+- **EIP-712**: https://eips.ethereum.org/EIPS/eip-712 (Typed structured data signing - Clear Signing)
+- **EIP-191**: https://eips.ethereum.org/EIPS/eip-191 (Signed Data Standard)
 - **EIP-4337**: https://eips.ethereum.org/EIPS/eip-4337 (Account Abstraction standard)
 - **EIP-7702**: https://eips.ethereum.org/EIPS/eip-7702 (Set code for an EOA)
 - **EIP-3074**: https://eips.ethereum.org/EIPS/eip-3074 (AUTH and AUTHCALL)
