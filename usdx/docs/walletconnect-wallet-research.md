@@ -29,13 +29,19 @@
 | **Rainbow** | ✅ | ✅ | 2020 | 4,237 | 11 | ⭐⭐⭐ | ❌ | Ethereum-focused; excellent NFT support |
 | **Block Wallet** | ✅ | ✅ | 2021 | 96 | 45 | ⭐⭐⭐⭐ | ❌ | Most stable (~1.7/month); privacy-first |
 | **Wigwam** | ✅ | ✅ | 2022 | 83 | 7 | ⭐⭐⭐⭐ | ❌ | Most stable (~2/month); excellent code quality |
-| **Safe (Gnosis)** | ✅ Web | ✅ | 2018 | - | - | ⭐⭐⭐⭐ | ✅ Yes | Multi-sig; enterprise-focused |
-| **Argent** | ⚠️ Starknet | ✅ | 2018 | 641 | 93 | ⭐⭐⭐⭐ | ✅ Yes | Smart contract wallet; mobile supports Ethereum |
+| **Safe (Gnosis)** | ⚠️ Web App* | ✅ | 2018 | - | - | ⭐⭐⭐⭐ | ✅ Yes | Multi-sig; enterprise-focused; *Web app only, no browser extension |
+| **Argent** | ⚠️ ArgentX (Starknet)* | ✅ | 2018 | 641 | 93 | ⭐⭐⭐⭐ | ✅ Yes | Smart contract wallet; *Desktop extension is Starknet-only, mobile supports Ethereum |
 | **OKX Wallet** | ✅ | ✅ | 2021 | - | - | ⭐⭐⭐⭐ | ⚠️ Partial | EIP-7702 support; exchange-backed |
 
 *Stability based on release frequency and code quality. See detailed metrics below.
 
-**Note:** Desktop-mobile sync: Most wallets don't automatically sync. You can import the same seed phrase on both platforms to access the same accounts.
+**Browser Extension Notes:**
+- **Safe (Gnosis Safe)**: Web app only, no browser extension
+- **Argent**: Desktop extension (ArgentX) is Starknet-only; mobile app supports Ethereum
+- **Brave Wallet**: Built into Brave browser, not a separate extension
+- All other wallets listed have browser extensions available
+
+**Desktop-Mobile Sync:** Most wallets don't automatically sync. You can import the same seed phrase on both platforms to access the same accounts.
 
 ---
 
@@ -144,8 +150,8 @@
 ### 6. **Safe (Gnosis Safe)** ⭐⭐⭐⭐⭐ (Best for Account Abstraction)
 
 **Pros:** Full EIP-4337 support, multi-sig, enterprise features, batch transactions, open source  
-**Cons:** Designed for teams/organizations, not individual developers  
-**Best for:** Teams/enterprises needing Account Abstraction and multi-sig
+**Cons:** Web app only (no browser extension), designed for teams/organizations, not individual developers  
+**Best for:** Teams/enterprises needing Account Abstraction and multi-sig (note: web app only, not browser extension)
 
 ---
 
@@ -179,10 +185,10 @@
 3. **Coinbase Wallet** (good multi-chain support)
 
 ### Account Abstraction / Smart Contract Wallets
-1. **Safe (Gnosis Safe)** (full EIP-4337, multi-sig, enterprise)
-2. **Argent** (full EIP-4337, smart contract wallet)
-3. **Coinbase Wallet** (full EIP-4337, can create smart contract wallets)
-4. **OKX Wallet** (EIP-7702 support)
+1. **Coinbase Wallet** (full EIP-4337, browser extension, can create smart contract wallets)
+2. **Safe (Gnosis Safe)** (full EIP-4337, multi-sig, enterprise - **web app only, no browser extension**)
+3. **Argent** (full EIP-4337, smart contract wallet - **desktop extension is Starknet-only**)
+4. **OKX Wallet** (EIP-7702 support, browser extension)
 
 ---
 
@@ -221,7 +227,7 @@
 
 **Need developer features:** Choose **Rabby** (transaction simulation, risk checks, batch transactions).
 
-**Need Account Abstraction:** Choose **Safe**, **Argent**, or **Coinbase Wallet** (full EIP-4337 support).
+**Need Account Abstraction:** Choose **Coinbase Wallet** (browser extension), **Safe** (web app only), or **Argent** (mobile only for Ethereum).
 
 **Need maximum compatibility:** Support **MetaMask** (industry standard) but consider **Rabby** or **Coinbase Wallet** as primary recommendations.
 
@@ -277,7 +283,7 @@
 **Best Overall:** **Rabby** - Developer-focused features, good stability, transaction simulation  
 **Most Stable:** **Block Wallet** or **Wigwam** - Lowest release frequency (~1.7-2/month)  
 **Best Balance:** **Coinbase Wallet** - Stable API, good documentation, Account Abstraction support  
-**Best for Account Abstraction:** **Safe** or **Argent** - Full EIP-4337 support
+**Best for Account Abstraction:** **Coinbase Wallet** (browser extension) or **Safe** (web app) - Full EIP-4337 support
 
 **Avoid MetaMask if:** You need stability - it has high feature churn (~8 releases/month) and frequent breaking changes.
 
