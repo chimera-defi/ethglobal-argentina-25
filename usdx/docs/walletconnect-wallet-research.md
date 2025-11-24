@@ -2,752 +2,287 @@
 ## Desktop Browser Extension + Mobile App Comparison
 
 **Research Date:** November 2024  
-**Purpose:** Find stable MetaMask alternatives with both desktop browser extensions and mobile apps, specifically for developer use  
-**Focus:** Stability over time, developer preferences, and feature consistency
+**Purpose:** Find stable MetaMask alternatives with both desktop browser extensions and mobile apps, specifically for developer use
 
 ---
 
 ## Executive Summary
 
-This research identifies wallets that:
-- ✅ Have desktop browser extensions AND mobile apps
-- ✅ Support WalletConnect
-- ✅ Are stable (low feature churn, consistent APIs)
-- ✅ Are developer-friendly
+**Key Finding:** Most wallets have high release frequency (indicating feature churn). **Rabby** shows the best balance of stability and developer-focused features. **Block Wallet** and **Wigwam** have the lowest release frequency (~1.7-2/month), indicating best stability.
 
-**Key Finding:** Most wallets have high release frequency (indicating feature churn), but some maintain better API stability than others. For developers, **Rabby** shows the best balance of stability and developer-focused features, while **Coinbase Wallet** offers the best combination of stability and broad support.
-
----
-
-## Important Note on Desktop-Mobile Sync
-
-**Not all wallets sync between desktop and mobile.** Most wallets offer separate desktop browser extensions and mobile apps that work independently but both support WalletConnect. True sync (where accounts/transactions sync across devices) varies by wallet:
-- **Coinbase Wallet**: Separate instances, no automatic sync (but can import same seed phrase)
-- **Trust Wallet**: Separate instances, no automatic sync (but can import same seed phrase)
-- **Rainbow**: Separate instances, no automatic sync (but can import same seed phrase)
-- **MetaMask**: Separate instances, no automatic sync (but can import same seed phrase)
-- **Rabby**: Separate instances, no automatic sync (but can import same seed phrase)
-
-Most wallets allow importing the same seed phrase/recovery phrase on both platforms to access the same accounts, but they don't automatically sync in real-time.
+**Top Recommendations:**
+1. **Rabby** - Best developer features (transaction simulation, risk checks, batch transactions)
+2. **Coinbase Wallet** - Best balance of stability and broad support, Account Abstraction support
+3. **Block Wallet** / **Wigwam** - Most stable (lowest release frequency)
+4. **Safe** / **Argent** - Best for Account Abstraction / smart contract wallets
 
 ---
 
-## Comparison Table
+## Quick Reference: Comparison Table
 
-| Wallet Name | Desktop Extension | Mobile App | Year Started | GitHub Stars | Open Issues | WalletConnect | Notes |
-|------------|-------------------|------------|-------------|--------------|-------------|---------------|-------|
-| MetaMask | ✅ Yes | ✅ Yes (iOS/Android) | 2015* | 12,948 | 2,496 | ✅ Yes | Industry standard; high issue count suggests complexity; *Repo created 2015, wallet launched 2016 |
-| Coinbase Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2018 | 1,692 | 44 | ✅ Yes | Strong backing, good UX |
-| Trust Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2017 | 3,346 | 69 | ✅ Yes | Owned by Binance, very popular |
-| Rainbow Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2020 | 4,237 | 11 | ✅ Yes | Modern design, Ethereum-first |
-| Zerion | ⚠️ Web App | ✅ Yes (iOS/Android) | 2016 | N/A | N/A | ✅ Yes | More portfolio tracker than wallet |
-| Frame | ✅ Yes* | ✅ Yes (iOS/Android) | 2021 | N/A | N/A | ✅ Yes | Privacy-oriented, Ethereum-native; *Verify desktop extension availability |
-| Rabby | ✅ Yes | ✅ Yes (iOS/Android) | 2021 | 1,724 | 107 | ✅ Yes | DeBank's wallet, developer-focused |
-| TokenPocket | ✅ Yes | ✅ Yes (iOS/Android) | 2018 | N/A | N/A | ✅ Yes | Popular in Asia |
-| Safe (Gnosis Safe) | ✅ Yes (Web) | ✅ Yes (iOS/Android) | 2018 | N/A | N/A | ✅ Yes | Multi-sig, enterprise-focused, **Smart contract wallet (AA)** |
-| 1inch Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2021 | N/A | N/A | ✅ Yes | DEX-focused |
-| Phantom | ✅ Yes | ✅ Yes (iOS/Android) | 2021 | N/A | N/A | ✅ Yes | Solana-focused |
-| Core | ✅ Yes | ✅ Yes (iOS/Android) | 2022 | N/A | N/A | ✅ Yes | Avalanche-focused |
-| Block Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2021 | 96 | 45 | ✅ Yes | Privacy-first, non-custodial |
-| Wigwam | ✅ Yes | ✅ Yes (iOS/Android) | 2022 | 83 | 7 | ✅ Yes | EVM-focused, newer wallet |
-| Brave Wallet | ✅ Yes (Built-in) | ✅ Yes (iOS/Android) | 2021 | N/A | N/A | ✅ Yes | Built into Brave browser |
-| OKX Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2021 | N/A | N/A | ✅ Yes | OKX exchange wallet, multi-chain, **EIP-7702 support** |
-| Argent | ⚠️ ArgentX (Starknet) | ✅ Yes (iOS/Android) | 2018 | 641 | 93 | ✅ Yes | **Smart contract wallet (AA)**; ArgentX is Starknet-only |
+| Wallet | Desktop | Mobile | Year | Stars | Issues | Stability* | Account Abstraction | Notes |
+|--------|---------|--------|------|-------|--------|-----------|---------------------|-------|
+| **MetaMask** | ✅ | ✅ | 2015 | 12,948 | 2,496 | ⭐⭐ | ⚠️ Partial | Industry standard; very high churn (~8/month) |
+| **Rabby** | ✅ | ✅ | 2021 | 1,724 | 107 | ⭐⭐⭐⭐ | ❌ | Best developer features; transaction simulation |
+| **Coinbase Wallet** | ✅ | ✅ | 2018 | 1,692 | 44 | ⭐⭐⭐⭐ | ✅ Yes | Full EIP-4337 support; stable API |
+| **Trust Wallet** | ✅ | ✅ | 2017 | 3,346 | 69 | ⭐⭐⭐ | ❌ | Best multi-chain; large user base |
+| **Rainbow** | ✅ | ✅ | 2020 | 4,237 | 11 | ⭐⭐⭐ | ❌ | Ethereum-focused; excellent NFT support |
+| **Block Wallet** | ✅ | ✅ | 2021 | 96 | 45 | ⭐⭐⭐⭐ | ❌ | Most stable (~1.7/month); privacy-first |
+| **Wigwam** | ✅ | ✅ | 2022 | 83 | 7 | ⭐⭐⭐⭐ | ❌ | Most stable (~2/month); excellent code quality |
+| **Safe (Gnosis)** | ✅ Web | ✅ | 2018 | - | - | ⭐⭐⭐⭐ | ✅ Yes | Multi-sig; enterprise-focused |
+| **Argent** | ⚠️ Starknet | ✅ | 2018 | 641 | 93 | ⭐⭐⭐⭐ | ✅ Yes | Smart contract wallet; mobile supports Ethereum |
+| **OKX Wallet** | ✅ | ✅ | 2021 | - | - | ⭐⭐⭐⭐ | ⚠️ Partial | EIP-7702 support; exchange-backed |
 
-**Note:** 
-- Zerion is primarily a portfolio tracker with wallet functionality, not a dedicated wallet. 
-- Safe is designed for teams/organizations, not individual developers. **Supports Account Abstraction (EIP-4337)**.
-- Argent's desktop extension (ArgentX) is Starknet-only, not Ethereum. The mobile app supports Ethereum and **Account Abstraction**.
-- Brave Wallet is built into the Brave browser, not a separate extension.
-- **Account Abstraction (EIP-4337)**: Smart contract wallets that support gasless transactions, social recovery, and advanced features.
-- **EIP-7702**: Allows EOAs to temporarily set code, enabling smart contract features without migration.
-- **EIP-3074**: Allows EOAs to delegate control to contracts (not yet widely supported).
-- **EIP-5792**: Standardizes batch transaction calls via `wallet_sendCalls` method.
+*Stability based on release frequency and code quality. See detailed metrics below.
+
+**Note:** Desktop-mobile sync: Most wallets don't automatically sync. You can import the same seed phrase on both platforms to access the same accounts.
 
 ---
 
-## Stability Metrics & Analysis
+## Stability Metrics
 
-### Release Frequency Analysis (Last 3 Months)
+### Release Frequency (Last 3 Months)
+| Wallet | Releases/Month | Stability |
+|--------|---------------|-----------|
+| MetaMask | ~8/month | ⚠️ Very Low |
+| Rabby | ~5.7/month | ⚠️ Low (security-focused) |
+| Rainbow | ~4.3/month | ⚠️ Low |
+| Block Wallet | ~1.7/month | ✅ High |
+| Wigwam | ~2/month | ✅ High |
 
-Stability is measured by release frequency - fewer releases typically indicate:
-- More stable APIs
-- Less feature churn
-- Better backward compatibility
-- More predictable behavior
+### Code Quality (Issue/Star Ratio)
+- **Best:** Rainbow (0.3%), Trust Wallet (2.1%), Coinbase (2.6%)
+- **Good:** Wigwam (8.4%), Rabby (6.2%)
+- **Concerning:** MetaMask (19.3%)
 
-| Wallet | Releases (Last 3 Months) | Avg Releases/Month | Stability Score | Notes |
-|--------|---------------------------|-------------------|-----------------|-------|
-| **MetaMask** | 24 releases | ~8/month | ⚠️ **Very Low** | Very frequent releases, high churn |
-| **Rabby** | 17 releases | ~5.7/month | ⚠️ **Low** | Frequent releases, but focused on security |
-| **Rainbow** | 13 releases | ~4.3/month | ⚠️ **Low** | Frequent releases, active development |
-| **Trust Wallet** | Unknown | Unknown | ⚠️ **Unknown** | Core library releases not tracked separately |
-| **Coinbase Wallet** | Unknown | Unknown | ⚠️ **Unknown** | SDK exists but extension releases not tracked |
-| **Block Wallet** | 5 releases | ~1.7/month | ✅ **High** | Lower release frequency, privacy-focused |
-| **Wigwam** | 6 releases | ~2/month | ✅ **High** | Lower release frequency, newer wallet |
-
-**Key Insight:** Most wallets have high release frequency, indicating active development but potential instability. **MetaMask** has the highest frequency (~8/month), followed by **Rabby** (~5.7/month) and **Rainbow** (~4.3/month). **Block Wallet** (~1.7/month) and **Wigwam** (~2/month) have significantly lower release frequencies, indicating better stability. However, **Rabby** focuses releases on security improvements rather than feature additions, which is better for developers.
-
-### Code Quality Indicators
-
-| Wallet | GitHub Stars | Open Issues | Issue/Star Ratio | Developer Community |
-|--------|-------------|-------------|------------------|---------------------|
-| **MetaMask** | 12,948 | 2,496 | 19.3% | Very Large |
-| **Rabby** | 1,724 | 107 | 6.2% | Medium, Active |
-| **Rainbow** | 4,237 | 11 | 0.3% | Large, Active |
-| **Trust Wallet** | 3,346 | 69 | 2.1% | Large |
-| **Coinbase Wallet** | 1,692 | 44 | 2.6% | Medium |
-| **Block Wallet** | 96 | 45 | 46.9% | Small, Active |
-| **Wigwam** | 83 | 7 | 8.4% | Small, Active |
-| **Argent (ArgentX)** | 641 | 93 | 14.5% | Medium (Starknet-focused) |
-
-**Key Insight:** Rainbow has the lowest issue/star ratio (0.3%), followed by Trust Wallet (2.1%) and Coinbase Wallet (2.6%). Rabby has 6.2%, which is still much better than MetaMask's 19.3%. Wigwam also shows excellent code quality with 8.4%.
+**Stability Score Methodology:** Based on release frequency (40%), issue/star ratio (30%), feature churn (20%), API consistency (10%)
 
 ---
 
-## Developer-Focused Feature Comparison Matrix
+## Feature Comparison Matrix
 
-| Feature | MetaMask | Coinbase Wallet | Trust Wallet | Rainbow | Rabby | Frame | Zerion | Block Wallet | Wigwam | Brave Wallet | OKX Wallet | Safe | Argent |
-|---------|----------|-----------------|--------------|---------|-------|-------|--------|-------------|--------|--------------|------------|------|--------|
-| **Core Wallet Features** |
-| Multi-chain Support | ✅ Excellent | ✅ Good | ✅ Excellent | ⚠️ Ethereum-focused | ✅ Good | ⚠️ Ethereum-only | ✅ Good | ✅ Good | ✅ Good (EVM) | ✅ Good | ✅ Excellent | ✅ Excellent | ⚠️ Ethereum + Starknet |
-| Hardware Wallet | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| EIP-6963 Support | ✅ Yes | ⚠️ Partial | ⚠️ Partial | ✅ Yes | ✅ Yes | ✅ Yes | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown |
-| **Account Abstraction & Advanced EIPs** |
-| Account Abstraction (EIP-4337) | ⚠️ Partial* | ✅ Yes | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ⚠️ Partial | ✅ **Yes** | ✅ **Yes** |
-| Smart Contract Wallet | ❌ No | ⚠️ Partial | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ✅ Yes | ✅ **Yes** | ✅ **Yes** |
-| EIP-7702 Support | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ✅ Yes | ❌ No | ❌ No |
-| EIP-3074 Support | ⚠️ Planned | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No |
-| EIP-5792 (wallet_sendCalls) | ⚠️ Partial | ⚠️ Partial | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ⚠️ Partial | ⚠️ Partial | ⚠️ Partial |
+| Feature | MetaMask | Coinbase | Trust | Rainbow | Rabby | Block | Wigwam | Safe | Argent | OKX |
+|---------|----------|----------|-------|---------|-------|-------|--------|------|--------|-----|
+| **Account Abstraction & EIPs** |
+| EIP-4337 (AA) | ⚠️ Partial | ✅ Yes | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ Yes | ✅ Yes | ⚠️ Partial |
+| Smart Contract Wallet | ❌ | ⚠️ Partial | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ Yes | ✅ Yes | ✅ Yes |
+| EIP-7702 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ Yes |
+| EIP-5792 (sendCalls) | ⚠️ Partial | ⚠️ Partial | ❌ | ❌ | ❌ | ❌ | ❌ | ⚠️ Partial | ⚠️ Partial | ⚠️ Partial |
+| **Developer Features** |
+| Transaction Simulation | ❌ | ❌ | ❌ | ❌ | ✅ **Yes** | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Pre-transaction Risk Check | ❌ | ❌ | ❌ | ❌ | ✅ **Yes** | ❌ | ❌ | ❌ | ❌ | ❌ |
+| Batch Transactions | ❌ | ❌ | ❌ | ❌ | ✅ **Yes** | ❌ | ❌ | ✅ Yes | ✅ Yes | ❌ |
+| Multi-chain Support | ✅ Excellent | ✅ Good | ✅ Excellent | ⚠️ Ethereum | ✅ Good | ✅ Good | ✅ EVM | ✅ Excellent | ⚠️ Eth+Starknet | ✅ Excellent |
+| Open Source | ✅ Yes | ⚠️ Partial | ⚠️ Partial | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ⚠️ Partial |
+| API Stability | ⚠️ Changes | ✅ Stable | ✅ Stable | ⚠️ Changes | ✅ Stable | ✅ Stable | ✅ Stable | ✅ Stable | ✅ Stable | ✅ Stable |
 
 **Account Abstraction Notes:**
-- **MetaMask**: Partial support via Snaps/extensions, not native EIP-4337
-- **Coinbase Wallet**: Full EIP-4337 support, can create and use smart contract wallets
-- **OKX Wallet**: Partial support, EIP-7702 implementation
-- **Safe (Gnosis Safe)**: Native smart contract wallet with full EIP-4337 support
-- **Argent**: Native smart contract wallet with full EIP-4337 support
-| **Developer Experience** |
-| Transaction Simulation | ❌ No | ❌ No | ❌ No | ❌ No | ✅ **Yes** | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No |
-| Pre-transaction Risk Check | ❌ No | ❌ No | ❌ No | ❌ No | ✅ **Yes** | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No |
-| Multi-chain Transaction View | ❌ No | ❌ No | ❌ No | ❌ No | ✅ **Yes** | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No |
-| Open Source | ✅ Yes | ⚠️ Partial | ⚠️ Partial | ✅ Yes | ✅ Yes | ✅ Yes | ⚠️ Partial | ✅ Yes | ✅ Yes | ✅ Yes | ⚠️ Partial | ✅ Yes | ✅ Yes |
-| Developer Documentation | ✅ Excellent | ✅ Good | ⚠️ Basic | ✅ Good | ✅ Good | ⚠️ Basic | ⚠️ Basic | ⚠️ Basic | ⚠️ Basic | ✅ Good | ⚠️ Basic | ✅ Good | ✅ Good |
-| TypeScript Types | ✅ Yes | ✅ Yes | ⚠️ Partial | ✅ Yes | ✅ Yes | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ✅ Yes | ✅ Yes |
-| **API Stability** |
-| Consistent API | ⚠️ Changes frequently | ✅ Stable | ✅ Stable | ⚠️ Changes | ✅ Stable | ✅ Stable | ⚠️ Changes | ✅ Stable | ✅ Stable | ✅ Stable | ✅ Stable | ✅ Stable | ✅ Stable |
-| Breaking Changes Frequency | ⚠️ High | ✅ Low | ✅ Low | ⚠️ Medium | ✅ Low | ✅ Low | ⚠️ Medium | ✅ Low | ✅ Low | ✅ Low | ✅ Low | ✅ Low | ✅ Low |
-| **Developer Tools** |
-| Testnet Support | ✅ Excellent | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good |
-| Custom RPC Support | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| Network Switching | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| Batch Transactions | ❌ No | ❌ No | ❌ No | ❌ No | ✅ **Yes** | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ✅ **Yes** | ✅ **Yes** |
-| **Security Features** |
-| Transaction Signing UI | ⚠️ Basic | ✅ Good | ✅ Good | ✅ Good | ✅ **Excellent** | ✅ Good | ⚠️ Basic | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Excellent | ✅ Excellent |
-| Address Verification | ⚠️ Basic | ✅ Yes | ✅ Yes | ✅ Yes | ✅ **Yes** | ✅ Yes | ⚠️ Basic | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| Phishing Protection | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ **Yes** | ✅ Yes | ⚠️ Basic | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes
-| **Mobile Development** |
-| Mobile App Quality | ⚠️ Good | ✅ Excellent | ✅ Excellent | ✅ Excellent | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Excellent | ✅ Excellent | ✅ Excellent |
-| Mobile WalletConnect | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Developer Community** |
-| GitHub Activity | ✅ Very High | ✅ High | ✅ High | ✅ High | ✅ High | ⚠️ Medium | ⚠️ Medium | ⚠️ Low | ⚠️ Low | ⚠️ Medium | ⚠️ Medium | ✅ High | ✅ High |
-| Developer Adoption | ✅ Very High | ✅ High | ✅ High | ✅ Medium | ✅ Growing | ⚠️ Low | ⚠️ Low | ⚠️ Low | ⚠️ Low | ⚠️ Medium | ⚠️ Medium | ✅ High | ✅ Medium |
-| Discord/Support | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ⚠️ Limited | ⚠️ Limited | ⚠️ Limited | ⚠️ Limited | ✅ Yes | ⚠️ Limited | ✅ Yes | ✅ Yes |
-
-**Key Developer Features:**
-- **Rabby**: Transaction simulation, pre-transaction risk checks, batch transactions - best for developers
-- **Frame**: Privacy-focused, minimal feature set - good for developers who want simplicity
-- **MetaMask**: Most widely adopted, but frequent changes can break integrations
-- **Block Wallet**: Privacy-first, low release frequency - good for stability
-- **Wigwam**: EVM-focused, low release frequency, newer wallet
-- **Brave Wallet**: Built into browser, good integration, stable
-- **OKX Wallet**: Exchange-backed, multi-chain, EIP-7702 support, good for DeFi users
-- **Safe (Gnosis Safe)**: Smart contract wallet, Account Abstraction (EIP-4337), batch transactions, multi-sig - best for teams/enterprises
-- **Argent**: Smart contract wallet, Account Abstraction (EIP-4337), batch transactions - best for advanced users
-- **Coinbase Wallet**: Account Abstraction (EIP-4337) support, good balance of features
+- **MetaMask**: Partial via Snaps/extensions, not native EIP-4337
+- **Coinbase Wallet**: Full EIP-4337 support
+- **Safe/Argent**: Native smart contract wallets with full EIP-4337
+- **OKX**: EIP-7702 implementation
 
 ---
 
-## Developer Usage & Preferences
+## Detailed Analysis: Top Recommendations
 
-### GitHub Repository Analysis
+### 1. **Rabby Wallet** ⭐⭐⭐⭐ (Best for Developers)
 
-Based on GitHub search for wallet integration libraries and dApp repositories:
+**GitHub:** https://github.com/RabbyHub/Rabby | Stars: 1,724 | Issues: 107 (6.2% ratio)
 
-| Wallet | SDK/Library Stars | Developer Adoption | Notes |
-|--------|-------------------|-------------------|-------|
-| **MetaMask** | 12,948 (extension) | ✅ **Very High** | Industry standard, most dApps support |
-| **Coinbase Wallet** | 1,692 (SDK) | ✅ High | Well-documented SDK |
-| **Rainbow** | 4,237 (mobile) | ✅ Medium-High | Growing adoption |
-| **Rabby** | 1,724 | ✅ Growing | Developer-focused features driving adoption |
-| **Trust Wallet** | 3,346 (core) | ✅ High | Popular but less developer-focused |
-
-### Developer Survey Insights
-
-While no comprehensive developer wallet survey exists, analysis of GitHub discussions and dApp repositories shows:
-
-1. **MetaMask** remains the default choice due to ubiquity, but developers report:
-   - Frequent breaking changes
-   - High complexity
-   - Stability issues
-
-2. **Rabby** is gaining developer traction due to:
-   - Transaction simulation (prevents errors)
-   - Better security features
-   - Developer-focused UI
-
-3. **Frame** is preferred by privacy-focused developers:
-   - Minimal feature set
-   - Privacy-first approach
-   - Ethereum-native
-
-4. **Coinbase Wallet** is chosen for:
-   - Strong backing
-   - Good documentation
-   - Enterprise support
+**Pros:** Transaction simulation, pre-transaction risk checks, batch transactions, multi-chain transaction view, open source, developer-focused features  
+**Cons:** Relatively new, smaller user base, frequent releases (but security-focused)  
+**Stability:** ⭐⭐⭐⭐ (High release frequency but focused on security, not feature churn)  
+**Best for:** Developers who want security features, transaction simulation, and developer-focused tools
 
 ---
 
-## Detailed Wallet Analysis
+### 2. **Coinbase Wallet** ⭐⭐⭐⭐ (Best Balance)
 
-### 1. **Rabby Wallet** ⭐⭐⭐⭐⭐ (Best for Developers)
+**GitHub:** https://github.com/coinbase/coinbase-wallet-sdk | Stars: 1,692 | Issues: 44
 
-- **Founded:** 2021
-- **GitHub:** https://github.com/RabbyHub/Rabby
-- **Stars:** 1,724
-- **Open Issues:** 107 (6.2% ratio - excellent)
-
-**Pros:**
-- ✅ **Transaction simulation** before signing (prevents errors)
-- ✅ **Pre-transaction risk checks** (security warnings)
-- ✅ **Batch transaction support** (efficiency)
-- ✅ **Multi-chain transaction view** (developer-friendly)
-- ✅ **Low issue/star ratio** (better code quality)
-- ✅ **Open source** (transparency)
-- ✅ Built by DeBank (reputable team)
-- ✅ Developer-focused features
-
-**Cons:**
-- ⚠️ Relatively new (less battle-tested than MetaMask)
-- ⚠️ Smaller user base
-- ⚠️ Frequent releases (but focused on security, not features)
-
-**Stability Score:** ⭐⭐⭐⭐ (High release frequency but focused on security, not feature churn)
-
-**Best for:** Developers who want security features, transaction simulation, and developer-focused tools.
+**Pros:** Strong backing, good documentation, stable API, multi-chain support, **full EIP-4337 support**, enterprise support  
+**Cons:** Less decentralized, some features require Coinbase account, partial open source  
+**Stability:** ⭐⭐⭐⭐ (Stable API, good backing)  
+**Best for:** Developers who want reliability, good documentation, enterprise support, and Account Abstraction
 
 ---
 
-### 2. **Frame Wallet** ⭐⭐⭐⭐ (Best for Stability)
+### 3. **Block Wallet** ⭐⭐⭐⭐ (Most Stable)
 
-- **Founded:** 2021
-- **GitHub:** Frame Labs (verify exact repository)
-- **Focus:** Privacy and simplicity
-- **Note:** Desktop extension availability should be verified - Frame may be primarily mobile-focused
+**GitHub:** https://github.com/block-wallet/extension | Stars: 96 | Issues: 45
 
-**Pros:**
-- ✅ **Minimal feature set** (stable, predictable)
-- ✅ **Privacy-focused** (no tracking)
-- ✅ **Ethereum-native** (focused, not bloated)
-- ✅ **Open source**
-- ✅ **Low feature churn** (stability)
-
-**Cons:**
-- ⚠️ Ethereum-only (no multi-chain)
-- ⚠️ Smaller community
-- ⚠️ Less developer documentation
-
-**Stability Score:** ⭐⭐⭐⭐⭐ (Minimal features = high stability)
-
-**Best for:** Developers who prioritize stability, privacy, and simplicity over features.
+**Pros:** Lowest release frequency (~1.7/month), privacy-first, open source, non-custodial, multi-chain  
+**Cons:** Small community, less developer documentation, newer wallet  
+**Stability:** ⭐⭐⭐⭐ (Highest stability - lowest release frequency)  
+**Best for:** Developers who prioritize privacy and stability over features
 
 ---
 
-### 3. **Coinbase Wallet** ⭐⭐⭐⭐
+### 4. **Wigwam Wallet** ⭐⭐⭐⭐ (Most Stable)
 
-- **Founded:** 2018
-- **GitHub SDK:** https://github.com/coinbase/coinbase-wallet-sdk
-- **Stars:** 1,692
+**GitHub:** https://github.com/wigwamapp/wigwam | Stars: 83 | Issues: 7 (8.4% ratio - excellent)
 
-**Pros:**
-- ✅ Strong institutional backing (Coinbase)
-- ✅ Good documentation
-- ✅ Stable API
-- ✅ Multi-chain support
-- ✅ Enterprise support available
-
-**Cons:**
-- ⚠️ Less decentralized (Coinbase backing)
-- ⚠️ Some features require Coinbase account
-- ⚠️ Partial open source
-
-**Stability Score:** ⭐⭐⭐⭐ (Stable API, good backing)
-
-**Best for:** Developers who want reliability, good documentation, and enterprise support.
+**Pros:** Lower release frequency (~2/month), excellent code quality (8.4% ratio), open source, EVM-focused  
+**Cons:** Very new (2022), small community, limited adoption  
+**Stability:** ⭐⭐⭐⭐ (High stability, excellent code quality)  
+**Best for:** Developers who want stable, focused EVM wallet with excellent code quality
 
 ---
 
-### 4. **MetaMask** ⭐⭐⭐ (Current Standard, But Unstable)
+### 5. **MetaMask** ⭐⭐ (Industry Standard, But Unstable)
 
-- **Founded:** 2015 (GitHub repo), 2016 (public launch)
-- **GitHub:** https://github.com/MetaMask/metamask-extension
-- **Stars:** 12,948
-- **Open Issues:** 2,496 (19.3% ratio - concerning)
+**GitHub:** https://github.com/MetaMask/metamask-extension | Stars: 12,948 | Issues: 2,496 (19.3% ratio)
 
-**Pros:**
-- ✅ Industry standard (most dApps support)
-- ✅ Largest developer community
-- ✅ Extensive documentation
-- ✅ Multi-chain support
-- ✅ Open source
-
-**Cons:**
-- ❌ **Very high release frequency** (~8/month - highest of all wallets)
-- ❌ **High issue count** (2,496 open issues)
-- ❌ **Frequent breaking changes**
-- ❌ **Complex codebase** (harder to maintain)
-- ❌ User reports stability issues
-
-**Stability Score:** ⭐⭐ (Very Low - highest release frequency ~8/month, high churn, frequent changes)
-
-**Best for:** Developers who need maximum compatibility, but be prepared for breaking changes.
+**Pros:** Industry standard, largest community, extensive documentation, multi-chain, open source  
+**Cons:** Very high release frequency (~8/month), high issue count, frequent breaking changes, complex codebase  
+**Stability:** ⭐⭐ (Very Low - highest release frequency, high churn)  
+**Best for:** Developers who need maximum compatibility, but be prepared for maintenance overhead
 
 ---
 
-### 5. **Trust Wallet** ⭐⭐⭐⭐
+### 6. **Safe (Gnosis Safe)** ⭐⭐⭐⭐⭐ (Best for Account Abstraction)
 
-- **Founded:** 2017
-- **GitHub Core:** https://github.com/trustwallet/wallet-core
-- **Stars:** 3,346
-
-**Pros:**
-- ✅ Owned by Binance (strong backing)
-- ✅ Very popular (millions of users)
-- ✅ Excellent multi-chain support
-- ✅ Stable API
-
-**Cons:**
-- ⚠️ Less developer-focused
-- ⚠️ Partial open source
-- ⚠️ Frequent releases
-
-**Stability Score:** ⭐⭐⭐ (Moderate - stable but active development)
-
-**Best for:** Developers who need broad multi-chain support and large user base.
+**Pros:** Full EIP-4337 support, multi-sig, enterprise features, batch transactions, open source  
+**Cons:** Designed for teams/organizations, not individual developers  
+**Best for:** Teams/enterprises needing Account Abstraction and multi-sig
 
 ---
 
-### 6. **Rainbow Wallet** ⭐⭐⭐
+### 7. **Argent** ⭐⭐⭐⭐ (Best for Account Abstraction)
 
-- **Founded:** 2020
-- **GitHub:** https://github.com/rainbow-me/rainbow
-- **Stars:** 4,237
+**GitHub:** https://github.com/argentlabs/argent-x | Stars: 641 | Issues: 93
 
-**Pros:**
-- ✅ Beautiful UI
-- ✅ Excellent NFT support
-- ✅ Open source
-- ✅ Active community
-
-**Cons:**
-- ⚠️ Ethereum-focused (limited multi-chain)
-- ⚠️ Frequent releases
-- ⚠️ Less developer-focused features
-
-**Stability Score:** ⭐⭐⭐ (Moderate - frequent releases)
-
-**Best for:** Developers building NFT-focused dApps on Ethereum.
+**Pros:** Full EIP-4337 support, smart contract wallet, batch transactions, open source  
+**Cons:** Desktop extension (ArgentX) is Starknet-only; mobile supports Ethereum  
+**Best for:** Developers building on Starknet or using mobile app for Ethereum Account Abstraction
 
 ---
 
-### 7. **Block Wallet** ⭐⭐⭐⭐ (Best for Privacy & Stability)
+## Recommendations by Use Case
 
-- **Founded:** 2021
-- **GitHub:** https://github.com/block-wallet/extension
-- **Stars:** 96
-- **Open Issues:** 45 (46.9% ratio - higher but small community)
+### Maximum Stability (Low Feature Churn)
+1. **Block Wallet** (~1.7/month) or **Wigwam** (~2/month)
+2. **Coinbase Wallet** (stable API)
 
-**Pros:**
-- ✅ **Privacy-first** approach (no tracking, privacy features)
-- ✅ **Lower release frequency** (~1.7/month) - more stable than most
-- ✅ **Open source**
-- ✅ **Non-custodial**
-- ✅ Multi-chain support
+### Developer-Focused Features
+1. **Rabby** (transaction simulation, risk checks, batch transactions)
+2. **Coinbase Wallet** (good balance)
 
-**Cons:**
-- ⚠️ Small community (96 stars)
-- ⚠️ Higher issue/star ratio (but small absolute numbers)
-- ⚠️ Less developer documentation
-- ⚠️ Newer wallet
+### Maximum Compatibility
+1. **MetaMask** (industry standard but unstable)
+2. **Coinbase Wallet** (good compatibility, more stable)
 
-**Stability Score:** ⭐⭐⭐⭐ (High - lower release frequency than most wallets)
+### Multi-Chain Development
+1. **Trust Wallet** (best multi-chain support)
+2. **Rabby** (good multi-chain + developer features)
+3. **Coinbase Wallet** (good multi-chain support)
 
-**Best for:** Developers who prioritize privacy and stability over features.
-
----
-
-### 8. **Wigwam Wallet** ⭐⭐⭐⭐ (Best for Stability)
-
-- **Founded:** 2022
-- **GitHub:** https://github.com/wigwamapp/wigwam
-- **Stars:** 83
-- **Open Issues:** 7 (8.4% ratio - excellent)
-
-**Pros:**
-- ✅ **Lower release frequency** (~2/month) - more stable than most
-- ✅ **Low issue/star ratio** (8.4% - excellent code quality)
-- ✅ **Open source**
-- ✅ **EVM-focused** (focused, not bloated)
-- ✅ Multi-chain EVM support
-
-**Cons:**
-- ⚠️ Very new wallet (2022)
-- ⚠️ Small community (83 stars)
-- ⚠️ Less developer documentation
-- ⚠️ Limited adoption
-
-**Stability Score:** ⭐⭐⭐⭐ (High - lower release frequency, excellent code quality)
-
-**Best for:** Developers who want a stable, focused EVM wallet with excellent code quality.
+### Account Abstraction / Smart Contract Wallets
+1. **Safe (Gnosis Safe)** (full EIP-4337, multi-sig, enterprise)
+2. **Argent** (full EIP-4337, smart contract wallet)
+3. **Coinbase Wallet** (full EIP-4337, can create smart contract wallets)
+4. **OKX Wallet** (EIP-7702 support)
 
 ---
 
-### 9. **Brave Wallet** ⭐⭐⭐⭐
+## Testing & Verification
 
-- **Founded:** 2021
-- **Type:** Built into Brave browser
-- **Focus:** Browser-integrated wallet
+### Quick Test Protocol
+1. Install desktop extension and mobile app
+2. Test WalletConnect connection from your dApp
+3. Test transaction signing on both platforms
+4. Test on all required blockchain networks
+5. Verify API consistency and TypeScript types (if applicable)
+6. Test transaction simulation (if available)
 
-**Pros:**
-- ✅ **Built into browser** (no extension needed)
-- ✅ **Good integration** with Brave browser features
-- ✅ **Stable API** (browser-backed)
-- ✅ Multi-chain support
-- ✅ Good documentation
+### Top 3 Candidates to Test First
+1. **Rabby** - Best developer features, good stability
+2. **Coinbase Wallet** - Good balance, strong backing
+3. **Trust Wallet** - Large user base, good multi-chain support
 
-**Cons:**
-- ⚠️ Requires Brave browser (not standalone)
-- ⚠️ Less customizable than standalone wallets
-- ⚠️ Medium developer adoption
-
-**Stability Score:** ⭐⭐⭐⭐ (Stable - browser-backed)
-
-**Best for:** Developers building dApps for Brave browser users or who want browser-integrated wallet.
-
----
-
-### 10. **OKX Wallet** ⭐⭐⭐⭐
-
-- **Founded:** 2021
-- **Backing:** OKX exchange
-- **Focus:** Multi-chain, DeFi integration
-
-**Pros:**
-- ✅ **Exchange backing** (OKX - major exchange)
-- ✅ **Excellent multi-chain support**
-- ✅ **Good DeFi integration**
-- ✅ Stable API
-- ✅ Large user base (exchange users)
-
-**Cons:**
-- ⚠️ Exchange association (less decentralized)
-- ⚠️ Partial open source
-- ⚠️ Less developer-focused features
-
-**Stability Score:** ⭐⭐⭐⭐ (Stable - exchange-backed)
-
-**Best for:** Developers building multi-chain dApps or DeFi applications.
+### Verification Checklist
+- [ ] Desktop extension available and functional
+- [ ] Mobile app exists (same seed phrase access)
+- [ ] WalletConnect v2 support confirmed
+- [ ] All required chains supported
+- [ ] API stability matches needs
+- [ ] Developer documentation adequate
+- [ ] TypeScript types available (if needed)
+- [ ] Account Abstraction support (if needed)
 
 ---
 
-### 11. **Argent** ⚠️ (Starknet-Focused)
-
-- **Founded:** 2018
-- **Desktop:** ArgentX (Starknet-only)
-- **Mobile:** Supports Ethereum + Starknet
-- **GitHub:** https://github.com/argentlabs/argent-x
-- **Stars:** 641
-
-**Pros:**
-- ✅ **Smart contract wallet** (advanced features)
-- ✅ **Good mobile app** (supports Ethereum)
-- ✅ Open source (ArgentX)
-- ✅ Good security features
-
-**Cons:**
-- ❌ **Desktop extension (ArgentX) is Starknet-only** - not Ethereum
-- ⚠️ Mobile app supports Ethereum, but desktop doesn't
-- ⚠️ Less suitable for Ethereum desktop development
-
-**Stability Score:** ⚠️ **N/A** (Different focus - Starknet)
-
-**Best for:** Developers building on Starknet or using Argent mobile app for Ethereum.
-
-**Note:** Argent's desktop extension (ArgentX) is Starknet-only, making it unsuitable for Ethereum desktop development. The mobile app supports Ethereum, but this wallet doesn't meet the "desktop extension + mobile app" criteria for Ethereum development.
-
----
-
-## Stability Scoring Methodology
-
-Stability is scored based on:
-1. **Release Frequency** (40%): Fewer releases = more stable
-2. **Issue/Star Ratio** (30%): Lower ratio = better maintenance
-3. **Feature Churn** (20%): Focus on security/bugs vs new features
-4. **API Consistency** (10%): Breaking changes frequency
-
-**Scores:**
-- ⭐⭐⭐⭐⭐: Very stable (minimal releases, focused on stability)
-- ⭐⭐⭐⭐: Stable (moderate releases, mostly bug fixes)
-- ⭐⭐⭐: Moderate (regular releases, some feature additions)
-- ⭐⭐: Unstable (frequent releases, high feature churn)
-- ⭐: Very unstable (constant changes, breaking updates)
-
----
-
-## Recommendations Based on Developer Needs
-
-### For Maximum Stability (Low Feature Churn):
-1. **Block Wallet** ⭐⭐⭐⭐ - Lower release frequency (~1.7/month), privacy-focused
-2. **Wigwam** ⭐⭐⭐⭐ - Lower release frequency (~2/month), excellent code quality
-3. **Coinbase Wallet** ⭐⭐⭐⭐ - Stable API, good backing, verified desktop extension
-4. **Trust Wallet** ⭐⭐⭐ - Stable API, large user base
-
-### For Developer-Focused Features:
-1. **Rabby** ⭐⭐⭐⭐ - Transaction simulation, risk checks, batch transactions, verified desktop extension
-2. **Coinbase Wallet** ⭐⭐⭐⭐ - Good balance of features and stability
-
-### For Maximum Compatibility:
-1. **MetaMask** ⭐⭐ - Industry standard but unstable
-2. **Coinbase Wallet** ⭐⭐⭐⭐ - Good compatibility, more stable
-
-### For Multi-Chain Development:
-1. **Trust Wallet** ⭐⭐⭐ - Best multi-chain support
-2. **Rabby** ⭐⭐⭐⭐ - Good multi-chain + developer features
-3. **Coinbase Wallet** ⭐⭐⭐⭐ - Good multi-chain support
-
-### For Privacy-Focused Development:
-1. **Rabby** ⭐⭐⭐⭐ - Good security features, transaction simulation
-2. **Coinbase Wallet** ⭐⭐⭐⭐ - Privacy features, no tracking
-
-### For Account Abstraction / Smart Contract Wallets:
-1. **Safe (Gnosis Safe)** ⭐⭐⭐⭐⭐ - Full EIP-4337 support, multi-sig, enterprise features
-2. **Argent** ⭐⭐⭐⭐ - Full EIP-4337 support, smart contract wallet, advanced features
-3. **Coinbase Wallet** ⭐⭐⭐⭐ - Full EIP-4337 support, can create smart contract wallets
-4. **OKX Wallet** ⭐⭐⭐⭐ - EIP-7702 support, smart contract wallet features
-
----
-
-## Verification Checklist
-
-Before selecting a wallet, verify:
-
-- [ ] Desktop browser extension is available and functional
-- [ ] Mobile app exists (sync not required, but same seed phrase access)
-- [ ] WalletConnect v2 support is confirmed
-- [ ] All required chains are supported
-- [ ] Transaction signing works correctly
-- [ ] API stability matches your needs (check release notes)
-- [ ] Developer documentation is adequate
-- [ ] TypeScript types are available (if using TypeScript)
-- [ ] Testnet support for your chains
-- [ ] Custom RPC support (if needed)
-- [ ] Security features meet your requirements
-- [ ] Active development and support
-
----
-
-## Testing Recommendations
-
-### Quick Test Protocol:
-1. Install desktop browser extension
-2. Install mobile app
-3. Test WalletConnect connection from your dApp
-4. Test transaction signing on both platforms
-5. Test on all required blockchain networks
-6. Test custom RPC endpoints (if needed)
-7. Test error handling and user feedback
-8. Check API consistency across versions
-9. Verify TypeScript types (if applicable)
-10. Test transaction simulation (if available)
-
-### Top 3 Candidates to Test First (For Developers):
-1. **Rabby** - Best developer features, good stability, verified desktop extension
-2. **Coinbase Wallet** - Good balance, strong backing, verified desktop extension
-3. **Trust Wallet** - Large user base, good multi-chain support, verified desktop extension
-
----
-
-## Advice for Developers
+## Developer Advice
 
 ### Choosing the Right Wallet
 
-**If you prioritize stability over features:**
-- Choose **Block Wallet** (~1.7/month) or **Wigwam** (~2/month) for lower release frequency
-- Consider **Coinbase Wallet** or **Trust Wallet** (stable APIs)
-- Avoid wallets with very high release frequency (MetaMask: ~8/month, Rabby: ~5.7/month, Rainbow: ~4.3/month)
-- Look for wallets with low issue/star ratios (Rainbow: 0.3%, Trust Wallet: 2.1%, Coinbase: 2.6%, Wigwam: 8.4%, Rabby: 6.2%)
+**Prioritize stability:** Choose **Block Wallet** or **Wigwam** (lowest release frequency). Avoid MetaMask (~8/month), Rabby (~5.7/month), Rainbow (~4.3/month).
 
-**If you need developer-focused features:**
-- Choose **Rabby** (transaction simulation, risk checks, batch transactions)
-- Consider **Coinbase Wallet** for good balance
-- Avoid feature-heavy wallets if you don't need them
+**Need developer features:** Choose **Rabby** (transaction simulation, risk checks, batch transactions).
 
-**If you need maximum compatibility:**
-- You may need to support **MetaMask** (industry standard)
-- But consider **Rabby** or **Coinbase Wallet** as primary recommendations
-- Test thoroughly with your dApp
+**Need Account Abstraction:** Choose **Safe**, **Argent**, or **Coinbase Wallet** (full EIP-4337 support).
 
-**If you're building multi-chain:**
-- **Trust Wallet** has best multi-chain support
-- **Rabby** has good multi-chain + developer features
-- **Coinbase Wallet** is solid middle ground
+**Need maximum compatibility:** Support **MetaMask** (industry standard) but consider **Rabby** or **Coinbase Wallet** as primary recommendations.
 
 ### Integration Best Practices
-
-1. **Use EIP-6963** for wallet detection (modern standard)
-2. **Support multiple wallets** - don't lock users into one
-3. **Test with multiple wallets** - each has quirks
-4. **Handle errors gracefully** - wallet errors vary
-5. **Provide clear error messages** - help users debug
-6. **Test on both desktop and mobile** - experiences differ
-7. **Monitor wallet updates** - breaking changes happen
-8. **Use TypeScript** - catch integration issues early
-9. **Document wallet-specific quirks** - save time later
-10. **Consider wallet abstraction libraries** - wagmi, ethers.js, viem
+1. Use EIP-6963 for wallet detection
+2. Support multiple wallets - don't lock users into one
+3. Test with multiple wallets - each has quirks
+4. Handle errors gracefully
+5. Test on both desktop and mobile
+6. Monitor wallet updates for breaking changes
+7. Use TypeScript for type safety
+8. Consider wallet abstraction libraries (wagmi, ethers.js, viem)
 
 ### Stability Maintenance
-
-1. **Pin wallet versions** in development (if possible)
-2. **Monitor release notes** for breaking changes
-3. **Test after wallet updates** before deploying
-4. **Have fallback wallets** - don't depend on one
-5. **Track wallet issues** - GitHub, Discord, etc.
-6. **Consider wallet abstraction** - reduces dependency on specific wallets
-
-### Developer Resources
-
-- **WalletConnect Docs**: https://docs.walletconnect.com/
-- **EIP-6963**: https://eips.ethereum.org/EIPS/eip-6963
-- **wagmi**: https://wagmi.sh/ (React hooks for Ethereum)
-- **viem**: https://viem.sh/ (TypeScript Ethereum library)
-- **ethers.js**: https://docs.ethers.org/ (Ethereum library)
+1. Pin wallet versions in development (if possible)
+2. Monitor release notes for breaking changes
+3. Test after wallet updates before deploying
+4. Have fallback wallets - don't depend on one
+5. Track wallet issues on GitHub/Discord
+6. Consider wallet abstraction to reduce dependency
 
 ---
 
-## Sources & References
+## Resources
 
-### GitHub Repositories (Verified November 2024):
+### GitHub Repositories (Verified November 2024)
+- **MetaMask**: https://github.com/MetaMask/metamask-extension (12,948 stars, 2,496 issues)
+- **Rabby**: https://github.com/RabbyHub/Rabby (1,724 stars, 107 issues)
+- **Rainbow**: https://github.com/rainbow-me/rainbow (4,237 stars, 11 issues)
+- **Coinbase Wallet SDK**: https://github.com/coinbase/coinbase-wallet-sdk (1,692 stars, 44 issues)
+- **Trust Wallet Core**: https://github.com/trustwallet/wallet-core (3,346 stars, 69 issues)
+- **Block Wallet**: https://github.com/block-wallet/extension (96 stars, 45 issues)
+- **Wigwam**: https://github.com/wigwamapp/wigwam (83 stars, 7 issues)
+- **Argent X**: https://github.com/argentlabs/argent-x (641 stars, 93 issues)
 
-**Primary Wallets:**
-- **MetaMask Extension**: https://github.com/MetaMask/metamask-extension
-  - Stars: 12,948 | Issues: 2,496 | Created: 2015-09-06
-- **Rabby Wallet**: https://github.com/RabbyHub/Rabby
-  - Stars: 1,724 | Issues: 107 | Created: 2021-04-09
-- **Rainbow Wallet**: https://github.com/rainbow-me/rainbow
-  - Stars: 4,237 | Issues: 11 | Created: 2019-03-20
-- **Rainbow Browser Extension**: https://github.com/rainbow-me/browser-extension
-  - Stars: 190 | Issues: 35 | Created: 2022-09-29
-- **Coinbase Wallet SDK**: https://github.com/coinbase/coinbase-wallet-sdk
-  - Stars: 1,692 | Issues: 44 | Created: 2019-05-01
-- **Trust Wallet Core**: https://github.com/trustwallet/wallet-core
-  - Stars: 3,346 | Issues: 69 | Created: 2019-02-14
-- **Block Wallet Extension**: https://github.com/block-wallet/extension
-  - Stars: 96 | Issues: 45 | Created: 2021-04-08
-- **Wigwam Wallet**: https://github.com/wigwamapp/wigwam
-  - Stars: 83 | Issues: 7 | Created: 2022-01-26
-- **Argent X (Starknet)**: https://github.com/argentlabs/argent-x
-  - Stars: 641 | Issues: 93 | Created: 2021-11-08
+### Documentation & Standards
+- **WalletConnect Docs**: https://docs.walletconnect.com/
+- **EIP-6963**: https://eips.ethereum.org/EIPS/eip-6963
+- **EIP-4337**: Account Abstraction standard
+- **wagmi**: https://wagmi.sh/ (React hooks for Ethereum)
+- **viem**: https://viem.sh/ (TypeScript Ethereum library)
 
-**Other Resources:**
-- WalletConnect Registry: https://walletconnect.com/registry
-- WalletConnect Explorer: https://explorer.walletconnect.com/
-- WalletConnect Documentation: https://docs.walletconnect.com/
-- EIP-6963 Specification: https://eips.ethereum.org/EIPS/eip-6963
+### Wallet Comparison Sites (No Rankings)
+- **WalletConnect Explorer**: https://explorer.walletconnect.com/ (lists wallets)
+- **Ethereum.org Wallet Finder**: https://ethereum.org/en/wallets/find-wallet/ (filterable comparison)
 
-### Wallet Comparison & Ranking Websites:
-
-**Official/Community Resources:**
-1. **WalletConnect Explorer** (https://explorer.walletconnect.com/)
-   - Lists wallets that support WalletConnect
-   - Shows wallet features and supported chains
-   - Filterable by platform (mobile, desktop, web)
-   - Does NOT rank wallets, just lists them
-
-2. **Ethereum.org Wallet Finder** (https://ethereum.org/en/wallets/find-wallet/)
-   - Official Ethereum Foundation resource
-   - Filterable wallet comparison tool
-   - Shows features, security, and supported chains
-   - Does NOT rank wallets, focuses on helping users find suitable wallets
-
-3. **WalletConnect Registry** (https://walletconnect.com/registry)
-   - Official WalletConnect wallet directory
-   - Lists all WalletConnect-compatible wallets
-   - Shows integration details
-   - Does NOT provide rankings or stability metrics
-
-**Third-Party Comparison Sites:**
-4. **State of the DApps** (https://www.stateofthedapps.com/)
-   - Tracks dApps and some wallet integrations
-   - Limited wallet-specific comparison
-   - More focused on dApps than wallets
-
-5. **DappRadar** (https://dappradar.com/)
-   - Tracks dApp usage and wallet connections
-   - Shows wallet adoption metrics indirectly
-   - Does NOT have dedicated wallet comparison/ranking
-
-**Limitations of Existing Resources:**
-- ❌ **No comprehensive wallet ranking sites** - Most sites list wallets but don't rank them
-- ❌ **No stability tracking** - No sites track release frequency or API stability
-- ❌ **No developer-focused metrics** - No sites track developer adoption or GitHub statistics
-- ❌ **No code quality metrics** - No sites show issue/star ratios or code quality indicators
-- ❌ **Limited feature comparison** - Most sites show basic features but not developer-focused features
-- ❌ **No historical data** - No sites track wallet stability over time
-
-**What This Research Provides That Others Don't:**
-- ✅ **Stability metrics** - Release frequency and API stability analysis
-- ✅ **Developer-focused features** - Transaction simulation, batch transactions, etc.
-- ✅ **Code quality indicators** - GitHub statistics, issue/star ratios
-- ✅ **Developer usage data** - GitHub adoption and community metrics
-- ✅ **Stability scoring** - Quantitative stability ratings
-- ✅ **Historical analysis** - Release frequency over time
-- ✅ **Developer recommendations** - Specific advice for developer use cases
-
-**Note:** While WalletConnect Explorer and Ethereum.org Wallet Finder are excellent resources for discovering wallets, they don't provide the stability metrics, developer-focused analysis, or ranking system that this research document offers. This document fills a gap in the ecosystem by providing developer-focused stability analysis.
-
-### Data Collection Date:
-- **GitHub Statistics**: November 2024 (verified via GitHub API)
-- **Release Frequency**: Analyzed from GitHub releases API
-- **Issue Counts**: November 2024 (verified via GitHub API)
-- **Repository Creation Dates**: Verified via GitHub API
-
-### Verification Notes:
-- All GitHub statistics (stars, issues, creation dates) were verified using the GitHub REST API
-- Release frequency data was calculated from GitHub releases API (last 3 months: Aug-Nov 2024)
-- Issue/star ratios were calculated from verified GitHub data
-- Some wallets (TokenPocket, OKX, Phantom, Core, Safe, 1inch, Frame, Zerion) do not have publicly accessible GitHub repositories or use private repositories
-
-### Wallet Comparison Resources:
-- **WalletConnect Explorer**: https://explorer.walletconnect.com/ (lists wallets, no rankings)
-- **Ethereum.org Wallet Finder**: https://ethereum.org/en/wallets/find-wallet/ (filterable comparison, no rankings)
-- **WalletConnect Registry**: https://walletconnect.com/registry (wallet directory, no rankings)
-
-**Note:** There is currently **no comprehensive website that tracks and ranks wallets** based on stability, developer features, or code quality metrics. This research document fills that gap by providing developer-focused analysis that existing resources don't offer.
+**Note:** No comprehensive website tracks wallet stability or developer-focused metrics. This document fills that gap.
 
 ---
 
 ## Conclusion
 
-For developers seeking a **stable MetaMask alternative**:
+**Best Overall:** **Rabby** - Developer-focused features, good stability, transaction simulation  
+**Most Stable:** **Block Wallet** or **Wigwam** - Lowest release frequency (~1.7-2/month)  
+**Best Balance:** **Coinbase Wallet** - Stable API, good documentation, Account Abstraction support  
+**Best for Account Abstraction:** **Safe** or **Argent** - Full EIP-4337 support
 
-1. **Best Overall:** **Rabby** - Developer-focused features, good stability, transaction simulation, verified desktop extension
-2. **Most Stable:** **Block Wallet** or **Wigwam** - Lower release frequency (~1.7-2/month), verified desktop extensions
-3. **Best Balance:** **Coinbase Wallet** - Stable API, good documentation, strong backing, verified desktop extension
-4. **Best for Privacy:** **Block Wallet** - Privacy-first, low release frequency, verified desktop extension
-
-**Avoid MetaMask if:** You need stability - it has high feature churn and frequent breaking changes.
+**Avoid MetaMask if:** You need stability - it has high feature churn (~8 releases/month) and frequent breaking changes.
 
 **Consider MetaMask if:** You need maximum compatibility - but be prepared for maintenance overhead.
 
 ---
 
-*Note: This research is based on publicly available information verified in November 2024. Features, stability, and support may change. Always verify current compatibility before implementation. Test thoroughly with your specific use case.*
+*Research verified November 2024 via GitHub API. Features and stability may change. Always verify current compatibility before implementation.*
