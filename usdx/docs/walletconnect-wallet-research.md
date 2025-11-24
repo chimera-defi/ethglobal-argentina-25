@@ -44,21 +44,25 @@ Most wallets allow importing the same seed phrase/recovery phrase on both platfo
 | Frame | ✅ Yes* | ✅ Yes (iOS/Android) | 2021 | N/A | N/A | ✅ Yes | Privacy-oriented, Ethereum-native; *Verify desktop extension availability |
 | Rabby | ✅ Yes | ✅ Yes (iOS/Android) | 2021 | 1,724 | 107 | ✅ Yes | DeBank's wallet, developer-focused |
 | TokenPocket | ✅ Yes | ✅ Yes (iOS/Android) | 2018 | N/A | N/A | ✅ Yes | Popular in Asia |
-| Safe (Gnosis Safe) | ✅ Yes (Web) | ✅ Yes (iOS/Android) | 2018 | N/A | N/A | ✅ Yes | Multi-sig, enterprise-focused |
+| Safe (Gnosis Safe) | ✅ Yes (Web) | ✅ Yes (iOS/Android) | 2018 | N/A | N/A | ✅ Yes | Multi-sig, enterprise-focused, **Smart contract wallet (AA)** |
 | 1inch Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2021 | N/A | N/A | ✅ Yes | DEX-focused |
 | Phantom | ✅ Yes | ✅ Yes (iOS/Android) | 2021 | N/A | N/A | ✅ Yes | Solana-focused |
 | Core | ✅ Yes | ✅ Yes (iOS/Android) | 2022 | N/A | N/A | ✅ Yes | Avalanche-focused |
 | Block Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2021 | 96 | 45 | ✅ Yes | Privacy-first, non-custodial |
 | Wigwam | ✅ Yes | ✅ Yes (iOS/Android) | 2022 | 83 | 7 | ✅ Yes | EVM-focused, newer wallet |
 | Brave Wallet | ✅ Yes (Built-in) | ✅ Yes (iOS/Android) | 2021 | N/A | N/A | ✅ Yes | Built into Brave browser |
-| OKX Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2021 | N/A | N/A | ✅ Yes | OKX exchange wallet, multi-chain |
-| Argent | ⚠️ ArgentX (Starknet) | ✅ Yes (iOS/Android) | 2018 | 641 | 93 | ✅ Yes | Smart contract wallet; ArgentX is Starknet-only |
+| OKX Wallet | ✅ Yes | ✅ Yes (iOS/Android) | 2021 | N/A | N/A | ✅ Yes | OKX exchange wallet, multi-chain, **EIP-7702 support** |
+| Argent | ⚠️ ArgentX (Starknet) | ✅ Yes (iOS/Android) | 2018 | 641 | 93 | ✅ Yes | **Smart contract wallet (AA)**; ArgentX is Starknet-only |
 
 **Note:** 
 - Zerion is primarily a portfolio tracker with wallet functionality, not a dedicated wallet. 
-- Safe is designed for teams/organizations, not individual developers.
-- Argent's desktop extension (ArgentX) is Starknet-only, not Ethereum. The mobile app supports Ethereum.
+- Safe is designed for teams/organizations, not individual developers. **Supports Account Abstraction (EIP-4337)**.
+- Argent's desktop extension (ArgentX) is Starknet-only, not Ethereum. The mobile app supports Ethereum and **Account Abstraction**.
 - Brave Wallet is built into the Brave browser, not a separate extension.
+- **Account Abstraction (EIP-4337)**: Smart contract wallets that support gasless transactions, social recovery, and advanced features.
+- **EIP-7702**: Allows EOAs to temporarily set code, enabling smart contract features without migration.
+- **EIP-3074**: Allows EOAs to delegate control to contracts (not yet widely supported).
+- **EIP-5792**: Standardizes batch transaction calls via `wallet_sendCalls` method.
 
 ---
 
@@ -103,38 +107,51 @@ Stability is measured by release frequency - fewer releases typically indicate:
 
 ## Developer-Focused Feature Comparison Matrix
 
-| Feature | MetaMask | Coinbase Wallet | Trust Wallet | Rainbow | Rabby | Frame | Zerion | Block Wallet | Wigwam | Brave Wallet | OKX Wallet |
-|---------|----------|-----------------|--------------|---------|-------|-------|--------|-------------|--------|--------------|------------|
+| Feature | MetaMask | Coinbase Wallet | Trust Wallet | Rainbow | Rabby | Frame | Zerion | Block Wallet | Wigwam | Brave Wallet | OKX Wallet | Safe | Argent |
+|---------|----------|-----------------|--------------|---------|-------|-------|--------|-------------|--------|--------------|------------|------|--------|
 | **Core Wallet Features** |
-| Multi-chain Support | ✅ Excellent | ✅ Good | ✅ Excellent | ⚠️ Ethereum-focused | ✅ Good | ⚠️ Ethereum-only | ✅ Good | ✅ Good | ✅ Good (EVM) | ✅ Good | ✅ Excellent |
-| Hardware Wallet | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| EIP-6963 Support | ✅ Yes | ⚠️ Partial | ⚠️ Partial | ✅ Yes | ✅ Yes | ✅ Yes | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown |
+| Multi-chain Support | ✅ Excellent | ✅ Good | ✅ Excellent | ⚠️ Ethereum-focused | ✅ Good | ⚠️ Ethereum-only | ✅ Good | ✅ Good | ✅ Good (EVM) | ✅ Good | ✅ Excellent | ✅ Excellent | ⚠️ Ethereum + Starknet |
+| Hardware Wallet | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| EIP-6963 Support | ✅ Yes | ⚠️ Partial | ⚠️ Partial | ✅ Yes | ✅ Yes | ✅ Yes | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown |
+| **Account Abstraction & Advanced EIPs** |
+| Account Abstraction (EIP-4337) | ⚠️ Partial* | ✅ Yes | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ⚠️ Partial | ✅ **Yes** | ✅ **Yes** |
+| Smart Contract Wallet | ❌ No | ⚠️ Partial | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ✅ Yes | ✅ **Yes** | ✅ **Yes** |
+| EIP-7702 Support | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ✅ Yes | ❌ No | ❌ No |
+| EIP-3074 Support | ⚠️ Planned | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No |
+| EIP-5792 (wallet_sendCalls) | ⚠️ Partial | ⚠️ Partial | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ⚠️ Partial | ⚠️ Partial | ⚠️ Partial |
+
+**Account Abstraction Notes:**
+- **MetaMask**: Partial support via Snaps/extensions, not native EIP-4337
+- **Coinbase Wallet**: Full EIP-4337 support, can create and use smart contract wallets
+- **OKX Wallet**: Partial support, EIP-7702 implementation
+- **Safe (Gnosis Safe)**: Native smart contract wallet with full EIP-4337 support
+- **Argent**: Native smart contract wallet with full EIP-4337 support
 | **Developer Experience** |
-| Transaction Simulation | ❌ No | ❌ No | ❌ No | ❌ No | ✅ **Yes** | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No |
-| Pre-transaction Risk Check | ❌ No | ❌ No | ❌ No | ❌ No | ✅ **Yes** | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No |
-| Multi-chain Transaction View | ❌ No | ❌ No | ❌ No | ❌ No | ✅ **Yes** | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No |
-| Open Source | ✅ Yes | ⚠️ Partial | ⚠️ Partial | ✅ Yes | ✅ Yes | ✅ Yes | ⚠️ Partial | ✅ Yes | ✅ Yes | ✅ Yes | ⚠️ Partial |
-| Developer Documentation | ✅ Excellent | ✅ Good | ⚠️ Basic | ✅ Good | ✅ Good | ⚠️ Basic | ⚠️ Basic | ⚠️ Basic | ⚠️ Basic | ✅ Good | ⚠️ Basic |
-| TypeScript Types | ✅ Yes | ✅ Yes | ⚠️ Partial | ✅ Yes | ✅ Yes | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown |
+| Transaction Simulation | ❌ No | ❌ No | ❌ No | ❌ No | ✅ **Yes** | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No |
+| Pre-transaction Risk Check | ❌ No | ❌ No | ❌ No | ❌ No | ✅ **Yes** | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No |
+| Multi-chain Transaction View | ❌ No | ❌ No | ❌ No | ❌ No | ✅ **Yes** | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No |
+| Open Source | ✅ Yes | ⚠️ Partial | ⚠️ Partial | ✅ Yes | ✅ Yes | ✅ Yes | ⚠️ Partial | ✅ Yes | ✅ Yes | ✅ Yes | ⚠️ Partial | ✅ Yes | ✅ Yes |
+| Developer Documentation | ✅ Excellent | ✅ Good | ⚠️ Basic | ✅ Good | ✅ Good | ⚠️ Basic | ⚠️ Basic | ⚠️ Basic | ⚠️ Basic | ✅ Good | ⚠️ Basic | ✅ Good | ✅ Good |
+| TypeScript Types | ✅ Yes | ✅ Yes | ⚠️ Partial | ✅ Yes | ✅ Yes | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ⚠️ Unknown | ✅ Yes | ✅ Yes |
 | **API Stability** |
-| Consistent API | ⚠️ Changes frequently | ✅ Stable | ✅ Stable | ⚠️ Changes | ✅ Stable | ✅ Stable | ⚠️ Changes | ✅ Stable | ✅ Stable | ✅ Stable | ✅ Stable |
-| Breaking Changes Frequency | ⚠️ High | ✅ Low | ✅ Low | ⚠️ Medium | ✅ Low | ✅ Low | ⚠️ Medium | ✅ Low | ✅ Low | ✅ Low | ✅ Low |
+| Consistent API | ⚠️ Changes frequently | ✅ Stable | ✅ Stable | ⚠️ Changes | ✅ Stable | ✅ Stable | ⚠️ Changes | ✅ Stable | ✅ Stable | ✅ Stable | ✅ Stable | ✅ Stable | ✅ Stable |
+| Breaking Changes Frequency | ⚠️ High | ✅ Low | ✅ Low | ⚠️ Medium | ✅ Low | ✅ Low | ⚠️ Medium | ✅ Low | ✅ Low | ✅ Low | ✅ Low | ✅ Low | ✅ Low |
 | **Developer Tools** |
-| Testnet Support | ✅ Excellent | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good |
-| Custom RPC Support | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| Network Switching | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| Batch Transactions | ❌ No | ❌ No | ❌ No | ❌ No | ✅ **Yes** | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No |
+| Testnet Support | ✅ Excellent | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good |
+| Custom RPC Support | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| Network Switching | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| Batch Transactions | ❌ No | ❌ No | ❌ No | ❌ No | ✅ **Yes** | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ❌ No | ✅ **Yes** | ✅ **Yes** |
 | **Security Features** |
-| Transaction Signing UI | ⚠️ Basic | ✅ Good | ✅ Good | ✅ Good | ✅ **Excellent** | ✅ Good | ⚠️ Basic | ✅ Good | ✅ Good | ✅ Good | ✅ Good |
-| Address Verification | ⚠️ Basic | ✅ Yes | ✅ Yes | ✅ Yes | ✅ **Yes** | ✅ Yes | ⚠️ Basic | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
-| Phishing Protection | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ **Yes** | ✅ Yes | ⚠️ Basic | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| Transaction Signing UI | ⚠️ Basic | ✅ Good | ✅ Good | ✅ Good | ✅ **Excellent** | ✅ Good | ⚠️ Basic | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Excellent | ✅ Excellent |
+| Address Verification | ⚠️ Basic | ✅ Yes | ✅ Yes | ✅ Yes | ✅ **Yes** | ✅ Yes | ⚠️ Basic | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| Phishing Protection | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ **Yes** | ✅ Yes | ⚠️ Basic | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes
 | **Mobile Development** |
-| Mobile App Quality | ⚠️ Good | ✅ Excellent | ✅ Excellent | ✅ Excellent | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Excellent |
-| Mobile WalletConnect | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| Mobile App Quality | ⚠️ Good | ✅ Excellent | ✅ Excellent | ✅ Excellent | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Good | ✅ Excellent | ✅ Excellent | ✅ Excellent |
+| Mobile WalletConnect | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
 | **Developer Community** |
-| GitHub Activity | ✅ Very High | ✅ High | ✅ High | ✅ High | ✅ High | ⚠️ Medium | ⚠️ Medium | ⚠️ Low | ⚠️ Low | ⚠️ Medium | ⚠️ Medium |
-| Developer Adoption | ✅ Very High | ✅ High | ✅ High | ✅ Medium | ✅ Growing | ⚠️ Low | ⚠️ Low | ⚠️ Low | ⚠️ Low | ⚠️ Medium | ⚠️ Medium |
-| Discord/Support | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ⚠️ Limited | ⚠️ Limited | ⚠️ Limited | ⚠️ Limited | ✅ Yes | ⚠️ Limited |
+| GitHub Activity | ✅ Very High | ✅ High | ✅ High | ✅ High | ✅ High | ⚠️ Medium | ⚠️ Medium | ⚠️ Low | ⚠️ Low | ⚠️ Medium | ⚠️ Medium | ✅ High | ✅ High |
+| Developer Adoption | ✅ Very High | ✅ High | ✅ High | ✅ Medium | ✅ Growing | ⚠️ Low | ⚠️ Low | ⚠️ Low | ⚠️ Low | ⚠️ Medium | ⚠️ Medium | ✅ High | ✅ Medium |
+| Discord/Support | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes | ⚠️ Limited | ⚠️ Limited | ⚠️ Limited | ⚠️ Limited | ✅ Yes | ⚠️ Limited | ✅ Yes | ✅ Yes |
 
 **Key Developer Features:**
 - **Rabby**: Transaction simulation, pre-transaction risk checks, batch transactions - best for developers
@@ -143,7 +160,10 @@ Stability is measured by release frequency - fewer releases typically indicate:
 - **Block Wallet**: Privacy-first, low release frequency - good for stability
 - **Wigwam**: EVM-focused, low release frequency, newer wallet
 - **Brave Wallet**: Built into browser, good integration, stable
-- **OKX Wallet**: Exchange-backed, multi-chain, good for DeFi users
+- **OKX Wallet**: Exchange-backed, multi-chain, EIP-7702 support, good for DeFi users
+- **Safe (Gnosis Safe)**: Smart contract wallet, Account Abstraction (EIP-4337), batch transactions, multi-sig - best for teams/enterprises
+- **Argent**: Smart contract wallet, Account Abstraction (EIP-4337), batch transactions - best for advanced users
+- **Coinbase Wallet**: Account Abstraction (EIP-4337) support, good balance of features
 
 ---
 
@@ -507,6 +527,12 @@ Stability is scored based on:
 ### For Privacy-Focused Development:
 1. **Rabby** ⭐⭐⭐⭐ - Good security features, transaction simulation
 2. **Coinbase Wallet** ⭐⭐⭐⭐ - Privacy features, no tracking
+
+### For Account Abstraction / Smart Contract Wallets:
+1. **Safe (Gnosis Safe)** ⭐⭐⭐⭐⭐ - Full EIP-4337 support, multi-sig, enterprise features
+2. **Argent** ⭐⭐⭐⭐ - Full EIP-4337 support, smart contract wallet, advanced features
+3. **Coinbase Wallet** ⭐⭐⭐⭐ - Full EIP-4337 support, can create smart contract wallets
+4. **OKX Wallet** ⭐⭐⭐⭐ - EIP-7702 support, smart contract wallet features
 
 ---
 
