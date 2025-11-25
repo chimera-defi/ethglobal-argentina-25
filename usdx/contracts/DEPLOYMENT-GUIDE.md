@@ -39,7 +39,34 @@ POLYGONSCAN_API_KEY=YOUR_POLYGONSCAN_API_KEY
 
 ## 🧪 Testnet Deployment
 
-### Step 1: Deploy Mock Contracts (Sepolia Only)
+### Quick Start: Ethereum Sepolia + Base Sepolia
+
+For deploying to Ethereum Sepolia (Hub) and Base Sepolia (Spoke) with cross-chain demo:
+
+```bash
+cd contracts
+
+# Set environment variables
+export ALCHEMY_API_KEY=your_key  # Optional - uses public RPC if not set
+export PRIVATE_KEY=0x...
+
+# Run interactive deployment script
+./scripts/deploy-and-demo.sh
+```
+
+This script will:
+1. Deploy all hub chain contracts on Ethereum Sepolia
+2. Deploy all spoke chain contracts on Base Sepolia  
+3. Configure LayerZero cross-chain connections
+4. Run cross-chain minting and bridging demo
+
+See `../docs/DEPLOYMENT-SEPOLIA-BASE.md` for detailed instructions.
+
+---
+
+### Manual Deployment (Legacy)
+
+#### Step 1: Deploy Mock Contracts (Sepolia Only)
 
 First, deploy mock USDC and Yearn vault on Sepolia:
 
@@ -48,7 +75,7 @@ cd contracts
 
 # Deploy mocks
 forge script script/DeployMocks.s.sol:DeployMocks \
-  --rpc-url $SEPOLIA_RPC_URL \
+  --rpc-url ${SEPOLIA_RPC_URL:-https://rpc.sepolia.org} \
   --broadcast \
   --verify \
   -vvvv
@@ -64,14 +91,14 @@ MockYearnVault: 0x...
 
 ---
 
-### Step 2: Deploy Hub Chain Contracts (Sepolia)
+#### Step 2: Deploy Hub Chain Contracts (Sepolia)
 
 Update `script/DeployHub.s.sol` with your mock USDC and Yearn addresses if needed, then:
 
 ```bash
 # Deploy hub contracts
 forge script script/DeployHub.s.sol:DeployHub \
-  --rpc-url $SEPOLIA_RPC_URL \
+  --rpc-url ${SEPOLIA_RPC_URL:-https://rpc.sepolia.org} \
   --broadcast \
   --verify \
   -vvvv
@@ -87,12 +114,12 @@ USDXVault: 0x...
 
 ---
 
-### Step 3: Deploy Spoke Chain Contracts (Mumbai)
+#### Step 3: Deploy Spoke Chain Contracts (Mumbai)
 
 ```bash
 # Deploy spoke contracts
 forge script script/DeploySpoke.s.sol:DeploySpoke \
-  --rpc-url $MUMBAI_RPC_URL \
+  --rpc-url ${MUMBAI_RPC_URL:-https://rpc-mumbai.maticvigil.com} \
   --broadcast \
   --verify \
   -vvvv
