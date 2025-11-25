@@ -164,6 +164,34 @@ Stability scores are calculated based on:
 - **Solution:** EIP-7730 adds formatting metadata (display formats, intent descriptions, value interpolation) to ABIs and EIP-712 schemas
 - **Goal:** Enable contract developers to define how their contracts are displayed to users, working across all wallets
 
+**Browser Wallet Solutions (No EIP Equivalent):**
+Unlike hardware wallets, browser wallets don't have a standardized EIP equivalent to EIP-7730. Instead, they use various approaches:
+
+1. **MetaMask Transaction Insights Snaps** (MetaMask-specific plugin system)
+   - **What it is:** MetaMask's plugin architecture that allows developers to create Snaps that provide transaction insights
+   - **How it works:** Snaps can intercept transaction requests and display custom UI/insights before users sign
+   - **Examples:** 
+     - Wallet Guard Snap - transaction insights and security alerts
+     - Tenderly MetaMask Snap - transaction simulation showing asset changes
+   - **Limitation:** Only works with MetaMask, not a cross-wallet standard
+   - **Documentation:** https://docs.metamask.io/snaps/concepts/transaction-insights/
+
+2. **Transaction Simulation APIs** (Third-party services)
+   - **Services:** Tenderly, Blowfish, OpenChain
+   - **What they do:** Provide APIs that simulate transactions and return human-readable previews
+   - **How wallets use them:** Wallets integrate these APIs to show transaction effects before signing
+   - **Example:** Rabby Wallet uses Tenderly for transaction simulation/preview
+   - **Limitation:** Requires wallet-specific integration, not standardized
+
+3. **Built-in Transaction Simulation** (Wallet-native features)
+   - **Rabby Wallet:** Has built-in transaction simulation using Tenderly API
+   - **Shows:** Asset changes, contract interactions, risk warnings before signing
+   - **Advantage:** No plugins needed, works out of the box
+
+**Key Difference:**
+- **Hardware wallets (EIP-7730):** Standardized format for contract developers to provide display metadata
+- **Browser wallets:** Plugin systems (MetaMask Snaps) or API integrations (transaction simulation services), no universal standard
+
 **Related Safety Features:**
 - **Domain verification** - EIP-712 includes domain name, version, chainId, and verifyingContract
 - **Address verification** - Some wallets highlight and verify contract addresses
@@ -203,12 +231,16 @@ Stability scores are calculated based on:
 | Breaking Changes Frequency | ⚠️ High | ✅ Low | ✅ Low | ⚠️ Medium | ✅ Low | ✅ Low | ⚠️ Medium | ✅ Low | ✅ Low | ✅ Low |
 
 **Clear Signing & Safety Notes:**
-- **EIP-7730 (Clear Signing Standard):** Proposed by Ledger, currently in Draft status (November 2024). Standardizes JSON format for clear-signing smart contract calls and typed messages. **Wallet support status unknown** - EIP-7730 is very new and adoption is not yet widespread.
+- **EIP-7730 (Clear Signing Standard):** Proposed by Ledger, currently in Draft status (November 2024). Standardizes JSON format for clear-signing smart contract calls and typed messages. **Designed for hardware wallets** - browser wallets use different approaches (see below). **Wallet support status unknown** - EIP-7730 is very new and adoption is not yet widespread.
+- **Browser Wallet Solutions:** Unlike hardware wallets, browser wallets don't have a standardized EIP. Instead:
+  - **MetaMask:** Uses Transaction Insights Snaps (plugin system) - developers can create Snaps that provide transaction insights
+  - **Rabby:** Built-in transaction simulation using Tenderly API - shows asset changes and risk warnings before signing
+  - **Other wallets:** May integrate transaction simulation APIs (Tenderly, Blowfish, OpenChain) or use EIP-712 for message signing
 - **EIP-712 Support:** All wallets listed support EIP-712 for human-readable message signing (verified November 2024). EIP-712 is the foundational standard that EIP-7730 builds upon.
 - **EIP-191 Support:** All wallets support EIP-191 signed data standard
 - **Ledger's Role:** Ledger proposed EIP-7730 to solve the problem of displaying complex transactions on hardware wallet screens with limited space. The standard enables contract developers to provide formatting metadata.
-- **Rabby:** Enhanced clear signing with better domain verification, address highlighting, and transaction simulation (uses EIP-712)
-- **MetaMask:** Supports EIP-712 but basic address verification compared to enhanced implementations
+- **Rabby:** Enhanced clear signing with better domain verification, address highlighting, and transaction simulation (uses EIP-712 + Tenderly API)
+- **MetaMask:** Supports EIP-712 but basic address verification compared to enhanced implementations. Can be extended via Transaction Insights Snaps.
 - **Safe/Argent:** Excellent clear signing with enhanced security features for smart contract wallets
 - **Phishing Protection:** All wallets include basic phishing protection; effectiveness varies
 
@@ -519,9 +551,11 @@ Stability scores are calculated based on:
 ### Documentation & Standards
 - **WalletConnect Docs**: https://docs.walletconnect.com/
 - **EIP-6963**: https://eips.ethereum.org/EIPS/eip-6963 (Wallet detection standard)
-- **EIP-7730 (ERC-7730)**: https://eips.ethereum.org/EIPS/eip-7730 (Structured Data Clear Signing Format - **The Clear Signing Standard**, proposed by Ledger)
+- **EIP-7730 (ERC-7730)**: https://eips.ethereum.org/EIPS/eip-7730 (Structured Data Clear Signing Format - **The Clear Signing Standard**, proposed by Ledger - for hardware wallets)
 - **EIP-712**: https://eips.ethereum.org/EIPS/eip-712 (Typed structured data signing - foundational standard for EIP-7730)
 - **EIP-191**: https://eips.ethereum.org/EIPS/eip-191 (Signed Data Standard)
+- **MetaMask Transaction Insights Snaps**: https://docs.metamask.io/snaps/concepts/transaction-insights/ (MetaMask-specific plugin system for browser wallet transaction insights)
+- **Tenderly Transaction Simulation**: https://github.com/Tenderly/tenderly-metamask-snap-simulate-asset-changes (Example MetaMask Snap using Tenderly API)
 - **EIP-4337**: https://eips.ethereum.org/EIPS/eip-4337 (Account Abstraction standard)
 - **EIP-7702**: https://eips.ethereum.org/EIPS/eip-7702 (Set code for an EOA)
 - **EIP-3074**: https://eips.ethereum.org/EIPS/eip-3074 (AUTH and AUTHCALL)
